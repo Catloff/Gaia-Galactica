@@ -1,13 +1,16 @@
 extends Node3D
 
 var inventory = {
-	"wood": 0,
-	"stone": 0,
-	"food": 0,
-	"metal": 0
+	"wood": 100,
+	"stone": 100,
+	"food": 100,
+	"metal": 4
 }
 
 @onready var hud = get_node("../HUD")
+
+func _ready() -> void:
+	call_deferred("update_hud")
 
 func _input(event):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:

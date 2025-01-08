@@ -123,3 +123,13 @@
 - Building cost: 80 wood, 40 stone
 - Updated HUD to display metal count
 - Added Smeltery button to building panel
+
+## 2025-01-08 18:06
+- Added upgrade system to Smeltery
+- Smeltery now has 3 levels with increasing efficiency:
+  - Level 1: 1 metal per 5 seconds
+  - Level 2: 2 metal per 4 seconds (costs 5 metal, 20 stone)
+  - Level 3: 3 metal per 3 seconds (costs 10 metal, 40 stone)
+- Added UI elements to show level and upgrade button
+- Building gets slightly redder with each upgrade
+- Resource costs stay constant (2 wood, 1 stone per operation)
