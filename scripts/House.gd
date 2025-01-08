@@ -2,7 +2,7 @@ extends StaticBody3D
 
 const COST = {
 	"wood": 50,
-	"fiber": 10
+	"stone": 10
 }
 
 func _ready():
@@ -11,4 +11,4 @@ func _ready():
 	$MeshInstance3D.material_override = material
 
 static func get_cost() -> Dictionary:
-	return COST 
+	return COST

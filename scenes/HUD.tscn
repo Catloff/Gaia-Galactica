@@ -44,9 +44,9 @@ text = "Wood: 0"
 layout_mode = 2
 text = "Food: 0"
 
-[node name="FiberLabel" type="Label" parent="ResourcePanel/MarginContainer/Resources"]
+[node name="StoneLabel" type="Label" parent="ResourcePanel/MarginContainer/Resources"]
 layout_mode = 2
-text = "Fiber: 0"
+text = "Stone: 0"
 
 [node name="BuildPanel" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -77,12 +77,12 @@ alignment = 1
 [node name="HouseButton" type="Button" parent="BuildPanel/MarginContainer/BuildButtons"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
-text = "Haus (50 Holz, 10 Fasern)"
+text = "House (50 Wood, 10 Stone)"
 
 [node name="LumbermillButton" type="Button" parent="BuildPanel/MarginContainer/BuildButtons"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
-text = "Holzfäller (60 Holz)"
+text = "Lumbermill (60 Wood)"
 
 [node name="BerryGathererButton" type="Button" parent="BuildPanel/MarginContainer/BuildButtons"]
 custom_minimum_size = Vector2(120, 0)

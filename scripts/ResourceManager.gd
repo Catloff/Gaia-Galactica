@@ -2,7 +2,7 @@ extends Node3D
 
 var inventory = {
 	"wood": 0,
-	"fiber": 0,
+	"stone": 0,
 	"food": 0
 }
 

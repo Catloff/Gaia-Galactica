@@ -102,6 +102,13 @@
 - Optimiert: Separate Spawn-Funktion für Cluster
 - Behoben: Fehlende Holz-Ressourcen
 
+## 2025-01-08 17:43
+- Renamed Fiber resource to Stone throughout the codebase
+- Updated Stone resource color to gray
+- Updated all UI elements to reflect the name change
+- Updated building costs to use Stone instead of Fiber
+- Ensured resource spawning system uses Stone type correctly
+
 ## 2025-01-08 17:45
 - Hinzugefügt: Ressourcendichte-Steuerung über RESOURCE_DENSITY
 - Implementiert: Dynamische Berechnung der Cluster-Anzahl

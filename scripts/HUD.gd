@@ -2,7 +2,7 @@ extends Control
 
 @onready var wood_label = $ResourcePanel/MarginContainer/Resources/WoodLabel
 @onready var food_label = $ResourcePanel/MarginContainer/Resources/FoodLabel
-@onready var fiber_label = $ResourcePanel/MarginContainer/Resources/FiberLabel
+@onready var stone_label = $ResourcePanel/MarginContainer/Resources/StoneLabel
 @onready var house_button = $BuildPanel/MarginContainer/BuildButtons/HouseButton
 @onready var lumbermill_button = $BuildPanel/MarginContainer/BuildButtons/LumbermillButton
 @onready var berry_gatherer_button = $BuildPanel/MarginContainer/BuildButtons/BerryGathererButton
@@ -12,7 +12,7 @@ signal building_selected(type: String)
 var current_building: String = ""
 var inventory: Dictionary = {
 	"wood": 0,
-	"fiber": 0,
+	"stone": 0,
 	"food": 0
 }
 
@@ -26,12 +26,12 @@ func update_resources(new_inventory: Dictionary) -> void:
 	inventory = new_inventory
 	wood_label.text = "Wood: %d" % inventory["wood"]
 	food_label.text = "Food: %d" % inventory["food"]
-	fiber_label.text = "Fiber: %d" % inventory["fiber"]
+	stone_label.text = "Stone: %d" % inventory["stone"]
 	update_button_states()
 
 func update_button_states():
-	# House: 50 Wood, 10 Fiber
-	var can_build_house = inventory["wood"] >= 50 and inventory["fiber"] >= 10
+	# House: 50 Wood, 10 Stone
+	var can_build_house = inventory["wood"] >= 50 and inventory["stone"] >= 10
 	house_button.disabled = not can_build_house
 	
 	# Lumbermill: 60 Wood

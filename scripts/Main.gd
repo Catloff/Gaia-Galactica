@@ -30,7 +30,7 @@ func spawn_resource_clusters():
 	print("Spawning %d resource clusters on map area %d" % [num_clusters, map_area])
 	
 	# Sicherstellen, dass wir mindestens einen Cluster von jedem Typ haben
-	var resource_types = [0, 1, 2]  # WOOD, FIBER, FOOD
+	var resource_types = [0, 1, 2]  # WOOD, STONE, FOOD
 	resource_types.shuffle()  # Zufällige Reihenfolge
 	
 	# Zuerst einen Cluster von jedem Typ spawnen

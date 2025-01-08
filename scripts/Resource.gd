@@ -1,6 +1,6 @@
 extends StaticBody3D
 
-enum ResourceType {WOOD, FIBER, FOOD}
+enum ResourceType {WOOD, STONE, FOOD}
 @export var resource_type: ResourceType
 @export var resource_amount: int = 10
 var remaining_harvests: int = 3
@@ -13,8 +13,8 @@ func _ready():
 	match resource_type:
 		ResourceType.WOOD:
 			material.albedo_color = Color(0.5, 0.25, 0.0) # Brown
-		ResourceType.FIBER:
-			material.albedo_color = Color(0.0, 0.8, 0.0) # Green
+		ResourceType.STONE:
+			material.albedo_color = Color(0.7, 0.7, 0.7) # Gray
 		ResourceType.FOOD:
 			material.albedo_color = Color(0.8, 0.0, 0.0) # Red
 	
