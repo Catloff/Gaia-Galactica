@@ -48,6 +48,10 @@ text = "Food: 0"
 layout_mode = 2
 text = "Stone: 0"
 
+[node name="MetalLabel" type="Label" parent="ResourcePanel/MarginContainer/Resources"]
+layout_mode = 2
+text = "Metal: 0"
+
 [node name="BuildPanel" type="PanelContainer" parent="."]
 layout_mode = 1
 anchors_preset = 7
@@ -88,3 +92,8 @@ text = "Lumbermill (60 Wood)"
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 text = "Berry Gatherer (50 Food)"
+
+[node name="SmelteryButton" type="Button" parent="BuildPanel/MarginContainer/BuildButtons"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Smeltery (80 Wood, 40 Stone)"

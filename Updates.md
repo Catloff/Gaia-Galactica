@@ -115,3 +115,11 @@
 - Verbessert: Flächenbasierte Ressourcenverteilung
 - Optimiert: Zufällige Variation der Cluster-Anzahl
 - Debug: Logging der Spawn-Informationen
+
+## 2025-01-08 17:46
+- Added new Smeltery building for metal production
+- Added metal as a new resource type
+- Smeltery converts wood (2) and stone (1) into metal every 5 seconds
+- Building cost: 80 wood, 40 stone
+- Updated HUD to display metal count
+- Added Smeltery button to building panel

@@ -3,7 +3,8 @@ extends Node3D
 var inventory = {
 	"wood": 0,
 	"stone": 0,
-	"food": 0
+	"food": 0,
+	"metal": 0
 }
 
 @onready var hud = get_node("../HUD")
