@@ -1,33 +1,28 @@
-extends StaticBody3D
-
-const COST = {
-	"food": 50
-}
+extends BaseBuilding
 
 const HARVEST_RADIUS = 5.0
 const HARVEST_RATE = 1.0  # Seconds per harvest
 
-@onready var resource_manager = get_node("/root/Main/ResourceManager")
 var harvest_timer: float = 0.0
-var is_preview: bool = true  # Start as preview by default
 
-func _ready():
+func setup_building():
+	base_cost = {
+		"food": 50
+	}
+	
+	# Set building color
 	var material = StandardMaterial3D.new()
 	material.albedo_color = Color(0.8, 0.2, 0.2)  # Red for berries
 	$MeshInstance3D.material_override = material
 
 func _process(delta):
-	if is_preview:
+	if not is_active:
 		return
 		
 	harvest_timer += delta
 	if harvest_timer >= HARVEST_RATE:
 		harvest_timer = 0.0
 		harvest_nearby_food()
-
-func activate():
-	is_preview = false
-	print("Berry Gatherer activated!")
 
 func harvest_nearby_food():
 	var space_state = get_world_3d().direct_space_state
@@ -47,6 +42,3 @@ func harvest_nearby_food():
 				if resource_data != null:
 					resource_manager.add_resources(resource_data)
 					return  # Only harvest one resource per tick
-
-static func get_cost() -> Dictionary:
-	return COST

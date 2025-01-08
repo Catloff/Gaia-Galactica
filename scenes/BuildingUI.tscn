@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://buildingui"]
+
+[node name="UI" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+top_level = true
+
+[node name="LevelLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = -50.0
+offset_top = -40.0
+offset_right = 50.0
+offset_bottom = -14.0
+text = "Level 1"
+horizontal_alignment = 1
+
+[node name="UpgradeButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = -50.0
+offset_top = -10.0
+offset_right = 50.0
+offset_bottom = 20.0
+text = "Upgrade" 

@@ -1,26 +1,25 @@
-extends StaticBody3D
-
-const COST = {
-	"wood": 80,
-	"stone": 20
-}
+extends BaseBuilding
 
 const PLANT_RADIUS = 8.0  # Größerer Radius als Lumbermill
 const PLANT_RATE = 3.0  # Sekunden pro Pflanzversuch
 const TREE_HEIGHT = 0.5  # Aus Main.gd RESOURCE_HEIGHT
 
-@onready var resource_manager = get_node("/root/Main/ResourceManager")
 var plant_timer: float = 0.0
-var is_preview: bool = true
 var tree_positions = []  # Speichert Positionen wo Bäume waren
 
-func _ready():
+func setup_building():
+	base_cost = {
+		"wood": 80,
+		"stone": 20
+	}
+	
+	# Set building color
 	var material = StandardMaterial3D.new()
 	material.albedo_color = Color(0.2, 0.6, 0.3)  # Grün für Förster
 	$MeshInstance3D.material_override = material
 
 func _process(delta):
-	if is_preview:
+	if not is_active:
 		return
 		
 	plant_timer += delta
@@ -29,7 +28,7 @@ func _process(delta):
 		attempt_tree_planting()
 
 func activate():
-	is_preview = false
+	super.activate()
 	print("Förster aktiviert!")
 	scan_for_trees()  # Scannt initial nach Bäumen im Radius
 
@@ -86,6 +85,3 @@ func _on_tree_removed(pos: Vector3, type: String):
 		if not tree_positions.has(pos):
 			tree_positions.append(pos)
 			print("Förster merkt sich Position eines gefällten Baums")
-
-static func get_cost() -> Dictionary:
-	return COST 

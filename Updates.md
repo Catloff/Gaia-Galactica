@@ -184,3 +184,36 @@
   - Added explicit building deselection after successful placement
   - Added `deselect_building` method to HUD for consistent deselection behavior
   - Improved code organization and error handling in BuildingManager
+
+## 2025-01-08 21:45
+- Refactoring: Building-System mit Basisklasse
+  - Implementiert: BaseBuilding als abstrakte Basisklasse für alle Gebäude
+  - Hinzugefügt: Gemeinsame Funktionalität wie Upgrade-System und UI-Verwaltung
+  - Überarbeitet: Smeltery nutzt nun die Basisklasse
+  - Optimiert: Verbesserte Code-Wiederverwendung und Wartbarkeit
+  - Standardisiert: Einheitliche Behandlung von Gebäude-Funktionen
+
+## 2025-01-08 21:50
+- Refactoring: Gebäude auf BaseBuilding umgestellt
+  - Überarbeitet: Lumbermill nutzt nun BaseBuilding
+  - Überarbeitet: BerryGatherer nutzt nun BaseBuilding
+  - Überarbeitet: Forester nutzt nun BaseBuilding
+  - Optimiert: Gemeinsame Funktionalität in Basisklasse verschoben
+  - Verbessert: Einheitliche Aktivierung und Deaktivierung
+  - Standardisiert: Konsistente Gebäude-Initialisierung
+
+## 2025-01-08 21:55
+- Refactoring: Vereinheitlichtes UI-System für Gebäude
+  - Implementiert: Wiederverwendbare BuildingUI-Szene
+  - Verbessert: Dynamische Upgrade-Button-Aktualisierung
+  - Hinzugefügt: Automatische Ressourcen-Kosten-Anzeige
+  - Optimiert: Konsistentes Upgrade-System für alle Gebäude
+  - Behoben: Smeltery-Upgrade-Funktionalität wiederhergestellt
+
+## 2025-01-08 22:00
+- Verbessert: UI-Positionierung für Gebäude
+  - Implementiert: Dynamische UI-Position über den Gebäuden
+  - Hinzugefügt: Automatische Ausrichtung zur Kamera
+  - Verbessert: Zentrierte Anzeige von Level und Upgrade-Button
+  - Optimiert: Sichtbarkeitssteuerung basierend auf Aktivierungsstatus
+  - Angepasst: UI-Layout für bessere Lesbarkeit
