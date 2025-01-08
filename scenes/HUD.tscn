@@ -113,7 +113,7 @@ theme_override_constants/separation = 10
 [node name="LumbermillButton" type="Button" parent="BuildPanel/MarginContainer/BuildCategories/BuildButtons/ResourceBuildings"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
-text = "Lumbermill (60 Wood)"
+text = "Lumbermill (50 Wood, 10 Stone)"
 
 [node name="BerryGathererButton" type="Button" parent="BuildPanel/MarginContainer/BuildCategories/BuildButtons/ResourceBuildings"]
 custom_minimum_size = Vector2(120, 0)
@@ -124,11 +124,6 @@ text = "Berry Gatherer (50 Food)"
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme_override_constants/separation = 10
-
-[node name="HouseButton" type="Button" parent="BuildPanel/MarginContainer/BuildCategories/BuildButtons/Infrastructure"]
-custom_minimum_size = Vector2(120, 0)
-layout_mode = 2
-text = "House (50 Wood, 10 Stone)"
 
 [node name="ForesterButton" type="Button" parent="BuildPanel/MarginContainer/BuildCategories/BuildButtons/Infrastructure"]
 custom_minimum_size = Vector2(120, 0)

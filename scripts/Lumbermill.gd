@@ -1,7 +1,8 @@
 extends StaticBody3D
 
 const COST = {
-	"wood": 60
+	"wood": 50,
+	"stone": 10
 }
 
 const HARVEST_RADIUS = 5.0

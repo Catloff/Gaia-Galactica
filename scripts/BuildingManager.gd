@@ -1,6 +1,5 @@
 extends Node3D
 
-var house_scene = preload("res://scenes/House.tscn")
 var lumbermill_scene = preload("res://scenes/Lumbermill.tscn")
 var berry_gatherer_scene = preload("res://scenes/BerryGatherer.tscn")
 var forester_scene = preload("res://scenes/Forester.tscn")
@@ -126,8 +125,6 @@ func place_building():
 	
 	var new_building
 	match current_building_type:
-		"house":
-			new_building = house_scene.instantiate()
 		"lumbermill":
 			new_building = lumbermill_scene.instantiate()
 		"berry_gatherer":
@@ -156,8 +153,6 @@ func _on_building_selected(type: String):
 	
 	if type != "none":
 		match type:
-			"house":
-				preview_building = house_scene.instantiate()
 			"lumbermill":
 				preview_building = lumbermill_scene.instantiate()
 			"berry_gatherer":
@@ -175,8 +170,6 @@ func _on_building_selected(type: String):
 
 func get_current_building_cost() -> Dictionary:
 	match current_building_type:
-		"house":
-			return house_scene.instantiate().get_cost()
 		"lumbermill":
 			return lumbermill_scene.instantiate().get_cost()
 		"berry_gatherer":
