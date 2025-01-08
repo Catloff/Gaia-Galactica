@@ -51,6 +51,7 @@ func scan_for_trees():
 				# Verbinde das Signal für diesen Baum, wenn es noch nicht verbunden ist
 				if not collider.resource_removed.is_connected(_on_tree_removed):
 					collider.resource_removed.connect(_on_tree_removed)
+					# Nur ein Förster funktioniert in dem Radius
 
 func attempt_tree_planting():
 	if tree_positions.is_empty():

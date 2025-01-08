@@ -4,6 +4,7 @@ var house_scene = preload("res://scenes/House.tscn")
 var lumbermill_scene = preload("res://scenes/Lumbermill.tscn")
 var berry_gatherer_scene = preload("res://scenes/BerryGatherer.tscn")
 var forester_scene = preload("res://scenes/Forester.tscn")
+var plantable_tree_scene = preload("res://scenes/PlantableTree.tscn")
 var preview_building: Node3D = null
 var can_place = false
 var current_building_type = "none"
@@ -82,6 +83,8 @@ func place_building():
 			new_building = berry_gatherer_scene.instantiate()
 		"forester":
 			new_building = forester_scene.instantiate()
+		"plant_tree":
+			new_building = plantable_tree_scene.instantiate()
 			
 	new_building.position = preview_building.position
 	get_parent().add_child(new_building)
@@ -108,6 +111,8 @@ func _on_building_selected(type: String):
 				preview_building = berry_gatherer_scene.instantiate()
 			"forester":
 				preview_building = forester_scene.instantiate()
+			"plant_tree":
+				preview_building = plantable_tree_scene.instantiate()
 		
 		if preview_building:
 			preview_building.visible = false
@@ -123,5 +128,7 @@ func get_current_building_cost() -> Dictionary:
 			return berry_gatherer_scene.instantiate().get_cost()
 		"forester":
 			return forester_scene.instantiate().get_cost()
+		"plant_tree":
+			return plantable_tree_scene.instantiate().get_cost()
 		_:
 			return {}

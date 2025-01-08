@@ -93,3 +93,8 @@ text = "Berry Gatherer (50 Food)"
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 text = "Förster (80 Holz, 20 Stein)"
+
+[node name="PlantTreeButton" type="Button" parent="BuildPanel/MarginContainer/BuildButtons"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Baum pflanzen (10 Holz)"
