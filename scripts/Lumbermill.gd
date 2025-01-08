@@ -4,7 +4,7 @@ const COST = {
 	"wood": 60
 }
 
-const HARVEST_RADIUS = 2.0
+const HARVEST_RADIUS = 5.0
 const HARVEST_RATE = 1.0  # Sekunden pro Ernte
 
 @onready var resource_manager = get_node("/root/Main/ResourceManager")

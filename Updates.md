@@ -72,3 +72,24 @@
 - Verbessert: UI-Klick-Erkennung im BuildingManager
 - Hinzugefügt: Sichere Unterscheidung zwischen UI- und Welt-Klicks
 - Optimiert: Bessere Benutzerinteraktion beim Abbrechen der Platzierung
+
+## 2025-01-08 17:25
+- Überarbeitet: Organisches Ressourcen-Spawning-System
+- Implementiert: Cluster-basierte Ressourcenverteilung
+- Hinzugefügt: Zufällige Cluster-Größen und -Positionen
+- Optimiert: Mindestabstände zwischen Ressourcen
+- Verbessert: Natürlichere Ressourcenverteilung auf der Karte
+
+## 2025-01-08 17:35
+- Verbessert: Garantierte Spawns für alle Ressourcentypen
+- Implementiert: Mindestens ein Cluster pro Ressourcentyp
+- Hinzugefügt: Zufällige Reihenfolge der initialen Cluster
+- Optimiert: Separate Spawn-Funktion für Cluster
+- Behoben: Fehlende Holz-Ressourcen
+
+## 2025-01-08 17:45
+- Hinzugefügt: Ressourcendichte-Steuerung über RESOURCE_DENSITY
+- Implementiert: Dynamische Berechnung der Cluster-Anzahl
+- Verbessert: Flächenbasierte Ressourcenverteilung
+- Optimiert: Zufällige Variation der Cluster-Anzahl
+- Debug: Logging der Spawn-Informationen
