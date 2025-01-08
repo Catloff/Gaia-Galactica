@@ -59,3 +59,16 @@
 - Implementiert: Aktivierungssystem für Gebäude
 - Hinzugefügt: Vorschau-Status für neue Gebäude
 - Optimiert: Klare Trennung zwischen Vorschau und aktivem Gebäude
+
+## 2025-01-08 17:05
+- Überarbeitet: Neues horizontales Baumenü am unteren Bildschirmrand
+- Verbessert: Direkte Gebäudeauswahl ohne Moduswechsel
+- Hinzugefügt: Automatische Button-Deaktivierung bei fehlenden Ressourcen
+- Implementiert: Toggle-Funktion für Gebäudeauswahl (erneutes Klicken deaktiviert)
+- Optimiert: Visuelle Hervorhebung des aktuell ausgewählten Gebäudes
+
+## 2025-01-08 17:15
+- Behoben: Unbeabsichtigte Gebäudeplatzierung beim Klicken auf UI
+- Verbessert: UI-Klick-Erkennung im BuildingManager
+- Hinzugefügt: Sichere Unterscheidung zwischen UI- und Welt-Klicks
+- Optimiert: Bessere Benutzerinteraktion beim Abbrechen der Platzierung
