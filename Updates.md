@@ -116,3 +116,16 @@
 - Implementiert: Automatisches Nachpflanzen alle 3 Sekunden
 - Kosten: 80 Holz, 20 Stein
 - Radius: 8 Einheiten (größer als Holzfäller)
+
+## 2025-01-08 18:00
+- Überarbeitet: Baumenü in drei Kategorien aufgeteilt (Ressourcengebäude, Infrastruktur, Ressourcen)
+- Verbessert: Übersichtlichere Anordnung der Gebäude-Buttons
+- Angepasst: Größeres Baumenü für bessere Lesbarkeit
+- Optimiert: Klare visuelle Trennung der Gebäudekategorien
+
+## 2025-01-08 18:10
+- Hinzugefügt: Abriss-Modus für Gebäude
+- Implementiert: Roter Abriss-Button neben dem Baumenü
+- Hinzugefügt: 50% Ressourcen-Rückerstattung beim Abreißen
+- Verbessert: Rechtsklick zum Verlassen des Abriss-Modus
+- Optimiert: Automatische Deaktivierung der Gebäudeauswahl im Abriss-Modus

@@ -8,15 +8,25 @@ var plantable_tree_scene = preload("res://scenes/PlantableTree.tscn")
 var preview_building: Node3D = null
 var can_place = false
 var current_building_type = "none"
+var demolish_mode = false
 
 @onready var resource_manager = get_node("../ResourceManager")
 @onready var hud = get_node("../HUD")
 @onready var build_panel = get_node("../HUD/BuildPanel")
+@onready var demolish_button = get_node("../HUD/BuildPanel/DemolishButton")
 
 func _ready():
 	hud.building_selected.connect(_on_building_selected)
+	hud.demolish_mode_changed.connect(_on_demolish_mode_changed)
 
 func _unhandled_input(event):
+	if demolish_mode:
+		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			if not is_mouse_over_ui():
+				attempt_demolish(event.position)
+				get_viewport().set_input_as_handled()
+		return
+		
 	if current_building_type == "none":
 		return
 		
@@ -32,10 +42,47 @@ func _unhandled_input(event):
 			
 	get_viewport().set_input_as_handled()
 
+func attempt_demolish(mouse_pos: Vector2):
+	var camera = get_viewport().get_camera_3d()
+	var from = camera.project_ray_origin(mouse_pos)
+	var to = from + camera.project_ray_normal(mouse_pos) * 1000
+	
+	var space_state = get_world_3d().direct_space_state
+	var query = PhysicsRayQueryParameters3D.create(from, to)
+	query.collision_mask = 1  # Standard Kollisionsmaske für Gebäude
+	var result = space_state.intersect_ray(query)
+	
+	if result and result.collider.has_method("get_cost"):
+		print("Versuche Gebäude abzureißen...")
+		# Gib einen Teil der Ressourcen zurück (50%)
+		var cost = result.collider.get_cost()
+		for resource in cost:
+			var refund = cost[resource] / 2
+			resource_manager.inventory[resource] += refund
+			print("Erstatte %d %s zurück" % [refund, resource])
+		
+		# Entferne das Gebäude
+		result.collider.queue_free()
+		resource_manager.update_hud()
+		print("Gebäude erfolgreich abgerissen!")
+
+func _on_demolish_mode_changed(enabled: bool):
+	demolish_mode = enabled
+	if enabled:
+		print("Abriss-Modus aktiviert")
+		# Entferne Vorschau-Gebäude wenn vorhanden
+		if preview_building:
+			remove_child(preview_building)
+			preview_building = null
+		current_building_type = "none"
+	else:
+		print("Abriss-Modus deaktiviert")
+
 func is_mouse_over_ui() -> bool:
 	var mouse_pos = build_panel.get_viewport().get_mouse_position()
 	var panel_rect = build_panel.get_global_rect()
-	return panel_rect.has_point(mouse_pos)
+	var demolish_rect = demolish_button.get_global_rect()
+	return panel_rect.has_point(mouse_pos) or demolish_rect.has_point(mouse_pos)
 
 func update_preview_position(mouse_pos):
 	if is_mouse_over_ui():

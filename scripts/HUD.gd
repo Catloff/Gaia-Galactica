@@ -3,13 +3,15 @@ extends Control
 @onready var wood_label = $ResourcePanel/MarginContainer/Resources/WoodLabel
 @onready var food_label = $ResourcePanel/MarginContainer/Resources/FoodLabel
 @onready var stone_label = $ResourcePanel/MarginContainer/Resources/StoneLabel
-@onready var house_button = $BuildPanel/MarginContainer/BuildButtons/HouseButton
-@onready var lumbermill_button = $BuildPanel/MarginContainer/BuildButtons/LumbermillButton
-@onready var berry_gatherer_button = $BuildPanel/MarginContainer/BuildButtons/BerryGathererButton
-@onready var forester_button = $BuildPanel/MarginContainer/BuildButtons/ForesterButton
-@onready var plant_tree_button = $BuildPanel/MarginContainer/BuildButtons/PlantTreeButton
+@onready var house_button = $BuildPanel/MarginContainer/BuildCategories/BuildButtons/Infrastructure/HouseButton
+@onready var lumbermill_button = $BuildPanel/MarginContainer/BuildCategories/BuildButtons/ResourceBuildings/LumbermillButton
+@onready var berry_gatherer_button = $BuildPanel/MarginContainer/BuildCategories/BuildButtons/ResourceBuildings/BerryGathererButton
+@onready var forester_button = $BuildPanel/MarginContainer/BuildCategories/BuildButtons/Infrastructure/ForesterButton
+@onready var plant_tree_button = $BuildPanel/MarginContainer/BuildCategories/BuildButtons/Resources/PlantTreeButton
+@onready var demolish_button = $BuildPanel/DemolishButton
 
 signal building_selected(type: String)
+signal demolish_mode_changed(enabled: bool)
 
 var current_building: String = ""
 var inventory: Dictionary = {
@@ -24,7 +26,15 @@ func _ready():
 	berry_gatherer_button.pressed.connect(_on_berry_gatherer_button_pressed)
 	forester_button.pressed.connect(_on_forester_button_pressed)
 	plant_tree_button.pressed.connect(_on_plant_tree_button_pressed)
+	demolish_button.pressed.connect(_on_demolish_button_pressed)
 	update_button_states()
+
+func _unhandled_input(event):
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+			if demolish_button.button_pressed:
+				demolish_button.button_pressed = false
+				_on_demolish_button_pressed()
 
 func update_resources(new_inventory: Dictionary) -> void:
 	inventory = new_inventory
@@ -69,6 +79,13 @@ func update_button_states():
 	berry_gatherer_button.modulate = Color(1, 1, 0) if current_building == "berry_gatherer" else Color(1, 1, 1)
 	forester_button.modulate = Color(1, 1, 0) if current_building == "forester" else Color(1, 1, 1)
 	plant_tree_button.modulate = Color(1, 1, 0) if current_building == "plant_tree" else Color(1, 1, 1)
+
+func _on_demolish_button_pressed():
+	print("Abriss-Button gedrückt!")
+	demolish_mode_changed.emit(demolish_button.button_pressed)
+	if demolish_button.button_pressed:
+		current_building = ""
+		building_selected.emit("none")
 
 func _on_house_button_pressed():
 	if house_button.disabled:

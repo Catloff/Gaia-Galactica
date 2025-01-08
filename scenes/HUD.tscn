@@ -55,9 +55,9 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -300.0
-offset_top = -100.0
-offset_right = 300.0
+offset_left = -450.0
+offset_top = -150.0
+offset_right = 450.0
 offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 0
@@ -66,35 +66,91 @@ grow_vertical = 0
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
+theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 10
 
-[node name="BuildButtons" type="HBoxContainer" parent="BuildPanel/MarginContainer"]
+[node name="BuildCategories" type="VBoxContainer" parent="BuildPanel/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 10
+
+[node name="CategoryLabels" type="HBoxContainer" parent="BuildPanel/MarginContainer/BuildCategories"]
+layout_mode = 2
+theme_override_constants/separation = 40
 alignment = 1
 
-[node name="HouseButton" type="Button" parent="BuildPanel/MarginContainer/BuildButtons"]
-custom_minimum_size = Vector2(120, 0)
+[node name="ResourceBuildingsLabel" type="Label" parent="BuildPanel/MarginContainer/BuildCategories/CategoryLabels"]
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
-text = "House (50 Wood, 10 Stone)"
+text = "Ressourcengebäude"
+horizontal_alignment = 1
 
-[node name="LumbermillButton" type="Button" parent="BuildPanel/MarginContainer/BuildButtons"]
+[node name="InfrastructureLabel" type="Label" parent="BuildPanel/MarginContainer/BuildCategories/CategoryLabels"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+text = "Infrastruktur"
+horizontal_alignment = 1
+
+[node name="ResourcesLabel" type="Label" parent="BuildPanel/MarginContainer/BuildCategories/CategoryLabels"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+text = "Ressourcen"
+horizontal_alignment = 1
+
+[node name="BuildButtons" type="HBoxContainer" parent="BuildPanel/MarginContainer/BuildCategories"]
+layout_mode = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="ResourceBuildings" type="VBoxContainer" parent="BuildPanel/MarginContainer/BuildCategories/BuildButtons"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="LumbermillButton" type="Button" parent="BuildPanel/MarginContainer/BuildCategories/BuildButtons/ResourceBuildings"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 text = "Lumbermill (60 Wood)"
 
-[node name="BerryGathererButton" type="Button" parent="BuildPanel/MarginContainer/BuildButtons"]
+[node name="BerryGathererButton" type="Button" parent="BuildPanel/MarginContainer/BuildCategories/BuildButtons/ResourceBuildings"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 text = "Berry Gatherer (50 Food)"
 
-[node name="ForesterButton" type="Button" parent="BuildPanel/MarginContainer/BuildButtons"]
+[node name="Infrastructure" type="VBoxContainer" parent="BuildPanel/MarginContainer/BuildCategories/BuildButtons"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HouseButton" type="Button" parent="BuildPanel/MarginContainer/BuildCategories/BuildButtons/Infrastructure"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "House (50 Wood, 10 Stone)"
+
+[node name="ForesterButton" type="Button" parent="BuildPanel/MarginContainer/BuildCategories/BuildButtons/Infrastructure"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 text = "Förster (80 Holz, 20 Stein)"
 
-[node name="PlantTreeButton" type="Button" parent="BuildPanel/MarginContainer/BuildButtons"]
+[node name="Resources" type="VBoxContainer" parent="BuildPanel/MarginContainer/BuildCategories/BuildButtons"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PlantTreeButton" type="Button" parent="BuildPanel/MarginContainer/BuildCategories/BuildButtons/Resources"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 text = "Baum pflanzen (10 Holz)"
+
+[node name="DemolishButton" type="Button" parent="BuildPanel"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_override_colors/icon_normal_color = Color(1, 0.2, 0.2, 1)
+theme_override_colors/icon_pressed_color = Color(1, 0, 0, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.4, 0.4, 1)
+theme_override_font_sizes/font_size = 20
+toggle_mode = true
+text = "X"
