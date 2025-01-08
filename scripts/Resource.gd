@@ -21,3 +21,7 @@ func _ready():
 func gather_resource():
 	var resource_name = ResourceType.keys()[resource_type].to_lower()
 	print("Player gathered %d units of %s" % [resource_amount, resource_name])
+	return {
+		"type": resource_name,
+		"amount": resource_amount
+	}

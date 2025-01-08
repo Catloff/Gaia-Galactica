@@ -1,10 +1,14 @@
 extends Node3D
 
-func _ready():
-	# Set up raycast for resource detection
-	pass
+var inventory = {
+	"wood": 0,
+	"fiber": 0,
+	"food": 0
+}
 
-func _unhandled_input(event):
+@onready var hud = get_node("../HUD")
+
+func _input(event):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		var camera = get_viewport().get_camera_3d()
 		var from = camera.project_ray_origin(event.position)
@@ -15,4 +19,16 @@ func _unhandled_input(event):
 		var result = space_state.intersect_ray(query)
 		
 		if result and result.collider.has_method("gather_resource"):
-			result.collider.gather_resource()
+			var resource_data = result.collider.gather_resource()
+			update_inventory(resource_data)
+
+func update_inventory(resource_data):
+	var resource_type = resource_data["type"].to_lower()
+	var amount = resource_data["amount"]
+	
+	inventory[resource_type] += amount
+	update_hud()
+
+func update_hud():
+	if hud:
+		hud.update_resources(inventory)

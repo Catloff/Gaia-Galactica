@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://example2"]
+[gd_scene load_steps=4 format=3 uid="uid://example2"]
 
 [ext_resource type="Script" path="res://scripts/Main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/ResourceManager.gd" id="2_manager"]
+[ext_resource type="PackedScene" uid="uid://bxqd3kjl8ijwp" path="res://scenes/HUD.tscn" id="3_hud"]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_main")
@@ -14,3 +15,5 @@ transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 10, 0)
 
 [node name="ResourceManager" type="Node3D" parent="."]
 script = ExtResource("2_manager")
+
+[node name="HUD" parent="." instance=ExtResource("3_hud")]
