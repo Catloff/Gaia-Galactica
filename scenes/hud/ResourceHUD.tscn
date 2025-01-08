@@ -41,3 +41,7 @@ text = "Stone: 0/1000"
 [node name="MetalLabel" type="Label" parent="MarginContainer/Resources"]
 layout_mode = 2
 text = "Metal: 0/100"
+
+[node name="FuelLabel" type="Label" parent="MarginContainer/Resources"]
+layout_mode = 2
+text = "Fuel: 0/200"

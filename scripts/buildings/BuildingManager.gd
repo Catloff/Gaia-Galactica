@@ -51,6 +51,13 @@ var buildings = {
 		{"wood": 10},
 		"Baum pflanzen"
 	),
+	"refinery": BuildingDefinition.new(
+		preload("res://scenes/buildings/Refinery.tscn"),
+		"refinery",
+		BuildingCategory.RESOURCE,
+		{"metal": 50, "stone": 30},
+		"Raffinerie"
+	),
 	"smeltery": BuildingDefinition.new(
 		preload("res://scenes/buildings/Smeltery.tscn"),
 		"smeltery",

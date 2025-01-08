@@ -6,14 +6,16 @@ var inventory = {
 	"wood": 100,
 	"stone": 100,
 	"food": 100,
-	"metal": 4
+	"metal": 4,
+	"fuel": 0
 }
 
 var storage_limits = {
 	"wood": 1000,
 	"stone": 1000,
 	"food": 500,
-	"metal": 100
+	"metal": 100,
+	"fuel": 200,
 }
 
 @onready var hud = $"../HUD"
