@@ -24,12 +24,9 @@ var is_active: bool = false
 @onready var ui = $UI
 
 func _ready():
-	print("[BaseBuilding] _ready für: ", name)
 	setup_building()
 	setup_ui()
 	setup_collision()
-	print("[BaseBuilding] Nach Setup - Upgrade Kosten: ", upgrade_costs)
-	print("[BaseBuilding] Nach Setup - Max Level: ", max_level)
 
 # Virtuelle Methode zum Einrichten des Gebäudes
 func setup_building():
@@ -37,29 +34,20 @@ func setup_building():
 
 # Einrichten der UI-Elemente
 func setup_ui():
-	print("[BaseBuilding] Setup UI für: ", name)
 	if not ui:
-		print("[BaseBuilding] FEHLER: Keine UI gefunden!")
 		return
-		
-	print("[BaseBuilding] UI Node gefunden: ", ui.name)
+	
 	# Verstecke UI initial
 	ui.visible = false
 	ui.top_level = true  # Stellt sicher, dass die UI immer im Vordergrund ist
 	
 	if level_label:
-		print("[BaseBuilding] Level Label gefunden")
 		level_label.text = "Level %d" % current_level
 		level_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	else:
-		print("[BaseBuilding] FEHLER: Kein Level Label gefunden!")
 		
 	if upgrade_button:
-		print("[BaseBuilding] Upgrade Button gefunden")
 		upgrade_button.pressed.connect(_on_upgrade_pressed)
 		update_upgrade_button()
-	else:
-		print("[BaseBuilding] FEHLER: Kein Upgrade Button gefunden!")
 
 func _process(_delta):
 	if is_active:
@@ -71,43 +59,29 @@ func update_ui_position():
 		
 	var camera = get_viewport().get_camera_3d()
 	if not camera:
-		print("[BaseBuilding] FEHLER: Keine Kamera gefunden!")
 		return
 		
 	# Position über dem Gebäude berechnen
 	var screen_pos = camera.unproject_position(global_position + Vector3(0, 1.5, 0))
 	
-	# Debug: Kamera und Gebäude Positionen
-	print("[BaseBuilding] Kamera Position: ", camera.global_position)
-	print("[BaseBuilding] Gebäude Position: ", global_position)
-	
 	# Vektor von der Kamera zum Gebäude
 	var to_building = global_position - camera.global_position
 	var camera_forward = -camera.global_transform.basis.z
 	
-	# Debug: Vektoren
-	print("[BaseBuilding] Vektor zum Gebäude: ", to_building)
-	print("[BaseBuilding] Kamera Vorwärts: ", camera_forward)
-	
 	# Berechne den Winkel zwischen den Vektoren
 	var dot_product = to_building.normalized().dot(camera_forward)
-	print("[BaseBuilding] Dot Product: ", dot_product)
 	
 	# Wenn der Winkel kleiner als 90 Grad ist (dot product > 0), ist das Gebäude vor der Kamera
 	if dot_product > 0:
 		ui.visible = true
 		ui.position = screen_pos
-		print("[BaseBuilding] UI sichtbar gemacht - Position: ", screen_pos)
 	else:
 		ui.visible = false
-		print("[BaseBuilding] UI versteckt - Gebäude außerhalb des Sichtfelds")
 
 func update_upgrade_button():
 	if not upgrade_button:
-		print("[BaseBuilding] FEHLER: Kein Upgrade Button zum Aktualisieren!")
 		return
 		
-	print("[BaseBuilding] Aktualisiere Upgrade Button - Level: ", current_level, "/", max_level)
 	if current_level >= max_level:
 		upgrade_button.text = "Max Level"
 		upgrade_button.disabled = true
@@ -118,9 +92,8 @@ func update_upgrade_button():
 			if cost_text != "":
 				cost_text += ", "
 			cost_text += "%d %s" % [cost[resource], resource]
-		upgrade_button.text = "Upgrade (%s)" % cost_text
+		upgrade_button.text = "Upgrade\n(%s)" % cost_text
 		upgrade_button.disabled = not can_upgrade()
-	print("[BaseBuilding] Button Text: ", upgrade_button.text, " Disabled: ", upgrade_button.disabled)
 
 # Einrichten der Kollision
 func setup_collision():
@@ -130,17 +103,13 @@ func setup_collision():
 
 # Aktivierung des Gebäudes
 func activate():
-	print("[BaseBuilding] Aktiviere Gebäude: ", name)
 	is_active = true
 	
 	# Stelle sicher, dass die UI korrekt eingerichtet ist
 	if ui:
-		print("[BaseBuilding] UI gefunden, mache sichtbar")
 		ui.top_level = true
 		ui.visible = true
 		update_ui()
-	else:
-		print("[BaseBuilding] FEHLER: Keine UI zum Aktivieren gefunden!")
 	
 	# Verbinde das Signal für Ressourcenänderungen
 	if resource_manager:
@@ -149,7 +118,6 @@ func activate():
 	
 	# Aktualisiere UI sofort
 	update_ui_position()
-	print("[BaseBuilding] Aktivierung abgeschlossen - UI sichtbar: ", ui.visible if ui else "Keine UI")
 
 # Deaktivierung des Gebäudes
 func deactivate():
