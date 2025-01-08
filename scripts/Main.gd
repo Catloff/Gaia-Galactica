@@ -6,18 +6,33 @@ const MAX_CLUSTER_SIZE = 8
 const MIN_DISTANCE_BETWEEN_CLUSTERS = 4.0
 const RESOURCE_HEIGHT = 0.5
 const RESOURCE_DENSITY = 0.01  # Cluster pro Quadrateinheit (0.01 = 1 Cluster pro 100 Einheiten)
+const LARGE_ROCK_COUNT = 5  # Anzahl der großen Steine auf der Karte
 
 var placed_positions = []
 
 func _ready():
 	setup_camera()
 	spawn_resource_clusters()
+	spawn_large_rocks()
 
 func setup_camera():
 	var camera = $Camera3D
 	if camera:
 		camera.position = Vector3(10, 10, 10)
 		camera.look_at(Vector3.ZERO)
+
+func spawn_large_rocks():
+	var large_rock_scene = preload("res://scenes/LargeRock.tscn")
+	
+	for _i in range(LARGE_ROCK_COUNT):
+		var valid_pos = find_valid_position()
+		if not valid_pos.is_valid:
+			continue
+			
+		var rock = large_rock_scene.instantiate()
+		add_child(rock)
+		rock.position = Vector3(valid_pos.position.x, 1.5, valid_pos.position.z)  # Höher platziert als normale Ressourcen
+		placed_positions.append(valid_pos.position)
 
 func spawn_resource_clusters():
 	var resource_scene = preload("res://scenes/Resource.tscn")

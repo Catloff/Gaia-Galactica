@@ -248,3 +248,10 @@
     - Forwards signals and resource updates
   - Improved code organization and maintainability
   - Better separation of concerns between UI components
+
+## 2025-01-08 21:00
+- Hinzugefügt: Große, unerschöpfliche Steine als neue Ressourcenquelle
+- Implementiert: Cooldown-System für das Abbauen der großen Steine (3 Sekunden)
+- Hinzugefügt: 5 große Steine werden zufällig auf der Karte verteilt
+- Optimiert: Große Steine geben 5 Steinressourcen pro Abbau
+- Angepasst: Visuelle Darstellung der großen Steine (3x3x3 Einheiten, dunkelgrau)
