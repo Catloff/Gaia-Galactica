@@ -35,6 +35,9 @@ func _ready():
 	var material = StandardMaterial3D.new()
 	material.albedo_color = Color(0.6, 0.3, 0.3)  # Reddish brown for smeltery
 	$MeshInstance3D.material_override = material
+	
+	# Füge get_cost zum StaticBody3D hinzu
+	$StaticBody3D.set_script(preload("res://scripts/SmelteryBody.gd"))
 
 func _process(delta):
 	if not is_active:
