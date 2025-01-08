@@ -49,12 +49,4 @@ func gather_resource():
 	}
 
 func update_appearance():
-	if not $MeshInstance3D.material_override:
-		return
-		
-	# Ressource wird transparenter je weniger Ernten übrig sind
-	var alpha = 0.4 + (remaining_harvests / 3.0) * 0.6
-	var material = $MeshInstance3D.material_override.duplicate()
-	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	material.albedo_color.a = alpha
-	$MeshInstance3D.material_override = material
+	self.position.y = remaining_harvests / 3.0 - 0.5
