@@ -50,11 +50,11 @@ func attempt_demolish(mouse_pos: Vector2):
 	
 	var space_state = get_world_3d().direct_space_state
 	var query = PhysicsRayQueryParameters3D.create(from, to)
-	query.collision_mask = 1  # Standard Kollisionsmaske für Gebäude
+	query.collision_mask = 0xFFFFFFFF  # Alle Kollisionsmasken aktivieren
 	var result = space_state.intersect_ray(query)
 	
 	if result and result.collider.has_method("get_cost"):
-		print("Versuche Gebäude abzureißen...")
+		print("Versuche Gebäude abzureißen: ", result.collider.name)
 		# Gib einen Teil der Ressourcen zurück (50%)
 		var cost = result.collider.get_cost()
 		for resource in cost:
@@ -63,7 +63,10 @@ func attempt_demolish(mouse_pos: Vector2):
 			print("Erstatte %d %s zurück" % [refund, resource])
 		
 		# Entferne das Gebäude
-		result.collider.queue_free()
+		if result.collider.has_method("demolish"):
+			result.collider.demolish()
+		else:
+			result.collider.queue_free()
 		resource_manager.update_hud()
 		print("Gebäude erfolgreich abgerissen!")
 

@@ -42,6 +42,9 @@ func _ready():
 	
 	# Connect to resource manager signal
 	resource_manager.resource_changed.connect(_on_resource_changed)
+	
+	# Füge get_cost zum StaticBody3D hinzu
+	$StaticBody3D.set_script(preload("res://scripts/SmelteryBody.gd"))
 
 func _process(delta):
 	if not is_active:
