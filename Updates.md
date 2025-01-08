@@ -217,3 +217,20 @@
   - Verbessert: Zentrierte Anzeige von Level und Upgrade-Button
   - Optimiert: Sichtbarkeitssteuerung basierend auf Aktivierungsstatus
   - Angepasst: UI-Layout für bessere Lesbarkeit
+
+## 2025-01-08 22:53
+- Refactoring: Changed building cost system
+  - Replaced `base_cost` variable with virtual `get_base_cost` function in BaseBuilding
+  - Updated Smeltery to override `get_base_cost` instead of setting variable
+  - Improved code organization and maintainability
+  - Made building cost system more flexible for subclasses
+
+## 2025-01-08 22:56
+- Extended: Building cost system refactoring
+  - Updated all building classes to use `get_base_cost` function:
+    - `BerryGatherer`: Food cost of 50
+    - `Forester`: Wood cost of 80 and Stone cost of 20
+    - `Lumbermill`: Wood cost of 60
+    - `Smeltery`: Wood cost of 80 and Stone cost of 40
+  - Removed redundant `base_cost` variable assignments
+  - Improved code consistency across all building types

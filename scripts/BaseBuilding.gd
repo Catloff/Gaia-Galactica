@@ -2,9 +2,6 @@ extends Node3D
 
 class_name BaseBuilding
 
-# Grundkosten des Gebäudes
-var base_cost: Dictionary = {}
-
 # Upgrade-Kosten als Array von Dictionaries
 var upgrade_costs: Array = []
 
@@ -175,9 +172,13 @@ func update_ui():
 func _on_resource_changed(_resource_type: String, _old_value: int, _new_value: int):
 	update_upgrade_button()
 
+# Virtuelle Methode für die Grundkosten des Gebäudes
+func get_base_cost() -> Dictionary:
+	return {}
+
 # Getter für die Gebäudekosten
 func get_cost() -> Dictionary:
-	return base_cost
+	return get_base_cost()
 
 # Abriss-Funktionalität
 func demolish():

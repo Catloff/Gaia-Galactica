@@ -8,11 +8,6 @@ const BASE_PROCESS_TIME = 5.0
 var process_timer = 0.0
 
 func setup_building():
-	base_cost = {
-		"wood": 80,
-		"stone": 40
-	}
-	
 	upgrade_costs = [
 		{
 			"metal": 5,
@@ -30,6 +25,12 @@ func setup_building():
 	var material = StandardMaterial3D.new()
 	material.albedo_color = Color(0.6, 0.3, 0.3)  # Reddish brown for smeltery
 	$MeshInstance3D.material_override = material
+
+func get_base_cost() -> Dictionary:
+	return {
+		"wood": 80,
+		"stone": 40
+	}
 
 func _process(delta):
 	if not is_active:

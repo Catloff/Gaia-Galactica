@@ -6,14 +6,15 @@ const HARVEST_RATE = 1.0  # Seconds per harvest
 var harvest_timer: float = 0.0
 
 func setup_building():
-	base_cost = {
-		"food": 50
-	}
-	
 	# Set building color
 	var material = StandardMaterial3D.new()
 	material.albedo_color = Color(0.8, 0.2, 0.2)  # Red for berries
 	$MeshInstance3D.material_override = material
+
+func get_base_cost() -> Dictionary:
+	return {
+		"food": 50
+	}
 
 func _process(delta):
 	if not is_active:

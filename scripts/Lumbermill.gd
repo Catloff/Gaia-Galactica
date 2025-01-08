@@ -6,15 +6,16 @@ const HARVEST_RATE = 1.0  # Sekunden pro Ernte
 var harvest_timer: float = 0.0
 
 func setup_building():
-	base_cost = {
-		"wood": 50,
-		"stone": 10
-	}
 	
 	# Set building color
 	var material = StandardMaterial3D.new()
 	material.albedo_color = Color(0.6, 0.4, 0.2)  # Braun
 	$MeshInstance3D.material_override = material
+
+func get_base_cost() -> Dictionary:
+	return {
+		"wood": 60
+	}
 
 func _process(delta):
 	if not is_active:

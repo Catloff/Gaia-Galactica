@@ -8,15 +8,16 @@ var plant_timer: float = 0.0
 var tree_positions = []  # Speichert Positionen wo Bäume waren
 
 func setup_building():
-	base_cost = {
-		"wood": 80,
-		"stone": 20
-	}
-	
 	# Set building color
 	var material = StandardMaterial3D.new()
 	material.albedo_color = Color(0.2, 0.6, 0.3)  # Grün für Förster
 	$MeshInstance3D.material_override = material
+
+func get_base_cost() -> Dictionary:
+	return {
+		"wood": 80,
+		"stone": 20
+	}
 
 func _process(delta):
 	if not is_active:
