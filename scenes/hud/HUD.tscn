@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://fraeaabxibdi"]
 
-[ext_resource type="Script" path="res://scripts/HUD.gd" id="1_hud"]
-[ext_resource type="PackedScene" path="res://scenes/ResourceHUD.tscn" id="2_resource_hud"]
-[ext_resource type="PackedScene" path="res://scenes/BuildingHUD.tscn" id="3_building_hud"]
+[ext_resource type="Script" path="res://scripts/hud/HUD.gd" id="1_hud"]
+[ext_resource type="PackedScene" uid="uid://resourcehud" path="res://scenes/hud/ResourceHUD.tscn" id="2_resource_hud"]
+[ext_resource type="PackedScene" uid="uid://buildinghud" path="res://scenes/hud/BuildingHUD.tscn" id="3_building_hud"]
 
 [node name="HUD" type="Control"]
 layout_mode = 3

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://buildinghud"]
 
-[ext_resource type="Script" path="res://scripts/BuildingHUD.gd" id="1_building_hud"]
+[ext_resource type="Script" path="res://scripts/hud/BuildingHUD.gd" id="1_building_hud"]
 
 [node name="BuildingHUD" type="PanelContainer"]
 anchors_preset = 7

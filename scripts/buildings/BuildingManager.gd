@@ -1,10 +1,10 @@
 extends Node3D
 
-var lumbermill_scene = preload("res://scenes/Lumbermill.tscn")
-var berry_gatherer_scene = preload("res://scenes/BerryGatherer.tscn")
-var forester_scene = preload("res://scenes/Forester.tscn")
-var plantable_tree_scene = preload("res://scenes/PlantableTree.tscn")
-var smeltery_scene = preload("res://scenes/Smeltery.tscn")
+var lumbermill_scene = preload("res://scenes/buildings/Lumbermill.tscn")
+var berry_gatherer_scene = preload("res://scenes/buildings/BerryGatherer.tscn")
+var forester_scene = preload("res://scenes/buildings/Forester.tscn")
+var plantable_tree_scene = preload("res://scenes/buildings/PlantableTree.tscn")
+var smeltery_scene = preload("res://scenes/buildings/Smeltery.tscn")
 var preview_building: Node3D = null
 var can_place = false
 var current_building_type = "none"

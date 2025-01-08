@@ -101,7 +101,7 @@ func update_upgrade_button():
 func setup_collision():
 	var static_body = get_node_or_null("StaticBody3D")
 	if static_body:
-		static_body.set_script(preload("res://scripts/BuildingBody.gd"))
+		static_body.set_script(preload("res://scripts/buildings/BuildingBody.gd"))
 
 # Aktivierung des Gebäudes
 func activate():
