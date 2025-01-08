@@ -1,5 +1,7 @@
 extends Node3D
 
+signal resource_changed(resource_type: String, old_value: int, new_value: int)
+
 var inventory = {
 	"wood": 100,
 	"stone": 100,
@@ -27,11 +29,13 @@ func _input(event):
 			if resource_data != null:
 				update_inventory(resource_data)
 
-func update_inventory(resource_data):
+func update_inventory(resource_data: Dictionary) -> void:
 	var resource_type = resource_data["type"].to_lower()
 	var amount = resource_data["amount"]
 	
+	var old_value = inventory[resource_type]
 	inventory[resource_type] += amount
+	resource_changed.emit(resource_type, old_value, inventory[resource_type])
 	update_hud()
 
 func update_hud():

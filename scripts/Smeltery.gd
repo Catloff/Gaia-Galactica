@@ -39,6 +39,9 @@ func _ready():
 	# Setup UI elements
 	setup_ui()
 	update_ui()
+	
+	# Connect to resource manager signal
+	resource_manager.resource_changed.connect(_on_resource_changed)
 
 func _process(delta):
 	if not is_active:
@@ -48,21 +51,25 @@ func _process(delta):
 	if process_timer >= get_process_time():
 		process_timer = 0.0
 		try_produce_metal()
-		# Check upgrade availability each time we produce metal
-		update_ui()
 
 func try_produce_metal():
-	var inventory = resource_manager.inventory
 	var wood_cost = get_wood_cost()
 	var stone_cost = get_stone_cost()
+	var metal_output = get_metal_output()
 	
-	if inventory["wood"] >= wood_cost and inventory["stone"] >= stone_cost:
-		# Consume resources
-		inventory["wood"] -= wood_cost
-		inventory["stone"] -= stone_cost
-		# Produce metal
-		inventory["metal"] += get_metal_output()
-		resource_manager.update_hud()
+	if resource_manager.inventory["wood"] >= wood_cost and resource_manager.inventory["stone"] >= stone_cost:
+		resource_manager.update_inventory({
+			"type": "wood",
+			"amount": -wood_cost
+		})
+		resource_manager.update_inventory({
+			"type": "stone",
+			"amount": -stone_cost
+		})
+		resource_manager.update_inventory({
+			"type": "metal",
+			"amount": metal_output
+		})
 
 func get_process_time() -> float:
 	# Each level reduces process time by 1 second
@@ -99,19 +106,18 @@ func get_upgrade_cost() -> Dictionary:
 
 func upgrade():
 	if not can_upgrade():
-		print("Cannot upgrade - requirements not met")
 		return
 		
 	var cost = get_upgrade_cost()
-	var inventory = resource_manager.inventory
 	
 	# Pay upgrade cost
 	for resource in cost:
-		inventory[resource] -= cost[resource]
+		resource_manager.update_inventory({
+			"type": resource,
+			"amount": -cost[resource]
+		})
 	
 	current_level += 1
-	print("Upgraded to level ", current_level)
-	resource_manager.update_hud()
 	update_ui()
 	
 	# Update building appearance
@@ -140,6 +146,12 @@ func update_ui():
 
 func _on_upgrade_pressed():
 	upgrade()
+
+func _on_resource_changed(resource_type: String, _old_value: int, _new_value: int):
+	# Only update UI if the changed resource is one we care about for upgrades
+	var upgrade_cost = get_upgrade_cost()
+	if upgrade_cost.has(resource_type):
+		update_ui()
 
 func activate():
 	is_active = true
