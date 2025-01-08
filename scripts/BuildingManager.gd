@@ -1,21 +1,24 @@
 extends Node3D
 
 var house_scene = preload("res://scenes/House.tscn")
-var preview_house: Node3D = null
+var lumbermill_scene = preload("res://scenes/Lumbermill.tscn")
+var preview_building: Node3D = null
 var can_place = false
 var build_mode = false
+var current_building_type = "none"
 
 @onready var resource_manager = get_node("../ResourceManager")
 @onready var hud = get_node("../HUD")
 
 func _ready():
-	preview_house = house_scene.instantiate()
-	preview_house.visible = false
-	add_child(preview_house)
+	preview_building = house_scene.instantiate()
+	preview_building.visible = false
+	add_child(preview_building)
 	hud.mode_changed.connect(_on_mode_changed)
+	hud.building_selected.connect(_on_building_selected)
 
 func _input(event):
-	if not build_mode:
+	if not build_mode or current_building_type == "none":
 		return
 		
 	if event is InputEventMouseMotion:
@@ -23,7 +26,7 @@ func _input(event):
 	
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		if can_place and has_resources():
-			place_house()
+			place_building()
 
 func update_preview_position(mouse_pos):
 	var camera = get_viewport().get_camera_3d()
@@ -36,31 +39,61 @@ func update_preview_position(mouse_pos):
 	var result = space_state.intersect_ray(query)
 	
 	if result:
-		preview_house.visible = true
-		preview_house.position = result.position
-		preview_house.position.y = 1.5  # Hälfte der Haushöhe
+		preview_building.visible = true
+		preview_building.position = result.position
+		preview_building.position.y = 1.0  # Hälfte der Gebäudehöhe
 		can_place = true
 	else:
-		preview_house.visible = false
+		preview_building.visible = false
 		can_place = false
 
 func has_resources() -> bool:
-	var cost = house_scene.instantiate().get_cost()
+	var cost = get_current_building_cost()
 	for resource in cost:
 		if resource_manager.inventory[resource] < cost[resource]:
 			return false
 	return true
 
-func place_house():
-	var cost = house_scene.instantiate().get_cost()
+func place_building():
+	var cost = get_current_building_cost()
 	for resource in cost:
 		resource_manager.inventory[resource] -= cost[resource]
 	
-	var new_house = house_scene.instantiate()
-	new_house.position = preview_house.position
-	get_parent().add_child(new_house)
+	var new_building
+	match current_building_type:
+		"house":
+			new_building = house_scene.instantiate()
+		"lumbermill":
+			new_building = lumbermill_scene.instantiate()
+	
+	new_building.position = preview_building.position
+	get_parent().add_child(new_building)
 	resource_manager.update_hud()
 
 func _on_mode_changed(mode: String):
 	build_mode = (mode == "build")
-	preview_house.visible = false 
+	if not build_mode:
+		preview_building.visible = false
+		current_building_type = "none"
+
+func _on_building_selected(type: String):
+	current_building_type = type
+	remove_child(preview_building)
+	
+	match type:
+		"house":
+			preview_building = house_scene.instantiate()
+		"lumbermill":
+			preview_building = lumbermill_scene.instantiate()
+	
+	preview_building.visible = false
+	add_child(preview_building)
+
+func get_current_building_cost() -> Dictionary:
+	match current_building_type:
+		"house":
+			return house_scene.instantiate().get_cost()
+		"lumbermill":
+			return lumbermill_scene.instantiate().get_cost()
+		_:
+			return {} 

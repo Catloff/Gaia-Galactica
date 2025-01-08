@@ -27,3 +27,11 @@
 - Verbessert: Gebäude snappen nun korrekt auf Bodenhöhe
 - Optimiert: Kollisionsmasken für präzise Gebäudeplatzierung
 - Angepasst: Bodenebene mit grüner Textur für bessere Sichtbarkeit
+
+## 2025-01-08 16:15
+- Hinzugefügt: Holzfäller-Hütte als automatisches Ressourcengebäude
+- Implementiert: Automatische Holzernte im 2-Einheiten-Radius
+- Erweitert: Gebäudeauswahl im Baumenü
+- Optimiert: BuildingManager für verschiedene Gebäudetypen
+- Kosten Holzfäller: 60 Holz
+- Erntegeschwindigkeit: 1 Holz pro Sekunde
