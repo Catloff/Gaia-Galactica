@@ -297,3 +297,10 @@
 - Refactored BuildingHUD to dynamically generate buttons from BuildingManager definitions
 - Removed hardcoded building buttons
 - Improved maintainability by automatically reflecting building changes in the UI
+
+## 2025-01-08 23:55
+- Hinzugefügt: Steinbruch als neues automatisches Ressourcengebäude
+- Implementiert: Automatischer Abbau von großen Steinen im 5-Einheiten-Radius
+- Kosten: 40 Holz, 20 Stein
+- Optimiert: Abbaurate synchronisiert mit Cooldown der großen Steine (3 Sekunden)
+- Angepasst: Graue Färbung für thematische Stimmigkeit

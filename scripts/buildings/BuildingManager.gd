@@ -57,6 +57,13 @@ var buildings = {
 		BuildingCategory.INFRASTRUCTURE,
 		{"wood": 80, "stone": 40},
 		"Schmelze"
+	),
+	"quarry": BuildingDefinition.new(
+		preload("res://scenes/buildings/Quarry.tscn"),
+		"quarry",
+		BuildingCategory.RESOURCE,
+		{"wood": 40, "stone": 20},
+		"Steinbruch"
 	)
 }
 
