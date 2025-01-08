@@ -12,6 +12,8 @@ var inventory = {
 @onready var hud = get_node("../HUD")
 
 func _ready() -> void:
+	# has to be called deferred to prevent a race condition:
+	# the labels are also queried @onready and might not be ready yet
 	call_deferred("update_hud")
 
 func _input(event):
