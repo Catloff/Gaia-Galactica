@@ -9,6 +9,13 @@ var inventory = {
 	"metal": 4
 }
 
+var storage_limits = {
+	"wood": 1000,
+	"stone": 1000,
+	"food": 500,
+	"metal": 100
+}
+
 @onready var hud = $"../HUD"
 
 func can_afford(costs: Dictionary) -> bool:
@@ -35,7 +42,8 @@ func add_resources(resource_data: Dictionary) -> void:
 	var amount = resource_data["amount"]
 	
 	var old_value = inventory[resource_type]
-	inventory[resource_type] += amount
+	var new_value = clampi(old_value + amount, 0, storage_limits[resource_type])
+	inventory[resource_type] = new_value
 	resource_changed.emit(resource_type, old_value, inventory[resource_type])
 
 func _input(event):

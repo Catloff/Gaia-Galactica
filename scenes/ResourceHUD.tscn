@@ -28,16 +28,16 @@ mouse_filter = 2
 
 [node name="WoodLabel" type="Label" parent="MarginContainer/Resources"]
 layout_mode = 2
-text = "Wood: 0"
+text = "Wood: 0/1000"
 
 [node name="FoodLabel" type="Label" parent="MarginContainer/Resources"]
 layout_mode = 2
-text = "Food: 0"
+text = "Food: 0/500"
 
 [node name="StoneLabel" type="Label" parent="MarginContainer/Resources"]
 layout_mode = 2
-text = "Stone: 0"
+text = "Stone: 0/1000"
 
 [node name="MetalLabel" type="Label" parent="MarginContainer/Resources"]
 layout_mode = 2
-text = "Metal: 0"
+text = "Metal: 0/100"

@@ -12,7 +12,8 @@ func _ready() -> void:
 
 func update_resources(_type, _old_value, _new_value) -> void:
 	var inventory = resource_manager.inventory
-	wood_label.text = "Wood: %d" % inventory["wood"]
-	food_label.text = "Food: %d" % inventory["food"]
-	stone_label.text = "Stone: %d" % inventory["stone"]
-	metal_label.text = "Metal: %d" % inventory["metal"]
+	var limits = resource_manager.storage_limits
+	wood_label.text = "Wood: %d/%d" % [inventory["wood"], limits["wood"]]
+	food_label.text = "Food: %d/%d" % [inventory["food"], limits["food"]]
+	stone_label.text = "Stone: %d/%d" % [inventory["stone"], limits["stone"]]
+	metal_label.text = "Metal: %d/%d" % [inventory["metal"], limits["metal"]]

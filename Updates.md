@@ -248,3 +248,26 @@
     - Forwards signals and resource updates
   - Improved code organization and maintainability
   - Better separation of concerns between UI components
+
+## 2025-01-08 23:28
+- Implemented Resource Storage Limits
+- Added maximum storage capacity for each resource type in ResourceManager
+- Updated ResourceHUD to display current/max values for each resource
+- Implemented logic to prevent exceeding storage limits when adding resources
+- Initial storage limits set to:
+  - Wood: 1000
+  - Stone: 1000
+  - Food: 500
+  - Metal: 100
+
+## 2025-01-08 23:30
+- Improved Resource Value Clamping
+- Replaced `min` function with `clampi` in ResourceManager
+- Now ensures resource values stay between 0 and maximum storage limit
+- Provides better value control and prevents negative resources
+
+## 2025-01-08 23:32
+- Updated Resource Display
+- Modified ResourceHUD to dynamically show current/maximum values
+- Resource display now shows format: "Resource: Current/Maximum"
+- Ensures UI stays in sync with storage limits
