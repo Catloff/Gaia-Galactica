@@ -270,4 +270,12 @@
 - Updated Resource Display
 - Modified ResourceHUD to dynamically show current/maximum values
 - Resource display now shows format: "Resource: Current/Maximum"
-- Ensures UI stays in sync with storage limits
+- Ensures UI stays in sync with storage Limits
+
+
+## 2025-01-08 23:35
+- Hinzugefügt: Große, unerschöpfliche Steine als neue Ressourcenquelle
+- Implementiert: Cooldown-System für das Abbauen der großen Steine (3 Sekunden)
+- Hinzugefügt: 5 große Steine werden zufällig auf der Karte verteilt
+- Optimiert: Große Steine geben 5 Steinressourcen pro Abbau
+- Angepasst: Visuelle Darstellung der großen Steine (3x3x3 Einheiten, dunkelgrau)

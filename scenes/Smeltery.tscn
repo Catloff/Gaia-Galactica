@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bnt7ga3ctrv4y"]
+[gd_scene load_steps=5 format=3 uid="uid://lqf5sxn2582n"]
 
 [ext_resource type="Script" path="res://scripts/Smeltery.gd" id="1_smeltery"]
 [ext_resource type="PackedScene" path="res://scenes/BuildingUI.tscn" id="2_building_ui"]
