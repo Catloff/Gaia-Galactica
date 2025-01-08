@@ -109,9 +109,10 @@
 - Updated building costs to use Stone instead of Fiber
 - Ensured resource spawning system uses Stone type correctly
 
-## 2025-01-08 17:45
-- Hinzugefügt: Ressourcendichte-Steuerung über RESOURCE_DENSITY
-- Implementiert: Dynamische Berechnung der Cluster-Anzahl
-- Verbessert: Flächenbasierte Ressourcenverteilung
-- Optimiert: Zufällige Variation der Cluster-Anzahl
-- Debug: Logging der Spawn-Informationen
+## 2025-01-08 17:50
+- Hinzugefügt: Förstergebäude für automatische Baumpflanzung
+- Implementiert: Speicherung von Baumpositionen für Nachpflanzung
+- Hinzugefügt: Scan-Funktion für existierende Bäume im Radius
+- Implementiert: Automatisches Nachpflanzen alle 3 Sekunden
+- Kosten: 80 Holz, 20 Stein
+- Radius: 8 Einheiten (größer als Holzfäller)

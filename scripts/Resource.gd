@@ -6,6 +6,8 @@ enum ResourceType {WOOD, STONE, FOOD}
 var remaining_harvests: int = 3
 var is_being_removed: bool = false
 
+signal resource_removed(position: Vector3, type: String)
+
 func _ready():
 	# Set the color based on resource type
 	var material = StandardMaterial3D.new()
@@ -39,6 +41,8 @@ func gather_resource():
 		# Deaktiviere Kollision sofort
 		collision_layer = 0
 		collision_mask = 0
+		# Signal senden bevor die Ressource entfernt wird
+		resource_removed.emit(global_position, get_resource_type())
 		# Kurze Verzögerung vor dem Entfernen für visuelles Feedback
 		var timer = get_tree().create_timer(0.1)
 		timer.timeout.connect(func(): queue_free())

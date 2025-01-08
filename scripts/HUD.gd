@@ -6,6 +6,7 @@ extends Control
 @onready var house_button = $BuildPanel/MarginContainer/BuildButtons/HouseButton
 @onready var lumbermill_button = $BuildPanel/MarginContainer/BuildButtons/LumbermillButton
 @onready var berry_gatherer_button = $BuildPanel/MarginContainer/BuildButtons/BerryGathererButton
+@onready var forester_button = $BuildPanel/MarginContainer/BuildButtons/ForesterButton
 
 signal building_selected(type: String)
 
@@ -20,6 +21,7 @@ func _ready():
 	house_button.pressed.connect(_on_house_button_pressed)
 	lumbermill_button.pressed.connect(_on_lumbermill_button_pressed)
 	berry_gatherer_button.pressed.connect(_on_berry_gatherer_button_pressed)
+	forester_button.pressed.connect(_on_forester_button_pressed)
 	update_button_states()
 
 func update_resources(new_inventory: Dictionary) -> void:
@@ -42,10 +44,15 @@ func update_button_states():
 	var can_build_berry_gatherer = inventory["food"] >= 50
 	berry_gatherer_button.disabled = not can_build_berry_gatherer
 	
+	# Forester: 80 Wood, 20 Stone
+	var can_build_forester = inventory["wood"] >= 80 and inventory["stone"] >= 20
+	forester_button.disabled = not can_build_forester
+	
 	# If current building can't be built anymore, deselect it
 	if (current_building == "house" and not can_build_house) or \
 	   (current_building == "lumbermill" and not can_build_lumbermill) or \
-	   (current_building == "berry_gatherer" and not can_build_berry_gatherer):
+	   (current_building == "berry_gatherer" and not can_build_berry_gatherer) or \
+	   (current_building == "forester" and not can_build_forester):
 		current_building = ""
 		building_selected.emit("none")
 	
@@ -53,6 +60,7 @@ func update_button_states():
 	house_button.modulate = Color(1, 1, 0) if current_building == "house" else Color(1, 1, 1)
 	lumbermill_button.modulate = Color(1, 1, 0) if current_building == "lumbermill" else Color(1, 1, 1)
 	berry_gatherer_button.modulate = Color(1, 1, 0) if current_building == "berry_gatherer" else Color(1, 1, 1)
+	forester_button.modulate = Color(1, 1, 0) if current_building == "forester" else Color(1, 1, 1)
 
 func _on_house_button_pressed():
 	if house_button.disabled:
@@ -88,4 +96,16 @@ func _on_berry_gatherer_button_pressed():
 	else:
 		current_building = "berry_gatherer"
 		building_selected.emit("berry_gatherer")
+	update_button_states()
+
+func _on_forester_button_pressed():
+	if forester_button.disabled:
+		return
+		
+	if current_building == "forester":
+		current_building = ""
+		building_selected.emit("none")
+	else:
+		current_building = "forester"
+		building_selected.emit("forester")
 	update_button_states()
