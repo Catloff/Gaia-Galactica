@@ -279,3 +279,15 @@
 - Hinzugefügt: 5 große Steine werden zufällig auf der Karte verteilt
 - Optimiert: Große Steine geben 5 Steinressourcen pro Abbau
 - Angepasst: Visuelle Darstellung der großen Steine (3x3x3 Einheiten, dunkelgrau)
+
+## 2025-01-08 23:49
+- Refactoring building system to use BuildingManager as single source of truth
+- Moving building definitions (costs, categories) from BuildingHUD to BuildingManager
+- Implementing centralized building registration system
+- Improving maintainability by removing duplicated building costs
+
+## 2025-01-09 00:01
+- Building Cost Management Refactoring
+- Removed `get_cost` functions from individual building scripts
+- Centralized all building costs in BuildingManager
+- Improved code maintainability by having a single source of truth for building costs

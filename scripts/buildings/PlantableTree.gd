@@ -24,6 +24,3 @@ func activate():
 	tree.global_position = global_position
 	# Entferne die Vorschau
 	queue_free()
-
-static func get_cost() -> Dictionary:
-	return COST 

@@ -176,10 +176,6 @@ func _on_resource_changed(_resource_type: String, _old_value: int, _new_value: i
 func get_base_cost() -> Dictionary:
 	return {}
 
-# Getter für die Gebäudekosten
-func get_cost() -> Dictionary:
-	return get_base_cost()
-
 # Abriss-Funktionalität
 func demolish():
 	deactivate()

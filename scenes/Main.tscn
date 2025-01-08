@@ -3,8 +3,8 @@
 [ext_resource type="Script" path="res://scripts/Main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/ResourceManager.gd" id="2_manager"]
 [ext_resource type="PackedScene" uid="uid://fraeaabxibdi" path="res://scenes/hud/HUD.tscn" id="3_hud"]
-[ext_resource type="Script" path="res://scripts/buildings/BuildingManager.gd" id="4_building"]
 [ext_resource type="PackedScene" path="res://scenes/Ground.tscn" id="5_ground"]
+[ext_resource type="PackedScene" uid="uid://cdvo1dccng3iy" path="res://scenes/buildings/building_manager.tscn" id="5_qeptx"]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_main")
@@ -22,5 +22,4 @@ script = ExtResource("2_manager")
 
 [node name="HUD" parent="." instance=ExtResource("3_hud")]
 
-[node name="BuildingManager" type="Node3D" parent="."]
-script = ExtResource("4_building")
+[node name="BuildingManager" parent="." instance=ExtResource("5_qeptx")]
