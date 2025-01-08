@@ -2,6 +2,7 @@ extends Node3D
 
 var house_scene = preload("res://scenes/House.tscn")
 var lumbermill_scene = preload("res://scenes/Lumbermill.tscn")
+var berry_gatherer_scene = preload("res://scenes/BerryGatherer.tscn")
 var preview_building: Node3D = null
 var can_place = false
 var current_building_type = "none"
@@ -21,14 +22,12 @@ func _unhandled_input(event):
 		update_preview_position(event.position)
 	
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		# Ignoriere den Input, wenn wir über dem UI sind
 		if is_mouse_over_ui():
 			return
 			
 		if can_place and has_resources():
 			place_building()
 			
-	# Stellen sicher, dass der Input nicht weitergegeben wird
 	get_viewport().set_input_as_handled()
 
 func is_mouse_over_ui() -> bool:
@@ -48,13 +47,13 @@ func update_preview_position(mouse_pos):
 	
 	var space_state = get_world_3d().direct_space_state
 	var query = PhysicsRayQueryParameters3D.create(from, to)
-	query.collision_mask = 2  # Nur mit Ground kollidieren
+	query.collision_mask = 2  # Only collide with Ground
 	var result = space_state.intersect_ray(query)
 	
 	if result:
 		preview_building.visible = true
 		preview_building.position = result.position
-		preview_building.position.y = 1.0  # Hälfte der Gebäudehöhe
+		preview_building.position.y = 1.0  # Half of building height
 		can_place = true
 	else:
 		preview_building.visible = false
@@ -78,12 +77,13 @@ func place_building():
 			new_building = house_scene.instantiate()
 		"lumbermill":
 			new_building = lumbermill_scene.instantiate()
+		"berry_gatherer":
+			new_building = berry_gatherer_scene.instantiate()
 			
 	new_building.position = preview_building.position
 	get_parent().add_child(new_building)
 	
-	# Aktiviere Gebäude nach der Platzierung
-	if current_building_type == "lumbermill" and new_building.has_method("activate"):
+	if new_building.has_method("activate"):
 		new_building.activate()
 		
 	resource_manager.update_hud()
@@ -101,6 +101,8 @@ func _on_building_selected(type: String):
 				preview_building = house_scene.instantiate()
 			"lumbermill":
 				preview_building = lumbermill_scene.instantiate()
+			"berry_gatherer":
+				preview_building = berry_gatherer_scene.instantiate()
 		
 		if preview_building:
 			preview_building.visible = false
@@ -112,5 +114,7 @@ func get_current_building_cost() -> Dictionary:
 			return house_scene.instantiate().get_cost()
 		"lumbermill":
 			return lumbermill_scene.instantiate().get_cost()
+		"berry_gatherer":
+			return berry_gatherer_scene.instantiate().get_cost()
 		_:
-			return {} 
+			return {}

@@ -73,6 +73,21 @@
 - Hinzugefügt: Sichere Unterscheidung zwischen UI- und Welt-Klicks
 - Optimiert: Bessere Benutzerinteraktion beim Abbrechen der Platzierung
 
+## 2025-01-08 17:18
+- Added BerryGatherer building for automatic food resource collection
+- Building costs 50 food to construct
+- Automatically gathers berries within radius similar to Lumbermill
+
+## 2025-01-08 17:19
+- Added BerryGatherer to BuildingManager
+- Integrated building placement system for BerryGatherer
+- Updated building selection logic to include new building type
+
+## 2025-01-08 17:21
+- Added BerryGatherer button to HUD
+- Added button state management for BerryGatherer (requires 50 food)
+- Updated button highlighting to include BerryGatherer selection
+
 ## 2025-01-08 17:25
 - Überarbeitet: Organisches Ressourcen-Spawning-System
 - Implementiert: Cluster-basierte Ressourcenverteilung

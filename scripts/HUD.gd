@@ -5,6 +5,7 @@ extends Control
 @onready var fiber_label = $ResourcePanel/MarginContainer/Resources/FiberLabel
 @onready var house_button = $BuildPanel/MarginContainer/BuildButtons/HouseButton
 @onready var lumbermill_button = $BuildPanel/MarginContainer/BuildButtons/LumbermillButton
+@onready var berry_gatherer_button = $BuildPanel/MarginContainer/BuildButtons/BerryGathererButton
 
 signal building_selected(type: String)
 
@@ -18,7 +19,8 @@ var inventory: Dictionary = {
 func _ready():
 	house_button.pressed.connect(_on_house_button_pressed)
 	lumbermill_button.pressed.connect(_on_lumbermill_button_pressed)
-	update_button_states()  # Initial-Update der Button-States
+	berry_gatherer_button.pressed.connect(_on_berry_gatherer_button_pressed)
+	update_button_states()
 
 func update_resources(new_inventory: Dictionary) -> void:
 	inventory = new_inventory
@@ -28,23 +30,29 @@ func update_resources(new_inventory: Dictionary) -> void:
 	update_button_states()
 
 func update_button_states():
-	# Haus: 50 Holz, 10 Fasern
+	# House: 50 Wood, 10 Fiber
 	var can_build_house = inventory["wood"] >= 50 and inventory["fiber"] >= 10
 	house_button.disabled = not can_build_house
 	
-	# Holzfäller: 60 Holz
+	# Lumbermill: 60 Wood
 	var can_build_lumbermill = inventory["wood"] >= 60
 	lumbermill_button.disabled = not can_build_lumbermill
 	
-	# Wenn das aktuelle Gebäude nicht mehr gebaut werden kann, Auswahl aufheben
+	# Berry Gatherer: 50 Food
+	var can_build_berry_gatherer = inventory["food"] >= 50
+	berry_gatherer_button.disabled = not can_build_berry_gatherer
+	
+	# If current building can't be built anymore, deselect it
 	if (current_building == "house" and not can_build_house) or \
-	   (current_building == "lumbermill" and not can_build_lumbermill):
+	   (current_building == "lumbermill" and not can_build_lumbermill) or \
+	   (current_building == "berry_gatherer" and not can_build_berry_gatherer):
 		current_building = ""
 		building_selected.emit("none")
 	
-	# Ausgewähltes Gebäude hervorheben
+	# Highlight selected building
 	house_button.modulate = Color(1, 1, 0) if current_building == "house" else Color(1, 1, 1)
 	lumbermill_button.modulate = Color(1, 1, 0) if current_building == "lumbermill" else Color(1, 1, 1)
+	berry_gatherer_button.modulate = Color(1, 1, 0) if current_building == "berry_gatherer" else Color(1, 1, 1)
 
 func _on_house_button_pressed():
 	if house_button.disabled:
@@ -68,4 +76,16 @@ func _on_lumbermill_button_pressed():
 	else:
 		current_building = "lumbermill"
 		building_selected.emit("lumbermill")
+	update_button_states()
+
+func _on_berry_gatherer_button_pressed():
+	if berry_gatherer_button.disabled:
+		return
+		
+	if current_building == "berry_gatherer":
+		current_building = ""
+		building_selected.emit("none")
+	else:
+		current_building = "berry_gatherer"
+		building_selected.emit("berry_gatherer")
 	update_button_states()
