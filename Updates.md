@@ -177,3 +177,10 @@
 - Refactored HUD building cost checks to use ResourceManager's `can_afford` function
 - Improved consistency in resource management across the codebase
 - Removed direct inventory access from HUD building checks
+
+## 2025-01-08 21:41
+- Fixed race condition in building placement system:
+  - Removed automatic building deselection from HUD's resource check
+  - Added explicit building deselection after successful placement
+  - Added `deselect_building` method to HUD for consistent deselection behavior
+  - Improved code organization and error handling in BuildingManager

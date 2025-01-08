@@ -48,7 +48,6 @@ func update_resources(new_inventory: Dictionary) -> void:
 	update_button_states()
 
 func update_button_states():
-	
 	# Lumbermill: 60 Wood
 	var can_build_lumbermill = resource_manager.can_afford({"wood": 60})
 	lumbermill_button.disabled = not can_build_lumbermill
@@ -75,36 +74,30 @@ func update_button_states():
 	})
 	smeltery_button.disabled = not can_build_smeltery
 	
-	# If current building can't be built anymore, deselect it
-	if (current_building == "lumbermill" and not can_build_lumbermill) or \
-		(current_building == "berry_gatherer" and not can_build_berry_gatherer) or \
-		(current_building == "forester" and not can_build_forester) or \
-		(current_building == "plant_tree" and not can_plant_tree) or \
-		(current_building == "smeltery" and not can_build_smeltery):
-		current_building = ""
-		building_selected.emit("none")
-	
-	# Highlight selected building
+	# Update button highlights
 	lumbermill_button.modulate = Color(1, 1, 0) if current_building == "lumbermill" else Color(1, 1, 1)
 	berry_gatherer_button.modulate = Color(1, 1, 0) if current_building == "berry_gatherer" else Color(1, 1, 1)
 	forester_button.modulate = Color(1, 1, 0) if current_building == "forester" else Color(1, 1, 1)
 	plant_tree_button.modulate = Color(1, 1, 0) if current_building == "plant_tree" else Color(1, 1, 1)
 	smeltery_button.modulate = Color(1, 1, 0) if current_building == "smeltery" else Color(1, 1, 1)
 
+func deselect_building():
+	current_building = ""
+	building_selected.emit("none")
+	update_button_states()
+
 func _on_demolish_button_pressed():
 	print("Abriss-Button gedrückt!")
 	demolish_mode_changed.emit(demolish_button.button_pressed)
 	if demolish_button.button_pressed:
-		current_building = ""
-		building_selected.emit("none")
+		deselect_building()
 
 func _on_lumbermill_button_pressed():
 	if lumbermill_button.disabled:
 		return
 		
 	if current_building == "lumbermill":
-		current_building = ""
-		building_selected.emit("none")
+		deselect_building()
 	else:
 		current_building = "lumbermill"
 		building_selected.emit("lumbermill")
@@ -115,8 +108,7 @@ func _on_berry_gatherer_button_pressed():
 		return
 		
 	if current_building == "berry_gatherer":
-		current_building = ""
-		building_selected.emit("none")
+		deselect_building()
 	else:
 		current_building = "berry_gatherer"
 		building_selected.emit("berry_gatherer")
@@ -127,8 +119,7 @@ func _on_forester_button_pressed():
 		return
 		
 	if current_building == "forester":
-		current_building = ""
-		building_selected.emit("none")
+		deselect_building()
 	else:
 		current_building = "forester"
 		building_selected.emit("forester")
@@ -139,8 +130,7 @@ func _on_plant_tree_button_pressed():
 		return
 		
 	if current_building == "plant_tree":
-		current_building = ""
-		building_selected.emit("none")
+		deselect_building()
 	else:
 		current_building = "plant_tree"
 		building_selected.emit("plant_tree")
@@ -151,8 +141,7 @@ func _on_smeltery_button_pressed():
 		return
 		
 	if current_building == "smeltery":
-		current_building = ""
-		building_selected.emit("none")
+		deselect_building()
 	else:
 		current_building = "smeltery"
 		building_selected.emit("smeltery")

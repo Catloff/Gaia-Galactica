@@ -58,8 +58,8 @@ func attempt_demolish(mouse_pos: Vector2):
 		var cost = result.collider.get_cost()
 		for resource in cost:
 			var refund = cost[resource] / 2
-			resource_manager.inventory[resource] += refund
 			print("Erstatte %d %s zurück" % [refund, resource])
+			resource_manager.add_resources({"type": resource, "amount": refund})
 		
 		# Entferne das Gebäude
 		if result.collider.has_method("demolish"):
@@ -113,16 +113,13 @@ func update_preview_position(mouse_pos):
 
 func has_resources() -> bool:
 	var cost = get_current_building_cost()
-	for resource in cost:
-		if resource_manager.inventory[resource] < cost[resource]:
-			return false
-	return true
+	return resource_manager.can_afford(cost)
 
 func place_building():
 	var cost = get_current_building_cost()
-	for resource in cost:
-		resource_manager.inventory[resource] -= cost[resource]
-	
+	if not resource_manager.pay_cost(cost):
+		return
+		
 	var new_building
 	match current_building_type:
 		"lumbermill":
@@ -143,6 +140,13 @@ func place_building():
 		new_building.activate()
 		
 	resource_manager.update_hud()
+	
+	# Explicitly deselect the building after successful placement
+	current_building_type = "none"
+	if preview_building:
+		remove_child(preview_building)
+		preview_building = null
+	hud.deselect_building()  # New method we'll add to HUD
 
 func _on_building_selected(type: String):
 	current_building_type = type
