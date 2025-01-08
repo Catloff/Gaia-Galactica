@@ -304,3 +304,31 @@
 - Kosten: 40 Holz, 20 Stein
 - Optimiert: Abbaurate synchronisiert mit Cooldown der großen Steine (3 Sekunden)
 - Angepasst: Graue Färbung für thematische Stimmigkeit
+
+## 2025-01-09 00:10
+- Hinzugefügt: Große, nachwachsende Büsche als neue Nahrungsquelle
+- Implementiert: Cooldown-System für das Ernten der großen Büsche (2 Sekunden)
+- Hinzugefügt: 4 große Büsche werden zufällig auf der Karte verteilt
+- Optimiert: Große Büsche geben 3 Nahrungsressourcen pro Ernte
+- Angepasst: Visuelle Darstellung der großen Büsche (4x2x4 Einheiten, dunkelgrün)
+
+## 2025-01-09 00:15
+- Refactoring: Ressourcen-Dateien in korrekte Ordnerstruktur verschoben
+  - Verschoben: LargeRock.gd und LargeBush.gd nach scripts/resources/
+  - Verschoben: LargeRock.tscn und LargeBush.tscn nach scenes/resources/
+  - Aktualisiert: Pfade in allen betroffenen Dateien
+  - Verbessert: Konsistente Projektstruktur für Ressourcen
+
+## 2025-01-09 00:20
+- Behoben: Signal-Probleme in großen Ressourcen
+  - Ersetzt: Ungenutztes "resource_gathered" Signal durch "resource_removed"
+  - Hinzugefügt: Korrekte Signal-Emission beim Ressourcenabbau
+  - Angepasst: Signatur des Signals an bestehende Ressourcen angepasst
+  - Verbessert: Konsistentes Verhalten mit normalen Ressourcen
+
+## 2025-01-09 00:25
+- Behoben: Ressourcen-Szenen Ladeprobleme
+  - Korrigiert: Formatierung der .tscn Dateien
+  - Vereinfacht: Resource IDs und Referenzen
+  - Entfernt: Überflüssige Kommentare und UIDs
+  - Verbessert: Kompatibilität mit Godot's Ressourcen-Loader

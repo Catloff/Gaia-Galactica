@@ -1,6 +1,6 @@
 extends StaticBody3D
 
-signal resource_gathered(amount: int)
+signal resource_removed(position: Vector3, type: String)
 
 const RESOURCE_TYPE = "STONE"
 const RESOURCE_AMOUNT = 5
@@ -26,6 +26,7 @@ func gather_resource():
 		return null
 		
 	can_be_mined = false
+	resource_removed.emit(global_position, get_resource_type())
 	
 	return {
 		"type": RESOURCE_TYPE.to_lower(),

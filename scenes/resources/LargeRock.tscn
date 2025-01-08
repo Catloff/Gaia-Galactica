@@ -1,18 +1,18 @@
 [gd_scene load_steps=4 format=3 uid="uid://c8q5n3x4y2m6v"]
 
-[ext_resource type="Script" path="res://scripts/LargeRock.gd" id="1_large_rock"]
+[ext_resource type="Script" path="res://scripts/resources/LargeRock.gd" id="1"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_1"]
+[sub_resource type="BoxMesh" id="1"]
 size = Vector3(3, 3, 3)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_1"]
+[sub_resource type="BoxShape3D" id="2"]
 size = Vector3(3, 3, 3)
 
 [node name="LargeRock" type="StaticBody3D"]
-script = ExtResource("1_large_rock")
+script = ExtResource("1")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-mesh = SubResource("BoxMesh_1")
+mesh = SubResource("1")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource("BoxShape3D_1") 
+shape = SubResource("2")

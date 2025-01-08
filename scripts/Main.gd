@@ -7,6 +7,7 @@ const MIN_DISTANCE_BETWEEN_CLUSTERS = 4.0
 const RESOURCE_HEIGHT = 0.5
 const RESOURCE_DENSITY = 0.01  # Cluster pro Quadrateinheit (0.01 = 1 Cluster pro 100 Einheiten)
 const LARGE_ROCK_COUNT = 5  # Anzahl der großen Steine auf der Karte
+const LARGE_BUSH_COUNT = 4  # Etwas weniger Büsche als Steine
 
 var placed_positions = []
 
@@ -14,6 +15,7 @@ func _ready():
 	setup_camera()
 	spawn_resource_clusters()
 	spawn_large_rocks()
+	spawn_large_bushes()
 
 func setup_camera():
 	var camera = $Camera3D
@@ -21,8 +23,21 @@ func setup_camera():
 		camera.position = Vector3(10, 10, 10)
 		camera.look_at(Vector3.ZERO)
 
+func spawn_large_bushes():
+	var large_bush_scene = preload("res://scenes/resources/LargeBush.tscn")
+	
+	for _i in range(LARGE_BUSH_COUNT):
+		var valid_pos = find_valid_position()
+		if not valid_pos.is_valid:
+			continue
+			
+		var bush = large_bush_scene.instantiate()
+		add_child(bush)
+		bush.position = Vector3(valid_pos.position.x, 1.0, valid_pos.position.z)  # Etwas niedriger als Steine
+		placed_positions.append(valid_pos.position)
+
 func spawn_large_rocks():
-	var large_rock_scene = preload("res://scenes/LargeRock.tscn")
+	var large_rock_scene = preload("res://scenes/resources/LargeRock.tscn")
 	
 	for _i in range(LARGE_ROCK_COUNT):
 		var valid_pos = find_valid_position()
@@ -35,7 +50,7 @@ func spawn_large_rocks():
 		placed_positions.append(valid_pos.position)
 
 func spawn_resource_clusters():
-	var resource_scene = preload("res://scenes/Resource.tscn")
+	var resource_scene = preload("res://scenes/resources/Resource.tscn")
 	
 	# Berechne die Anzahl der Cluster basierend auf der Kartengröße und Dichte
 	var map_area = (MAP_SIZE * 2) * (MAP_SIZE * 2)  # Gesamtfläche der Karte
