@@ -10,6 +10,7 @@ extends Control
 @onready var plant_tree_button = $BuildPanel/MarginContainer/BuildCategories/BuildButtons/Resources/PlantTreeButton
 @onready var demolish_button = $BuildPanel/DemolishButton
 @onready var metal_label = $ResourcePanel/MarginContainer/Resources/MetalLabel
+@onready var resource_manager = get_node("/root/Main/ResourceManager")
 
 signal building_selected(type: String)
 signal demolish_mode_changed(enabled: bool)
@@ -49,22 +50,29 @@ func update_resources(new_inventory: Dictionary) -> void:
 func update_button_states():
 	
 	# Lumbermill: 60 Wood
-	var can_build_lumbermill = inventory["wood"] >= 60
+	var can_build_lumbermill = resource_manager.can_afford({"wood": 60})
 	lumbermill_button.disabled = not can_build_lumbermill
 	
 	# Berry Gatherer: 50 Food
-	var can_build_berry_gatherer = inventory["food"] >= 50
+	var can_build_berry_gatherer = resource_manager.can_afford({"food": 50})
 	berry_gatherer_button.disabled = not can_build_berry_gatherer
 	
 	# Forester: 80 Wood, 20 Stone
-	var can_build_forester = inventory["wood"] >= 80 and inventory["stone"] >= 20
+	var can_build_forester = resource_manager.can_afford({
+		"wood": 80,
+		"stone": 20
+	})
 	forester_button.disabled = not can_build_forester
 	
 	# Plant Tree: 10 Wood
-	var can_plant_tree = inventory["wood"] >= 10
+	var can_plant_tree = resource_manager.can_afford({"wood": 10})
 	plant_tree_button.disabled = not can_plant_tree
+	
 	# Smeltery: 80 Wood, 40 Stone
-	var can_build_smeltery = inventory["wood"] >= 80 and inventory["stone"] >= 40
+	var can_build_smeltery = resource_manager.can_afford({
+		"wood": 80,
+		"stone": 40
+	})
 	smeltery_button.disabled = not can_build_smeltery
 	
 	# If current building can't be built anymore, deselect it

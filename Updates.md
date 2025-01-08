@@ -172,3 +172,8 @@
   - Simplified resource costs using `pay_cost`
   - Improved metal production code readability
   - Enhanced upgrade system to use new API
+
+## 2025-01-08 21:19
+- Refactored HUD building cost checks to use ResourceManager's `can_afford` function
+- Improved consistency in resource management across the codebase
+- Removed direct inventory access from HUD building checks
