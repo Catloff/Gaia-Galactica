@@ -1,13 +1,12 @@
 extends Control
 
-@onready var lumbermill_button = $MarginContainer/BuildCategories/BuildButtons/ResourceBuildings/LumbermillButton
-@onready var berry_gatherer_button = $MarginContainer/BuildCategories/BuildButtons/ResourceBuildings/BerryGathererButton
-@onready var forester_button = $MarginContainer/BuildCategories/BuildButtons/Infrastructure/ForesterButton
-@onready var smeltery_button = $MarginContainer/BuildCategories/BuildButtons/Infrastructure/SmelteryButton
-@onready var plant_tree_button = $MarginContainer/BuildCategories/BuildButtons/Resources/PlantTreeButton
 @onready var demolish_button = $DemolishButton
 @onready var resource_manager = get_node("/root/Main/ResourceManager")
 @onready var building_manager = get_node("/root/Main/BuildingManager")
+
+@onready var resource_container = $MarginContainer/BuildCategories/BuildButtons/ResourceBuildings
+@onready var infrastructure_container = $MarginContainer/BuildCategories/BuildButtons/Infrastructure
+@onready var special_container = $MarginContainer/BuildCategories/BuildButtons/Special
 
 signal building_selected(type: String)
 signal demolish_mode_changed(enabled: bool)
@@ -18,23 +17,7 @@ var button_mapping = {}
 func _ready():
 	# Connect building manager signals
 	building_manager.buildings_updated.connect(_on_buildings_updated)
-	
-	# Connect button signals
-	lumbermill_button.pressed.connect(_on_building_button_pressed.bind("lumbermill"))
-	berry_gatherer_button.pressed.connect(_on_building_button_pressed.bind("berry_gatherer"))
-	forester_button.pressed.connect(_on_building_button_pressed.bind("forester"))
-	plant_tree_button.pressed.connect(_on_building_button_pressed.bind("plant_tree"))
-	smeltery_button.pressed.connect(_on_building_button_pressed.bind("smeltery"))
 	demolish_button.pressed.connect(_on_demolish_button_pressed)
-	
-	# Map buttons to building types
-	button_mapping = {
-		"lumbermill": lumbermill_button,
-		"berry_gatherer": berry_gatherer_button,
-		"forester": forester_button,
-		"plant_tree": plant_tree_button,
-		"smeltery": smeltery_button
-	}
 	
 	# Initialize button states
 	call_deferred("_on_buildings_updated")
@@ -51,12 +34,34 @@ func _on_resource_changed(_type: String, _old_value: int, _new_value: int) -> vo
 	update_button_states()
 
 func _on_buildings_updated():
-	for type in button_mapping:
-		var building = building_manager.get_building_definition(type)
-		if building:
-			var button = button_mapping[type]
-			button.text = "%s %s" % [building.display_name, building.get_cost_text()]
+	# Clear existing buttons
+	for button in button_mapping.values():
+		button.queue_free()
+	button_mapping.clear()
+	
+	# Get buildings by category
+	var resource_buildings = building_manager.get_buildings_by_category(building_manager.BuildingCategory.RESOURCE)
+	var infrastructure_buildings = building_manager.get_buildings_by_category(building_manager.BuildingCategory.INFRASTRUCTURE)
+	var special_buildings = building_manager.get_buildings_by_category(building_manager.BuildingCategory.SPECIAL)
+	
+	# Create buttons for each category
+	for building in resource_buildings:
+		_create_building_button(building, resource_container)
+	
+	for building in infrastructure_buildings:
+		_create_building_button(building, infrastructure_container)
+		
+	for building in special_buildings:
+		_create_building_button(building, special_container)
+	
 	update_button_states()
+
+func _create_building_button(building_def, container):
+	var button = Button.new()
+	button.text = "%s %s" % [building_def.display_name, building_def.get_cost_text()]
+	button.pressed.connect(_on_building_button_pressed.bind(building_def.type))
+	container.add_child(button)
+	button_mapping[building_def.type] = button
 
 func update_button_states():
 	for type in button_mapping:

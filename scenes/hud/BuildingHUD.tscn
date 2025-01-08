@@ -44,10 +44,10 @@ layout_mode = 2
 text = "Infrastruktur"
 horizontal_alignment = 1
 
-[node name="ResourcesLabel" type="Label" parent="MarginContainer/BuildCategories/CategoryLabels"]
+[node name="SpecialLabel" type="Label" parent="MarginContainer/BuildCategories/CategoryLabels"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
-text = "Ressourcen"
+text = "Spezial"
 horizontal_alignment = 1
 
 [node name="BuildButtons" type="HBoxContainer" parent="MarginContainer/BuildCategories"]
@@ -59,33 +59,13 @@ alignment = 1
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 
-[node name="LumbermillButton" type="Button" parent="MarginContainer/BuildCategories/BuildButtons/ResourceBuildings"]
-layout_mode = 2
-text = "Sägewerk (60 Holz)"
-
-[node name="BerryGathererButton" type="Button" parent="MarginContainer/BuildCategories/BuildButtons/ResourceBuildings"]
-layout_mode = 2
-text = "Beerensammler (50 Nahrung)"
-
 [node name="Infrastructure" type="VBoxContainer" parent="MarginContainer/BuildCategories/BuildButtons"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 
-[node name="ForesterButton" type="Button" parent="MarginContainer/BuildCategories/BuildButtons/Infrastructure"]
-layout_mode = 2
-text = "Förster (80 Holz, 20 Stein)"
-
-[node name="SmelteryButton" type="Button" parent="MarginContainer/BuildCategories/BuildButtons/Infrastructure"]
-layout_mode = 2
-text = "Schmelze (80 Holz, 40 Stein)"
-
-[node name="Resources" type="VBoxContainer" parent="MarginContainer/BuildCategories/BuildButtons"]
+[node name="Special" type="VBoxContainer" parent="MarginContainer/BuildCategories/BuildButtons"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
-
-[node name="PlantTreeButton" type="Button" parent="MarginContainer/BuildCategories/BuildButtons/Resources"]
-layout_mode = 2
-text = "Baum pflanzen (10 Holz)"
 
 [node name="DemolishButton" type="Button" parent="."]
 custom_minimum_size = Vector2(40, 40)

@@ -291,3 +291,9 @@
 - Removed `get_cost` functions from individual building scripts
 - Centralized all building costs in BuildingManager
 - Improved code maintainability by having a single source of truth for building costs
+
+## 2025-01-09 00:04
+- Dynamic Building Button Generation
+- Refactored BuildingHUD to dynamically generate buttons from BuildingManager definitions
+- Removed hardcoded building buttons
+- Improved maintainability by automatically reflecting building changes in the UI
