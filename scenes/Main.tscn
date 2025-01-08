@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://example2"]
+[gd_scene load_steps=6 format=3 uid="uid://example2"]
 
 [ext_resource type="Script" path="res://scripts/Main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/ResourceManager.gd" id="2_manager"]
-[ext_resource type="PackedScene" uid="uid://bxqd3kjl8ijwp" path="res://scenes/HUD.tscn" id="3_hud"]
+[ext_resource type="PackedScene" path="res://scenes/HUD.tscn" id="3_hud"]
+[ext_resource type="Script" path="res://scripts/BuildingManager.gd" id="4_building"]
+[ext_resource type="PackedScene" path="res://scenes/Ground.tscn" id="5_ground"]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_main")
@@ -13,7 +15,12 @@ transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 10, 15)
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 10, 0)
 
+[node name="Ground" parent="." instance=ExtResource("5_ground")]
+
 [node name="ResourceManager" type="Node3D" parent="."]
 script = ExtResource("2_manager")
 
 [node name="HUD" parent="." instance=ExtResource("3_hud")]
+
+[node name="BuildingManager" type="Node3D" parent="."]
+script = ExtResource("4_building")

@@ -6,9 +6,17 @@ var inventory = {
 	"food": 0
 }
 
+var gather_mode = true
+
 @onready var hud = get_node("../HUD")
 
+func _ready():
+	hud.mode_changed.connect(_on_mode_changed)
+
 func _input(event):
+	if not gather_mode:
+		return
+		
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		var camera = get_viewport().get_camera_3d()
 		var from = camera.project_ray_origin(event.position)
@@ -32,3 +40,6 @@ func update_inventory(resource_data):
 func update_hud():
 	if hud:
 		hud.update_resources(inventory)
+
+func _on_mode_changed(mode: String):
+	gather_mode = (mode == "gather")
