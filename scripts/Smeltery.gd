@@ -8,7 +8,6 @@ const BASE_PROCESS_TIME = 5.0
 var process_timer = 0.0
 
 func setup_building():
-	print("[Smeltery] Setup Building Start")
 	base_cost = {
 		"wood": 80,
 		"stone": 40
@@ -26,8 +25,6 @@ func setup_building():
 	]
 	
 	max_level = 3
-	print("[Smeltery] Setup abgeschlossen - Upgrade Kosten: ", upgrade_costs)
-	print("[Smeltery] Max Level gesetzt auf: ", max_level)
 	
 	# Set building color
 	var material = StandardMaterial3D.new()

@@ -19,23 +19,28 @@ var is_active: bool = false
 @onready var resource_manager = get_node("/root/Main/ResourceManager")
 
 # UI Elemente
-@onready var upgrade_button = $UI/UpgradeButton
-@onready var level_label = $UI/LevelLabel
-@onready var ui = $UI
+var upgrade_button: Button
+var level_label: Label
+var ui: Control
 
 func _ready():
 	setup_building()
 	setup_ui()
 	setup_collision()
-
+	assert(max_level == len(upgrade_costs) + 1)
+	
 # Virtuelle Methode zum Einrichten des Gebäudes
 func setup_building():
 	pass
 
 # Einrichten der UI-Elemente
 func setup_ui():
+	ui = get_node("UI")
 	if not ui:
 		return
+	level_label = $UI/LevelLabel
+	upgrade_button = $UI/UpgradeButton
+	
 	
 	# Verstecke UI initial
 	ui.visible = false
