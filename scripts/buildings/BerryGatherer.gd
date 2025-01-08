@@ -11,10 +11,6 @@ func setup_building():
 	material.albedo_color = Color(0.8, 0.2, 0.2)  # Red for berries
 	$MeshInstance3D.material_override = material
 
-func get_base_cost() -> Dictionary:
-	return {
-		"food": 50
-	}
 
 func _process(delta):
 	if not is_active:

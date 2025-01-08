@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://b6j8q2y4n3xk5"]
+
+[ext_resource type="Script" path="res://scripts/buildings/Refinery.gd" id="1_r4n2p"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_k8j2p"]
+size = Vector3(2, 3, 2)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_u6v2q"]
+top_radius = 0.4
+bottom_radius = 0.6
+height = 1.5
+
+[node name="Refinery" type="Node3D"]
+script = ExtResource("1_r4n2p")
+
+[node name="Base" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+mesh = SubResource("BoxMesh_k8j2p")
+
+[node name="Chimney" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 3.25, 0.6)
+mesh = SubResource("CylinderMesh_u6v2q")

@@ -219,35 +219,68 @@
   - Angepasst: UI-Layout für bessere Lesbarkeit
 
 ## 2025-01-08 22:53
-- Refactoring: Changed building cost system
-  - Replaced `base_cost` variable with virtual `get_base_cost` function in BaseBuilding
-  - Updated Smeltery to override `get_base_cost` instead of setting variable
-  - Improved code organization and maintainability
-  - Made building cost system more flexible for subclasses
+- Refactoring: Changed building system to use BuildingManager as single source of truth
+- Moving building definitions (costs, categories) from BuildingHUD to BuildingManager
+- Implementing centralized building registration system
+- Improving maintainability by removing duplicated building costs
 
 ## 2025-01-08 22:56
-- Extended: Building cost system refactoring
-  - Updated all building classes to use `get_base_cost` function:
-    - `BerryGatherer`: Food cost of 50
-    - `Forester`: Wood cost of 80 and Stone cost of 20
-    - `Lumbermill`: Wood cost of 60
-    - `Smeltery`: Wood cost of 80 and Stone cost of 40
-  - Removed redundant `base_cost` variable assignments
-  - Improved code consistency across all building types
+- Building Cost Management Refactoring
+- Removed `get_cost` functions from individual building scripts
+- Centralized all building costs in BuildingManager
+- Improved code maintainability by having a single source of truth for building costs
+
+## 2025-01-09 00:01
+- Dynamic Building Button Generation
+- Refactored BuildingHUD to dynamically generate buttons from BuildingManager definitions
+- Removed hardcoded building buttons
+- Improved maintainability by automatically reflecting building changes in the UI
+
+## 2025-01-09 00:04
+- Added Fuel Resource and Refinery Building
+- Added new fuel resource type
+- Implemented refinery building that converts food into fuel
+- Updated resource management system to handle fuel
+- Added refinery to building menu under Resource category
+
+## 2025-01-09 00:12
+- Added Fuel Display to HUD
+- Added fuel resource display to ResourceHUD
+- Updated ResourceHUD scene with fuel label
+- Connected fuel display to resource management system
+
+## 2025-01-09 00:15
+- Refinery Improvements
+- Updated Refinery to extend BaseBuilding
+- Added proper resource management using pay_cost API
+- Implemented upgrade system with efficiency and speed improvements
+- Added visual feedback with building color
+
+## 2025-01-09 00:19
+- Added Fuel Display to HUD
+- Added fuel resource display to ResourceHUD
+- Updated ResourceHUD scene with fuel label
+- Connected fuel display to resource management system
+
+## 2025-01-09 00:19
+- Added Fuel Display to HUD
+- Added fuel resource display to ResourceHUD
+- Updated ResourceHUD scene with fuel label
+- Connected fuel display to resource management system
 
 ## 2025-01-08 23:04
 - Refactoring: Split HUD into separate components
-  - Created `ResourceHUD` for resource display:
-    - Moved resource labels and update logic
-    - Simplified resource management code
-  - Created `BuildingHUD` for building controls:
-    - Moved building buttons and selection logic
-    - Maintained building cost checks and UI updates
-  - Updated main `HUD`:
-    - Now acts as a coordinator between components
-    - Forwards signals and resource updates
-  - Improved code organization and maintainability
-  - Better separation of concerns between UI components
+- Created `ResourceHUD` for resource display:
+  - Moved resource labels and update logic
+  - Simplified resource management code
+- Created `BuildingHUD` for building controls:
+  - Moved building buttons and selection logic
+  - Maintained building cost checks and UI updates
+- Updated main `HUD`:
+  - Now acts as a coordinator between components
+  - Forwards signals and resource updates
+- Improved code organization and maintainability
+- Better separation of concerns between UI components
 
 ## 2025-01-08 23:28
 - Implemented Resource Storage Limits
@@ -281,7 +314,7 @@
 - Angepasst: Visuelle Darstellung der großen Steine (3x3x3 Einheiten, dunkelgrau)
 
 ## 2025-01-08 23:49
-- Refactoring building system to use BuildingManager as single source of truth
+- Refactoring: Changed building system to use BuildingManager as single source of truth
 - Moving building definitions (costs, categories) from BuildingHUD to BuildingManager
 - Implementing centralized building registration system
 - Improving maintainability by removing duplicated building costs
@@ -298,6 +331,19 @@
 - Removed hardcoded building buttons
 - Improved maintainability by automatically reflecting building changes in the UI
 
+## 2025-01-09 00:12
+- Added Fuel Resource and Refinery Building
+- Added new fuel resource type
+- Implemented refinery building that converts food into fuel
+- Updated resource management system to handle fuel
+- Added refinery to building menu under Resource category
+
+## 2025-01-09 00:15
+- Refinery Improvements
+- Updated Refinery to extend BaseBuilding
+- Added proper resource management using pay_cost API
+- Implemented upgrade system with efficiency and speed improvements
+- Added visual feedback with building color
 ## 2025-01-08 23:55
 - Hinzugefügt: Steinbruch als neues automatisches Ressourcengebäude
 - Implementiert: Automatischer Abbau von großen Steinen im 5-Einheiten-Radius

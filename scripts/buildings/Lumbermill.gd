@@ -12,10 +12,6 @@ func setup_building():
 	material.albedo_color = Color(0.6, 0.4, 0.2)  # Braun
 	$MeshInstance3D.material_override = material
 
-func get_base_cost() -> Dictionary:
-	return {
-		"wood": 60
-	}
 
 func _process(delta):
 	if not is_active:

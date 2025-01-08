@@ -172,10 +172,6 @@ func update_ui():
 func _on_resource_changed(_resource_type: String, _old_value: int, _new_value: int):
 	update_upgrade_button()
 
-# Virtuelle Methode für die Grundkosten des Gebäudes
-func get_base_cost() -> Dictionary:
-	return {}
-
 # Abriss-Funktionalität
 func demolish():
 	deactivate()

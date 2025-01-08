@@ -4,6 +4,7 @@ extends Control
 @onready var food_label = $MarginContainer/Resources/FoodLabel
 @onready var stone_label = $MarginContainer/Resources/StoneLabel
 @onready var metal_label = $MarginContainer/Resources/MetalLabel
+@onready var fuel_label = $MarginContainer/Resources/FuelLabel
 @onready var resource_manager = get_node("/root/Main/ResourceManager")
 
 func _ready() -> void:
@@ -17,3 +18,4 @@ func update_resources(_type, _old_value, _new_value) -> void:
 	food_label.text = "Food: %d/%d" % [inventory["food"], limits["food"]]
 	stone_label.text = "Stone: %d/%d" % [inventory["stone"], limits["stone"]]
 	metal_label.text = "Metal: %d/%d" % [inventory["metal"], limits["metal"]]
+	fuel_label.text = "Fuel: %d/%d" % [inventory["fuel"], limits["fuel"]]
