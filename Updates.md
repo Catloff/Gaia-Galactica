@@ -35,3 +35,27 @@
 - Optimiert: BuildingManager für verschiedene Gebäudetypen
 - Kosten Holzfäller: 60 Holz
 - Erntegeschwindigkeit: 1 Holz pro Sekunde
+
+## 2025-01-08 16:25
+- Verbessert: Ressourcen haben jetzt 3 Erntevorgänge
+- Implementiert: Ressourcen verschwinden nach Erschöpfung
+- Hinzugefügt: Visuelle Rückmeldung durch abnehmende Transparenz
+- Optimiert: Verzögertes Entfernen für bessere Spielerfahrung
+
+## 2025-01-08 16:35
+- Behoben: Absturz beim Entfernen erschöpfter Ressourcen
+- Verbessert: Sicheres Entfernen von Ressourcen
+- Hinzugefügt: Sofortige Kollisionsdeaktivierung
+- Optimiert: Holzfäller-Logik für erschöpfte Ressourcen
+
+## 2025-01-08 16:45
+- Verbessert: Holzfäller erntet jetzt nur noch Holz-Ressourcen
+- Hinzugefügt: Ressourcentyp-Überprüfung vor dem Ernten
+- Optimiert: Saubere Trennung der Ressourcentypen
+- Behoben: Unbeabsichtigtes Ernten anderer Ressourcen
+
+## 2025-01-08 16:55
+- Verbessert: Holzfäller startet erst nach Platzierung mit der Ernte
+- Implementiert: Aktivierungssystem für Gebäude
+- Hinzugefügt: Vorschau-Status für neue Gebäude
+- Optimiert: Klare Trennung zwischen Vorschau und aktivem Gebäude

@@ -65,9 +65,14 @@ func place_building():
 			new_building = house_scene.instantiate()
 		"lumbermill":
 			new_building = lumbermill_scene.instantiate()
-	
+			
 	new_building.position = preview_building.position
 	get_parent().add_child(new_building)
+	
+	# Aktiviere Gebäude nach der Platzierung
+	if current_building_type == "lumbermill" and new_building.has_method("activate"):
+		new_building.activate()
+		
 	resource_manager.update_hud()
 
 func _on_mode_changed(mode: String):
