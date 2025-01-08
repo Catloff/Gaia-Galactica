@@ -46,7 +46,7 @@ func harvest_nearby_wood():
 			if collider.get_resource_type() == "WOOD":
 				var resource_data = collider.gather_resource()
 				if resource_data != null:
-					resource_manager.update_inventory(resource_data)
+					resource_manager.add_resources(resource_data)
 					return  # Nur eine Ressource pro Tick ernten
 
 static func get_cost() -> Dictionary:

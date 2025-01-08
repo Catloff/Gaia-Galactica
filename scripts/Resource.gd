@@ -44,7 +44,7 @@ func gather_resource():
 		# Signal senden bevor die Ressource entfernt wird
 		resource_removed.emit(global_position, get_resource_type())
 		# Kurze Verzögerung vor dem Entfernen für visuelles Feedback
-		var timer = get_tree().create_timer(0.1)
+		var timer = get_tree().create_timer(0.3)
 		timer.timeout.connect(func(): queue_free())
 		
 	return {
@@ -53,4 +53,4 @@ func gather_resource():
 	}
 
 func update_appearance():
-	self.position.y = remaining_harvests / 3.0 - 0.5
+	self.position.y = remaining_harvests / 3.0 - 0.45

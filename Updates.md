@@ -156,3 +156,19 @@
 - Hinzugefügt: 50% Ressourcen-Rückerstattung beim Abreißen
 - Verbessert: Rechtsklick zum Verlassen des Abriss-Modus
 - Optimiert: Automatische Deaktivierung der Gebäudeauswahl im Abriss-Modus
+
+## 2025-01-08 20:57
+- Refactored ResourceManager with more specific functions:
+  - Added `CanAfford` to check if player has enough resources
+  - Added `PayCost` to deduct resources if affordable
+  - Added `AddResources` to add resources to inventory
+- Improved code organization and maintainability
+- Maintained existing functionality while making the API more explicit
+
+## 2025-01-08 20:58
+- Fixed function naming in ResourceManager to follow GDScript snake_case convention
+- Updated Smeltery to use new resource management functions:
+  - Replaced direct inventory access with `can_afford` checks
+  - Simplified resource costs using `pay_cost`
+  - Improved metal production code readability
+  - Enhanced upgrade system to use new API

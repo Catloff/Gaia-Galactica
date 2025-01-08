@@ -45,7 +45,7 @@ func harvest_nearby_food():
 			if collider.get_resource_type() == "FOOD":
 				var resource_data = collider.gather_resource()
 				if resource_data != null:
-					resource_manager.update_inventory(resource_data)
+					resource_manager.add_resources(resource_data)
 					return  # Only harvest one resource per tick
 
 static func get_cost() -> Dictionary:

@@ -16,6 +16,35 @@ func _ready() -> void:
 	# the labels are also queried @onready and might not be ready yet
 	call_deferred("update_hud")
 
+func can_afford(costs: Dictionary) -> bool:
+	for resource_type in costs:
+		var required_amount = costs[resource_type]
+		if not inventory.has(resource_type) or inventory[resource_type] < required_amount:
+			return false
+	return true
+
+func pay_cost(costs: Dictionary) -> bool:
+	if not can_afford(costs):
+		return false
+	
+	var old_values = {}
+	for resource_type in costs:
+		old_values[resource_type] = inventory[resource_type]
+		inventory[resource_type] -= costs[resource_type]
+		resource_changed.emit(resource_type, old_values[resource_type], inventory[resource_type])
+	
+	update_hud()
+	return true
+
+func add_resources(resource_data: Dictionary) -> void:
+	var resource_type = resource_data["type"].to_lower()
+	var amount = resource_data["amount"]
+	
+	var old_value = inventory[resource_type]
+	inventory[resource_type] += amount
+	resource_changed.emit(resource_type, old_value, inventory[resource_type])
+	update_hud()
+
 func _input(event):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		var camera = get_viewport().get_camera_3d()
@@ -29,16 +58,7 @@ func _input(event):
 		if result and result.collider.has_method("gather_resource"):
 			var resource_data = result.collider.gather_resource()
 			if resource_data != null:
-				update_inventory(resource_data)
-
-func update_inventory(resource_data: Dictionary) -> void:
-	var resource_type = resource_data["type"].to_lower()
-	var amount = resource_data["amount"]
-	
-	var old_value = inventory[resource_type]
-	inventory[resource_type] += amount
-	resource_changed.emit(resource_type, old_value, inventory[resource_type])
-	update_hud()
+				add_resources(resource_data)
 
 func update_hud():
 	if hud:

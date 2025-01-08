@@ -17,12 +17,13 @@ const UPGRADE_COSTS = [
 ]
 
 const BASE_PROCESS_TIME = 5.0
-const BASE_WOOD_COST = 2
-const BASE_STONE_COST = 1
+const WOOD_COST = 2
+const STONE_COST = 1
 const BASE_METAL_OUTPUT = 1
 
 var current_level = 1
 const MAX_LEVEL = 3
+# TODO: use Timer node?
 var process_timer = 0.0
 var is_active = false
 
@@ -49,35 +50,19 @@ func _process(delta):
 		try_produce_metal()
 
 func try_produce_metal():
-	var wood_cost = get_wood_cost()
-	var stone_cost = get_stone_cost()
-	var metal_output = get_metal_output()
-	
-	if resource_manager.inventory["wood"] >= wood_cost and resource_manager.inventory["stone"] >= stone_cost:
-		resource_manager.update_inventory({
-			"type": "wood",
-			"amount": -wood_cost
-		})
-		resource_manager.update_inventory({
-			"type": "stone",
-			"amount": -stone_cost
-		})
-		resource_manager.update_inventory({
+	var costs = {
+		"wood": WOOD_COST,
+		"stone": STONE_COST,
+	}
+	if resource_manager.pay_cost(costs):
+		resource_manager.add_resources({
 			"type": "metal",
-			"amount": metal_output
+			"amount": get_metal_output()
 		})
 
 func get_process_time() -> float:
 	# Each level reduces process time by 1 second
 	return BASE_PROCESS_TIME - (current_level - 1)
-
-func get_wood_cost() -> int:
-	# Wood cost stays the same
-	return BASE_WOOD_COST
-
-func get_stone_cost() -> int:
-	# Stone cost stays the same
-	return BASE_STONE_COST
 
 func get_metal_output() -> int:
 	# Each level adds 1 to metal output
@@ -88,12 +73,7 @@ func can_upgrade() -> bool:
 		return false
 		
 	var cost = get_upgrade_cost()
-	var inventory = resource_manager.inventory
-	
-	for resource in cost:
-		if inventory[resource] < cost[resource]:
-			return false
-	return true
+	return resource_manager.can_afford(cost)
 
 func get_upgrade_cost() -> Dictionary:
 	if current_level >= MAX_LEVEL:
@@ -107,19 +87,14 @@ func upgrade():
 	var cost = get_upgrade_cost()
 	
 	# Pay upgrade cost
-	for resource in cost:
-		resource_manager.update_inventory({
-			"type": resource,
-			"amount": -cost[resource]
-		})
-	
-	current_level += 1
-	update_ui()
-	
-	# Update building appearance
-	var material = StandardMaterial3D.new()
-	material.albedo_color = Color(0.6 + (current_level - 1) * 0.1, 0.3, 0.3)  # Gets slightly redder with each level
-	$MeshInstance3D.material_override = material
+	if resource_manager.pay_cost(cost):
+		current_level += 1
+		update_ui()
+		
+		# Update building appearance
+		var material = StandardMaterial3D.new()
+		material.albedo_color = Color(0.6 + (current_level - 1) * 0.1, 0.3, 0.3)  # Gets slightly redder with each level
+		$MeshInstance3D.material_override = material
 
 func setup_ui():
 	var button_position = get_viewport().get_camera_3d().unproject_position(global_transform.origin)

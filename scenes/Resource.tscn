@@ -3,10 +3,8 @@
 [ext_resource type="Script" path="res://scripts/Resource.gd" id="1_resource"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_1"]
-size = Vector3(1, 1, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1"]
-size = Vector3(1, 1, 1)
 
 [node name="Resource" type="StaticBody3D"]
 script = ExtResource("1_resource")
