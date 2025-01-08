@@ -126,7 +126,7 @@ func setup_ui():
 	upgrade_button.pressed.connect(_on_upgrade_pressed)
 	level_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	$UI.set_position(button_position - Vector2(50, -20))
-	$UI.call_deferred("set_visible", true)
+	$UI.set_visible(true)
 
 func update_ui():
 	if not level_label or not upgrade_button:
