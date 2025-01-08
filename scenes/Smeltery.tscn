@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=4 format=3 uid="uid://bnt7ga3ctrv4y"]
 
 [ext_resource type="Script" path="res://scripts/Smeltery.gd" id="1_smeltery"]
 
@@ -20,6 +20,7 @@ mesh = SubResource("BoxMesh_smeltery")
 shape = SubResource("BoxShape3D_smeltery")
 
 [node name="UI" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -27,15 +28,16 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -50.0
-offset_top = -40.0
+offset_top = -20.0
 offset_right = 50.0
-offset_bottom = 0.0
+offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
+pivot_offset = Vector2(50, 20)
 size_flags_horizontal = 4
 
 [node name="LevelLabel" type="Label" parent="UI"]
-anchors_preset = 8
+layout_mode = 0
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -50,7 +52,7 @@ text = "Level 1"
 horizontal_alignment = 1
 
 [node name="UpgradeButton" type="Button" parent="UI"]
-anchors_preset = 8
+layout_mode = 0
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5

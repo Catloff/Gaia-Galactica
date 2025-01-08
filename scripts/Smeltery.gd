@@ -35,13 +35,6 @@ func _ready():
 	var material = StandardMaterial3D.new()
 	material.albedo_color = Color(0.6, 0.3, 0.3)  # Reddish brown for smeltery
 	$MeshInstance3D.material_override = material
-	
-	# Setup UI elements
-	setup_ui()
-	update_ui()
-	
-	# Connect to resource manager signal
-	resource_manager.resource_changed.connect(_on_resource_changed)
 
 func _process(delta):
 	if not is_active:
@@ -126,9 +119,11 @@ func upgrade():
 	$MeshInstance3D.material_override = material
 
 func setup_ui():
-	upgrade_button.text = "Upgrade"
+	var button_position = get_viewport().get_camera_3d().unproject_position(global_transform.origin)
 	upgrade_button.pressed.connect(_on_upgrade_pressed)
 	level_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	$UI.set_position(button_position - Vector2(50, -20))
+	$UI.call_deferred("set_visible", true)
 
 func update_ui():
 	if not level_label or not upgrade_button:
@@ -155,6 +150,13 @@ func _on_resource_changed(resource_type: String, _old_value: int, _new_value: in
 
 func activate():
 	is_active = true
+	
+	# Setup UI elements
+	setup_ui()
+	update_ui()
+	
+	# Connect to resource manager signal
+	resource_manager.resource_changed.connect(_on_resource_changed)
 
 static func get_cost() -> Dictionary:
 	return BASE_COST

@@ -78,7 +78,7 @@ class PositionResult:
 	var position: Vector3
 	var is_valid: bool
 	
-	func _init(pos: Vector3 = Vector3.ZERO, valid: bool = false):
+	func _init(pos: Vector3, valid: bool):
 		position = pos
 		is_valid = valid
 
