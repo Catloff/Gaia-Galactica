@@ -1,12 +1,18 @@
 extends Node3D
 
+signal resource_changed(resource_type: String, old_value: int, new_value: int)
+
 var inventory = {
-	"wood": 0,
-	"stone": 0,
-	"food": 0
+	"wood": 100,
+	"stone": 100,
+	"food": 100,
+	"metal": 4
 }
 
 @onready var hud = get_node("../HUD")
+
+func _ready() -> void:
+	call_deferred("update_hud")
 
 func _input(event):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
@@ -23,11 +29,13 @@ func _input(event):
 			if resource_data != null:
 				update_inventory(resource_data)
 
-func update_inventory(resource_data):
+func update_inventory(resource_data: Dictionary) -> void:
 	var resource_type = resource_data["type"].to_lower()
 	var amount = resource_data["amount"]
 	
+	var old_value = inventory[resource_type]
 	inventory[resource_type] += amount
+	resource_changed.emit(resource_type, old_value, inventory[resource_type])
 	update_hud()
 
 func update_hud():

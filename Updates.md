@@ -109,6 +109,22 @@
 - Updated building costs to use Stone instead of Fiber
 - Ensured resource spawning system uses Stone type correctly
 
+
+## 2025-01-08 17:45
+- Hinzugefügt: Ressourcendichte-Steuerung über RESOURCE_DENSITY
+- Implementiert: Dynamische Berechnung der Cluster-Anzahl
+- Verbessert: Flächenbasierte Ressourcenverteilung
+- Optimiert: Zufällige Variation der Cluster-Anzahl
+- Debug: Logging der Spawn-Informationen
+
+## 2025-01-08 17:46
+- Added new Smeltery building for metal production
+- Added metal as a new resource type
+- Smeltery converts wood (2) and stone (1) into metal every 5 seconds
+- Building cost: 80 wood, 40 stone
+- Updated HUD to display metal count
+- Added Smeltery button to building panel
+
 ## 2025-01-08 17:50
 - Hinzugefügt: Förstergebäude für automatische Baumpflanzung
 - Implementiert: Speicherung von Baumpositionen für Nachpflanzung
@@ -122,6 +138,17 @@
 - Verbessert: Übersichtlichere Anordnung der Gebäude-Buttons
 - Angepasst: Größeres Baumenü für bessere Lesbarkeit
 - Optimiert: Klare visuelle Trennung der Gebäudekategorien
+
+
+## 2025-01-08 18:06
+- Added upgrade system to Smeltery
+- Smeltery now has 3 levels with increasing efficiency:
+  - Level 1: 1 metal per 5 seconds
+  - Level 2: 2 metal per 4 seconds (costs 5 metal, 20 stone)
+  - Level 3: 3 metal per 3 seconds (costs 10 metal, 40 stone)
+- Added UI elements to show level and upgrade button
+- Building gets slightly redder with each upgrade
+- Resource costs stay constant (2 wood, 1 stone per operation)
 
 ## 2025-01-08 18:10
 - Hinzugefügt: Abriss-Modus für Gebäude

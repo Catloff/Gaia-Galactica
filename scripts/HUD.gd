@@ -7,8 +7,10 @@ extends Control
 @onready var lumbermill_button = $BuildPanel/MarginContainer/BuildCategories/BuildButtons/ResourceBuildings/LumbermillButton
 @onready var berry_gatherer_button = $BuildPanel/MarginContainer/BuildCategories/BuildButtons/ResourceBuildings/BerryGathererButton
 @onready var forester_button = $BuildPanel/MarginContainer/BuildCategories/BuildButtons/Infrastructure/ForesterButton
+@onready var smeltery_button = $BuildPanel/MarginContainer/BuildCategories/BuildButtons/Infrastructure/SmelteryButton
 @onready var plant_tree_button = $BuildPanel/MarginContainer/BuildCategories/BuildButtons/Resources/PlantTreeButton
 @onready var demolish_button = $BuildPanel/DemolishButton
+@onready var metal_label = $ResourcePanel/MarginContainer/Resources/MetalLabel
 
 signal building_selected(type: String)
 signal demolish_mode_changed(enabled: bool)
@@ -17,7 +19,8 @@ var current_building: String = ""
 var inventory: Dictionary = {
 	"wood": 0,
 	"stone": 0,
-	"food": 0
+	"food": 0,
+	"metal": 0
 }
 
 func _ready():
@@ -27,6 +30,7 @@ func _ready():
 	forester_button.pressed.connect(_on_forester_button_pressed)
 	plant_tree_button.pressed.connect(_on_plant_tree_button_pressed)
 	demolish_button.pressed.connect(_on_demolish_button_pressed)
+	smeltery_button.pressed.connect(_on_smeltery_button_pressed)
 	update_button_states()
 
 func _unhandled_input(event):
@@ -41,6 +45,7 @@ func update_resources(new_inventory: Dictionary) -> void:
 	wood_label.text = "Wood: %d" % inventory["wood"]
 	food_label.text = "Food: %d" % inventory["food"]
 	stone_label.text = "Stone: %d" % inventory["stone"]
+	metal_label.text = "Metal: %d" % inventory["metal"]
 	update_button_states()
 
 func update_button_states():
@@ -63,13 +68,17 @@ func update_button_states():
 	# Plant Tree: 10 Wood
 	var can_plant_tree = inventory["wood"] >= 10
 	plant_tree_button.disabled = not can_plant_tree
+	# Smeltery: 80 Wood, 40 Stone
+	var can_build_smeltery = inventory["wood"] >= 80 and inventory["stone"] >= 40
+	smeltery_button.disabled = not can_build_smeltery
 	
 	# If current building can't be built anymore, deselect it
 	if (current_building == "house" and not can_build_house) or \
-	   (current_building == "lumbermill" and not can_build_lumbermill) or \
-	   (current_building == "berry_gatherer" and not can_build_berry_gatherer) or \
-	   (current_building == "forester" and not can_build_forester) or \
-	   (current_building == "plant_tree" and not can_plant_tree):
+		(current_building == "lumbermill" and not can_build_lumbermill) or \
+		(current_building == "berry_gatherer" and not can_build_berry_gatherer) or \
+		(current_building == "forester" and not can_build_forester) or \
+		(current_building == "plant_tree" and not can_plant_tree) or \
+		(current_building == "smeltery" and not can_build_smeltery):
 		current_building = ""
 		building_selected.emit("none")
 	
@@ -79,6 +88,7 @@ func update_button_states():
 	berry_gatherer_button.modulate = Color(1, 1, 0) if current_building == "berry_gatherer" else Color(1, 1, 1)
 	forester_button.modulate = Color(1, 1, 0) if current_building == "forester" else Color(1, 1, 1)
 	plant_tree_button.modulate = Color(1, 1, 0) if current_building == "plant_tree" else Color(1, 1, 1)
+	smeltery_button.modulate = Color(1, 1, 0) if current_building == "smeltery" else Color(1, 1, 1)
 
 func _on_demolish_button_pressed():
 	print("Abriss-Button gedrückt!")
@@ -145,4 +155,15 @@ func _on_plant_tree_button_pressed():
 	else:
 		current_building = "plant_tree"
 		building_selected.emit("plant_tree")
+
+func _on_smeltery_button_pressed():
+	if smeltery_button.disabled:
+		return
+		
+	if current_building == "smeltery":
+		current_building = ""
+		building_selected.emit("none")
+	else:
+		current_building = "smeltery"
+		building_selected.emit("smeltery")
 	update_button_states()
