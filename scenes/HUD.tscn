@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://bxqd3kjl8ijwp"]
+[gd_scene load_steps=4 format=3 uid="uid://bxqd3kjl8ijwp"]
 
 [ext_resource type="Script" path="res://scripts/HUD.gd" id="1_hud"]
+[ext_resource type="PackedScene" path="res://scenes/ResourceHUD.tscn" id="2_resource_hud"]
+[ext_resource type="PackedScene" path="res://scenes/BuildingHUD.tscn" id="3_building_hud"]
 
 [node name="HUD" type="Control"]
 layout_mode = 3
@@ -12,149 +14,8 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_hud")
 
-[node name="ResourcePanel" type="PanelContainer" parent="."]
+[node name="ResourceHUD" parent="." instance=ExtResource("2_resource_hud")]
 layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -200.0
-offset_top = 20.0
-offset_right = -20.0
-offset_bottom = 126.0
-grow_horizontal = 0
-mouse_filter = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="ResourcePanel"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="Resources" type="VBoxContainer" parent="ResourcePanel/MarginContainer"]
-layout_mode = 2
-mouse_filter = 2
-
-[node name="WoodLabel" type="Label" parent="ResourcePanel/MarginContainer/Resources"]
-layout_mode = 2
-text = "Wood: 0"
-
-[node name="FoodLabel" type="Label" parent="ResourcePanel/MarginContainer/Resources"]
-layout_mode = 2
-text = "Food: 0"
-
-[node name="StoneLabel" type="Label" parent="ResourcePanel/MarginContainer/Resources"]
-layout_mode = 2
-text = "Stone: 0"
-
-[node name="MetalLabel" type="Label" parent="ResourcePanel/MarginContainer/Resources"]
-layout_mode = 2
-text = "Metal: 0"
-
-[node name="BuildPanel" type="PanelContainer" parent="."]
+[node name="BuildingHUD" parent="." instance=ExtResource("3_building_hud")]
 layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -450.0
-offset_top = -150.0
-offset_right = 450.0
-offset_bottom = -20.0
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="MarginContainer" type="MarginContainer" parent="BuildPanel"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 50
-theme_override_constants/margin_bottom = 10
-
-[node name="BuildCategories" type="VBoxContainer" parent="BuildPanel/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="CategoryLabels" type="HBoxContainer" parent="BuildPanel/MarginContainer/BuildCategories"]
-layout_mode = 2
-theme_override_constants/separation = 40
-alignment = 1
-
-[node name="ResourceBuildingsLabel" type="Label" parent="BuildPanel/MarginContainer/BuildCategories/CategoryLabels"]
-custom_minimum_size = Vector2(250, 0)
-layout_mode = 2
-text = "Ressourcengebäude"
-horizontal_alignment = 1
-
-[node name="InfrastructureLabel" type="Label" parent="BuildPanel/MarginContainer/BuildCategories/CategoryLabels"]
-custom_minimum_size = Vector2(250, 0)
-layout_mode = 2
-text = "Infrastruktur"
-horizontal_alignment = 1
-
-[node name="ResourcesLabel" type="Label" parent="BuildPanel/MarginContainer/BuildCategories/CategoryLabels"]
-custom_minimum_size = Vector2(250, 0)
-layout_mode = 2
-text = "Ressourcen"
-horizontal_alignment = 1
-
-[node name="BuildButtons" type="HBoxContainer" parent="BuildPanel/MarginContainer/BuildCategories"]
-layout_mode = 2
-theme_override_constants/separation = 40
-alignment = 1
-
-[node name="ResourceBuildings" type="VBoxContainer" parent="BuildPanel/MarginContainer/BuildCategories/BuildButtons"]
-custom_minimum_size = Vector2(250, 0)
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="LumbermillButton" type="Button" parent="BuildPanel/MarginContainer/BuildCategories/BuildButtons/ResourceBuildings"]
-custom_minimum_size = Vector2(120, 0)
-layout_mode = 2
-text = "Lumbermill (50 Wood, 10 Stone)"
-
-[node name="BerryGathererButton" type="Button" parent="BuildPanel/MarginContainer/BuildCategories/BuildButtons/ResourceBuildings"]
-custom_minimum_size = Vector2(120, 0)
-layout_mode = 2
-text = "Berry Gatherer (50 Food)"
-
-[node name="Infrastructure" type="VBoxContainer" parent="BuildPanel/MarginContainer/BuildCategories/BuildButtons"]
-custom_minimum_size = Vector2(250, 0)
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="ForesterButton" type="Button" parent="BuildPanel/MarginContainer/BuildCategories/BuildButtons/Infrastructure"]
-custom_minimum_size = Vector2(120, 0)
-layout_mode = 2
-text = "Förster (80 Holz, 20 Stein)"
-
-[node name="SmelteryButton" type="Button" parent="BuildPanel/MarginContainer/BuildCategories/BuildButtons/Infrastructure"]
-custom_minimum_size = Vector2(120, 0)
-layout_mode = 2
-text = "Smeltery (80 Wood, 40 Stone)"
-
-[node name="Resources" type="VBoxContainer" parent="BuildPanel/MarginContainer/BuildCategories/BuildButtons"]
-custom_minimum_size = Vector2(250, 0)
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="PlantTreeButton" type="Button" parent="BuildPanel/MarginContainer/BuildCategories/BuildButtons/Resources"]
-custom_minimum_size = Vector2(120, 0)
-layout_mode = 2
-text = "Baum pflanzen (10 Holz)"
-
-[node name="DemolishButton" type="Button" parent="BuildPanel"]
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 0
-focus_mode = 0
-mouse_default_cursor_shape = 2
-theme_override_colors/icon_normal_color = Color(1, 0.2, 0.2, 1)
-theme_override_colors/icon_pressed_color = Color(1, 0, 0, 1)
-theme_override_colors/icon_hover_color = Color(1, 0.4, 0.4, 1)
-theme_override_font_sizes/font_size = 20
-toggle_mode = true
-text = "X"

@@ -32,7 +32,7 @@ func setup_building():
 
 # Einrichten der UI-Elemente
 func setup_ui():
-	ui = get_node("UI")
+	ui = get_node_or_null("UI")
 	if not ui:
 		return
 	level_label = $UI/LevelLabel
@@ -99,7 +99,7 @@ func update_upgrade_button():
 
 # Einrichten der Kollision
 func setup_collision():
-	var static_body = $StaticBody3D
+	var static_body = get_node_or_null("StaticBody3D")
 	if static_body:
 		static_body.set_script(preload("res://scripts/BuildingBody.gd"))
 

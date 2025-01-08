@@ -9,12 +9,7 @@ var inventory = {
 	"metal": 4
 }
 
-@onready var hud = get_node("../HUD")
-
-func _ready() -> void:
-	# has to be called deferred to prevent a race condition:
-	# the labels are also queried @onready and might not be ready yet
-	call_deferred("update_hud")
+@onready var hud = $"../HUD"
 
 func can_afford(costs: Dictionary) -> bool:
 	for resource_type in costs:
@@ -33,7 +28,6 @@ func pay_cost(costs: Dictionary) -> bool:
 		inventory[resource_type] -= costs[resource_type]
 		resource_changed.emit(resource_type, old_values[resource_type], inventory[resource_type])
 	
-	update_hud()
 	return true
 
 func add_resources(resource_data: Dictionary) -> void:
@@ -43,7 +37,6 @@ func add_resources(resource_data: Dictionary) -> void:
 	var old_value = inventory[resource_type]
 	inventory[resource_type] += amount
 	resource_changed.emit(resource_type, old_value, inventory[resource_type])
-	update_hud()
 
 func _input(event):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
@@ -59,7 +52,3 @@ func _input(event):
 			var resource_data = result.collider.gather_resource()
 			if resource_data != null:
 				add_resources(resource_data)
-
-func update_hud():
-	if hud:
-		hud.update_resources(inventory)

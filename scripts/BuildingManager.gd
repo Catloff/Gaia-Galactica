@@ -10,10 +10,10 @@ var can_place = false
 var current_building_type = "none"
 var demolish_mode = false
 
-@onready var resource_manager = get_node("../ResourceManager")
-@onready var hud = get_node("../HUD")
-@onready var build_panel = get_node("../HUD/BuildPanel")
-@onready var demolish_button = get_node("../HUD/BuildPanel/DemolishButton")
+@onready var resource_manager = $"/root/Main/ResourceManager"
+@onready var hud = $"../HUD"
+@onready var build_panel = $"../HUD/BuildingHUD"
+@onready var demolish_button = $"../HUD/BuildingHUD/DemolishButton"
 
 func _ready():
 	hud.building_selected.connect(_on_building_selected)
@@ -66,7 +66,6 @@ func attempt_demolish(mouse_pos: Vector2):
 			result.collider.demolish()
 		else:
 			result.collider.queue_free()
-		resource_manager.update_hud()
 		print("Gebäude erfolgreich abgerissen!")
 
 func _on_demolish_mode_changed(enabled: bool):
@@ -138,15 +137,13 @@ func place_building():
 	
 	if new_building.has_method("activate"):
 		new_building.activate()
-		
-	resource_manager.update_hud()
 	
 	# Explicitly deselect the building after successful placement
 	current_building_type = "none"
 	if preview_building:
 		remove_child(preview_building)
 		preview_building = null
-	hud.deselect_building()  # New method we'll add to HUD
+	build_panel.deselect_building()  # New method we'll add to HUD
 
 func _on_building_selected(type: String):
 	current_building_type = type

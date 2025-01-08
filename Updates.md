@@ -234,3 +234,17 @@
     - `Smeltery`: Wood cost of 80 and Stone cost of 40
   - Removed redundant `base_cost` variable assignments
   - Improved code consistency across all building types
+
+## 2025-01-08 23:04
+- Refactoring: Split HUD into separate components
+  - Created `ResourceHUD` for resource display:
+    - Moved resource labels and update logic
+    - Simplified resource management code
+  - Created `BuildingHUD` for building controls:
+    - Moved building buttons and selection logic
+    - Maintained building cost checks and UI updates
+  - Updated main `HUD`:
+    - Now acts as a coordinator between components
+    - Forwards signals and resource updates
+  - Improved code organization and maintainability
+  - Better separation of concerns between UI components
