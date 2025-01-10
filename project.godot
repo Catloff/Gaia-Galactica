@@ -14,3 +14,9 @@ config/name="Gaia Galactic"
 run/main_scene="res://scenes/Main.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
+
+[display]
+
+window/size/viewport_width=500
+window/size/viewport_height=900
+window/size/resizable=false
