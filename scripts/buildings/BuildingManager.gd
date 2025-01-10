@@ -228,7 +228,6 @@ func update_preview_position(mouse_pos):
 		preview_building.visible = true
 		# Platziere das Gebäude auf der Planetenoberfläche
 		var hit_pos = result.position
-		var surface_normal = hit_pos.normalized()
 		preview_building.position = hit_pos
 		
 		# Richte das Gebäude zur Planetenmitte aus
@@ -250,6 +249,7 @@ func place_building():
 		return
 		
 	var new_building = building.scene.instantiate()
+	# Setze die Position und Rotation BEVOR wir das Gebäude zur Szene hinzufügen
 	new_building.position = preview_building.position
 	new_building.rotation = preview_building.rotation
 	get_parent().add_child(new_building)

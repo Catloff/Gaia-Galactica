@@ -8,8 +8,7 @@ var tree_stumps: Array = []  # Liste der Baumstümpfe
 
 func _ready():
 	super._ready()
-	# Setze die Position auf den Boden
-	position.y = 0.0
+	scan_for_stumps()
 
 func setup_building():
 	# Set building color
@@ -20,9 +19,6 @@ func setup_building():
 	var roof_material = StandardMaterial3D.new()
 	roof_material.albedo_color = Color(0.4, 0.2, 0.1)  # Braun
 	$Roof.material_override = roof_material
-	
-	# Scanne initial nach Baumstümpfen
-	scan_for_stumps()
 
 func _process(delta):
 	if not is_active:

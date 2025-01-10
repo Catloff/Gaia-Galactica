@@ -384,3 +384,23 @@
   - Neue Szene `MobileNavigation.tscn` erstellt mit einer unteren Navigationsleiste
   - "Bauen"-Button implementiert, der das Baumenü ein-/ausblendet
   - Anpassung für mobile Bildschirmformate
+
+## 2025-01-09 00:19
+- Added Fuel Display to HUD
+- Added fuel resource display to ResourceHUD
+- Updated ResourceHUD scene with fuel label
+- Connected fuel display to resource management system
+
+## 2025-01-09 00:25
+- Behoben: Förster-Gebäude verschwindet nicht mehr beim Platzieren
+  - Hinzugefügt: StaticBody3D-Komponente für korrekte Kollision
+  - Angepasst: Kollisionsform an Gebäudegröße
+  - Optimiert: Korrekte Positionierung auf der Planetenoberfläche
+  - Verbessert: Konsistenz mit anderen Gebäuden
+
+## 2025-01-09 00:30
+- Behoben: Korrekte Gebäudeplatzierung auf der Planetenoberfläche
+  - Korrigiert: Positionierung der Gebäude im BuildingManager
+  - Entfernt: Manuelle Positions-Überschreibungen in Gebäuden
+  - Verbessert: Konsistente Ausrichtung zur Planetenmitte
+  - Optimiert: Platzierungslogik für sphärische Oberfläche
