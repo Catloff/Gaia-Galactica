@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Gameplay.md",
+                "file": "Prompt.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Gameplay"
+              "title": "Prompt"
             }
           }
         ]
@@ -93,7 +93,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Gameplay.md",
+                "file": "Prompt.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -103,7 +103,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for Gameplay"
+              "title": "Backlinks for Prompt"
             }
           },
           {
@@ -112,12 +112,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Gameplay.md",
+                "file": "Prompt.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from Gameplay"
+              "title": "Outgoing links from Prompt"
             }
           },
           {
@@ -139,10 +139,10 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Gameplay.md"
+                "file": "Prompt.md"
               },
               "icon": "lucide-list",
-              "title": "Outline of Gameplay"
+              "title": "Outline of Prompt"
             }
           }
         ]
@@ -163,5 +163,7 @@
     }
   },
   "active": "28e594672dc2f9de",
-  "lastOpenFiles": []
+  "lastOpenFiles": [
+    "Gameplay.md"
+  ]
 }

@@ -378,3 +378,9 @@
   - Vereinfacht: Resource IDs und Referenzen
   - Entfernt: Überflüssige Kommentare und UIDs
   - Verbessert: Kompatibilität mit Godot's Ressourcen-Loader
+
+## 2024-01-09
+- Mobile Navigation hinzugefügt
+  - Neue Szene `MobileNavigation.tscn` erstellt mit einer unteren Navigationsleiste
+  - "Bauen"-Button implementiert, der das Baumenü ein-/ausblendet
+  - Anpassung für mobile Bildschirmformate

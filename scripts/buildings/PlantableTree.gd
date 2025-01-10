@@ -17,7 +17,7 @@ func _ready():
 func activate():
 	is_preview = false
 	# Erstelle eine echte Ressource an dieser Position
-	var resource_scene = load("res://scenes/Resource.tscn")
+	var resource_scene = preload("res://scenes/resources/Resource.tscn")
 	var tree = resource_scene.instantiate()
 	tree.resource_type = 0  # WOOD type
 	get_parent().add_child(tree)

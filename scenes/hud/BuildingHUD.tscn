@@ -3,75 +3,61 @@
 [ext_resource type="Script" path="res://scripts/hud/BuildingHUD.gd" id="1_building_hud"]
 
 [node name="BuildingHUD" type="PanelContainer"]
-anchors_preset = 7
+anchors_preset = 8
 anchor_left = 0.5
-anchor_top = 1.0
+anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -450.0
-offset_top = -150.0
-offset_right = 450.0
-offset_bottom = -20.0
+anchor_bottom = 0.5
+offset_left = -175.0
+offset_top = -250.0
+offset_right = 175.0
+offset_bottom = 200.0
 grow_horizontal = 2
-grow_vertical = 0
+grow_vertical = 2
 script = ExtResource("1_building_hud")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 50
+theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="BuildCategories" type="VBoxContainer" parent="MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="CategoryLabels" type="HBoxContainer" parent="MarginContainer/BuildCategories"]
-layout_mode = 2
-theme_override_constants/separation = 40
-alignment = 1
-
-[node name="ResourceBuildingsLabel" type="Label" parent="MarginContainer/BuildCategories/CategoryLabels"]
-custom_minimum_size = Vector2(250, 0)
-layout_mode = 2
-text = "Ressourcengebäude"
-horizontal_alignment = 1
-
-[node name="InfrastructureLabel" type="Label" parent="MarginContainer/BuildCategories/CategoryLabels"]
-custom_minimum_size = Vector2(250, 0)
-layout_mode = 2
-text = "Infrastruktur"
-horizontal_alignment = 1
-
-[node name="SpecialLabel" type="Label" parent="MarginContainer/BuildCategories/CategoryLabels"]
-custom_minimum_size = Vector2(250, 0)
-layout_mode = 2
-text = "Spezial"
-horizontal_alignment = 1
-
-[node name="BuildButtons" type="HBoxContainer" parent="MarginContainer/BuildCategories"]
-layout_mode = 2
-theme_override_constants/separation = 40
-alignment = 1
-
-[node name="ResourceBuildings" type="VBoxContainer" parent="MarginContainer/BuildCategories/BuildButtons"]
-custom_minimum_size = Vector2(250, 0)
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="Infrastructure" type="VBoxContainer" parent="MarginContainer/BuildCategories/BuildButtons"]
-custom_minimum_size = Vector2(250, 0)
+[node name="TabContainer" type="TabContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
 
-[node name="Special" type="VBoxContainer" parent="MarginContainer/BuildCategories/BuildButtons"]
-custom_minimum_size = Vector2(250, 0)
+[node name="Ressourcen" type="ScrollContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
 layout_mode = 2
+vertical_scroll_mode = 2
+horizontal_scroll_mode = 0
 
-[node name="DemolishButton" type="Button" parent="."]
-custom_minimum_size = Vector2(40, 40)
+[node name="ResourceBuildings" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer/Ressourcen"]
 layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 0
-focus_mode = 0
-toggle_mode = true
-text = "X"
+size_flags_horizontal = 3
+theme_override_constants/separation = 5
+
+[node name="Infrastruktur" type="ScrollContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
+visible = false
+layout_mode = 2
+vertical_scroll_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="Infrastructure" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer/Infrastruktur"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 5
+
+[node name="Spezial" type="ScrollContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
+visible = false
+layout_mode = 2
+vertical_scroll_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="Special" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer/Spezial"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 5

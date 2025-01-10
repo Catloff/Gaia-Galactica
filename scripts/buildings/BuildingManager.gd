@@ -82,7 +82,7 @@ var demolish_mode = false
 var resource_manager
 @onready var hud = $"../HUD"
 @onready var build_panel = $"../HUD/BuildingHUD"
-@onready var demolish_button = $"../HUD/BuildingHUD/DemolishButton"
+@onready var mobile_nav = $"../HUD/MobileNavigation"
 
 signal buildings_updated
 
@@ -178,10 +178,10 @@ func _on_demolish_mode_changed(enabled: bool):
 		print("Abriss-Modus deaktiviert")
 
 func is_mouse_over_ui() -> bool:
-	var mouse_pos = build_panel.get_viewport().get_mouse_position()
-	var panel_rect = build_panel.get_global_rect()
-	var demolish_rect = demolish_button.get_global_rect()
-	return panel_rect.has_point(mouse_pos) or demolish_rect.has_point(mouse_pos)
+	var mouse_pos = get_viewport().get_mouse_position()
+	var panel_rect = build_panel.get_global_rect() if build_panel.visible else Rect2()
+	var nav_rect = mobile_nav.get_global_rect()
+	return panel_rect.has_point(mouse_pos) or nav_rect.has_point(mouse_pos)
 
 func update_preview_position(mouse_pos):
 	if is_mouse_over_ui():

@@ -1,4 +1,5 @@
 - **Bitte duze mich IMMER**
+- use "preload" function to load ressources if applicable
 - **Document any changes with a timestamp in an `Updates.md` file.** Create this file if it doesn't exist.
 - **Never modify code that is irrelevant to the user's request.** Think carefully before making any changes.
 - **When making changes, consider:**
