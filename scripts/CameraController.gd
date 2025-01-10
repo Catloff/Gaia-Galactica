@@ -4,28 +4,45 @@ extends Node3D
 
 var rotation_speed: float = 0.005
 var zoom_speed: float = 0.3
-var min_zoom: float = 10.0
-var max_zoom: float = 100.0
-var current_zoom: float = 35.0
+var min_zoom: float = 40.0
+var max_zoom: float =120.0
+var current_zoom: float = 100.0
 
 # Neue Variablen für die Rotationskontrolle
 var current_rotation := Quaternion.IDENTITY
 var up_vector := Vector3.UP
 var initial_basis: Basis
-var last_basis: Basis  # Speichert die letzte gültige Basis
+var last_basis: Basis
+
+# Trägheitsvariablen
+var inertia_decay: float = 0.97
+var min_inertia: float = 0.0001
+var current_inertia := Vector2.ZERO
+var max_inertia: float = 2.0
 
 func _ready() -> void:
-	current_zoom = camera.transform.origin.length()
-	
 	# Explizite Konstruktion der initialen Basis
-	var forward := Vector3(0, -0.5, 0.866025)  # Entspricht dem ursprünglichen Blickwinkel
-	var up := Vector3(0, 0.866025, 0.5)        # Entspricht der ursprünglichen Up-Richtung
+	var forward := Vector3(0, -0.5, 0.866025)
+	var up := Vector3(0, 0.866025, 0.5)
 	var right := forward.cross(up).normalized()
-	up = right.cross(forward).normalized()      # Reorthogonalisierung
+	up = right.cross(forward).normalized()
 	
 	# Setze die Basis direkt
 	global_transform.basis = Basis(right, up, -forward)
-	last_basis = global_transform.basis  # Speichere die initiale Basis
+	last_basis = global_transform.basis
+	
+	# Setze initiale Kameraposition
+	var new_transform = camera.transform
+	new_transform.origin = new_transform.origin.normalized() * current_zoom
+	camera.transform = new_transform
+
+func _process(delta: float) -> void:
+	# Wende Trägheit an, wenn vorhanden
+	if current_inertia.length_squared() > min_inertia:
+		_apply_camera_relative_rotation(current_inertia)
+		current_inertia *= inertia_decay
+	else:
+		current_inertia = Vector2.ZERO
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -43,9 +60,17 @@ func _handle_zoom(event: InputEventMouseButton) -> void:
 
 func _handle_rotation(event: InputEventMouseMotion) -> void:
 	if event.button_mask == MOUSE_BUTTON_MASK_LEFT:
+		# Aktualisiere die Trägheit mit Glättung
+		var new_inertia = event.relative * rotation_speed
+		current_inertia = current_inertia.lerp(new_inertia, 0.3)  # Sanfter Übergang
+		current_inertia = current_inertia.limit_length(max_inertia)  # Begrenzen der maximalen Geschwindigkeit
 		_apply_camera_relative_rotation(event.relative)
 
 func _handle_touch_rotation(event: InputEventScreenDrag) -> void:
+	# Aktualisiere die Trägheit mit Glättung
+	var new_inertia = event.relative * rotation_speed
+	current_inertia = current_inertia.lerp(new_inertia, 0.3)  # Sanfter Übergang
+	current_inertia = current_inertia.limit_length(max_inertia)  # Begrenzen der maximalen Geschwindigkeit
 	_apply_camera_relative_rotation(event.relative)
 
 func _apply_camera_relative_rotation(relative: Vector2) -> void:
@@ -68,11 +93,11 @@ func _apply_camera_relative_rotation(relative: Vector2) -> void:
 	var angle_to_up := new_up.angle_to(up_vector)
 	
 	# Verhindere zu extreme Rotationen (näher als 5 Grad an den Polen)
-	if angle_to_up > 0.087 and angle_to_up < PI - 0.087:  # ~5 Grad in Radianten
+	if angle_to_up > 0.087 and angle_to_up < PI - 0.087:
 		global_transform.basis = new_basis
-		last_basis = new_basis  # Speichere die erfolgreiche Rotation
+		last_basis = new_basis
 	else:
-		# Bei Pol-Nähe: Nutze nur horizontale Rotation und behalte vertikale Position bei
+		# Bei Pol-Nähe: Nutze nur horizontale Rotation
 		global_transform.basis = intermediate_basis
 		last_basis = intermediate_basis
 
@@ -80,4 +105,5 @@ func _zoom(zoom_factor: float) -> void:
 	current_zoom = clamp(current_zoom + zoom_factor, min_zoom, max_zoom)
 	var new_transform = camera.transform
 	new_transform.origin = new_transform.origin.normalized() * current_zoom
-	camera.transform = new_transform 
+	camera.transform = new_transform
+	

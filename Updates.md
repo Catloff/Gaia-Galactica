@@ -477,3 +477,25 @@
   - Hinzugefügt: Speicherung der letzten gültigen Basis für stabilere Übergänge
   - Optimiert: Flüssigere Bewegung bei reiner vertikaler Rotation
   - Entfernt: Initiale Mikro-Rotationen zugunsten stabilerer Basis-Verwaltung
+
+## 2024-01-09
+- Hinzugefügt: Kamera-Trägheit für natürlichere Bewegungen
+  - Implementiert: Sanftes Auslaufen der Kamerarotation
+  - Hinzugefügt: Trägheitsbasierte Weiterbewegung nach dem Loslassen
+  - Optimiert: Geschmeidiger Übergang zwischen aktiver und passiver Bewegung
+  - Angepasst: Abklingrate für realistische Bewegungsdynamik
+
+## 2024-01-09
+- Verbessert: Kamera-Trägheitsverhalten
+  - Optimiert: Langsamerer Abbau der Trägheit (97% statt 95%)
+  - Reduziert: Minimale Trägheit für längeres Ausrollen
+  - Hinzugefügt: Sanfte Übergänge zwischen Bewegungen
+  - Implementiert: Maximale Trägheitsgeschwindigkeit
+  - Verbessert: Glättung der Trägheitsbewegung
+
+## 2024-01-09
+- Angepasst: Kamera-Zoom für bessere Planetenübersicht
+  - Erhöht: Initialer Zoom auf 60 Einheiten für Gesamtansicht
+  - Angepasst: Minimaler Zoom auf 20 Einheiten
+  - Verbessert: Direkte Anwendung der Zoom-Einstellungen beim Start
+  - Optimiert: Kameraposition für bessere Planetenübersicht
