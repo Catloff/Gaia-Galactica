@@ -1,5 +1,13 @@
 # Updates
 
+## 2024-01-07
+- Kamerasteuerung hinzugefügt:
+  - Freie Rotation um den Planeten mit Maus (linke Maustaste halten und ziehen) oder Touch (Finger ziehen)
+  - Zoom-Funktion mit Mausrad
+  - Kamera rotiert relativ zum Planetenzentrum
+  - Minimaler Zoom: 10 Einheiten
+  - Maximaler Zoom: 100 Einheiten
+
 ## 2025-01-08 15:36
 - Added resource inventory system to track gathered resources
 - Modified ResourceManager to maintain resource counts
@@ -404,3 +412,34 @@
   - Entfernt: Manuelle Positions-Überschreibungen in Gebäuden
   - Verbessert: Konsistente Ausrichtung zur Planetenmitte
   - Optimiert: Platzierungslogik für sphärische Oberfläche
+
+## 2025-01-09 00:35
+- Implementiert: Intuitive Kamerasteuerung für Planetenrotation
+  - Hinzugefügt: Kamerablickrelative Rotation des Planeten
+  - Implementiert: Zoom-Funktion mit Mausrad und Pinch-Geste
+  - Optimiert: Flüssige Kamerabewegungen ohne Pole
+  - Angepasst: Zoom-Grenzen für optimale Übersicht
+  - Verbessert: Touch- und Maussteuerung für alle Plattformen
+
+## 2025-01-09 00:40
+- Verbessert: Kamerarotation um Planetenzentrum
+  - Korrigiert: Rotation erfolgt nun exakt um den Planetenmittelpunkt
+  - Implementiert: Kamerabasiertes Rotationssystem statt Planetenrotation
+  - Optimiert: Flüssigere Kamerabewegungen durch direkte Transformationen
+  - Verbessert: Präzisere Steuerung der Kameraposition
+  - Hinzugefügt: Speicherung der Kamerarotation für konsistente Bewegungen
+
+## 2025-01-09 00:45
+- Implementiert: Vollständig kamerarelative Rotation
+  - Verbessert: Rotation folgt exakt der Kameraansicht
+  - Entfernt: Abhängigkeit von Weltachsen
+  - Optimiert: Direkte Transformation der Kameraposition
+  - Hinzugefügt: Automatische Distanzkorrektur
+  - Verbessert: Intuitivere Steuerung ohne "Pole"
+
+## 2025-01-09
+- Verbessert: Vollständig kamerarelative Rotation implementiert
+  - Hinzugefügt: Rotation basiert nun auf der aktuellen Kameraausrichtung
+  - Optimiert: Intuitivere Steuerung für horizontale und vertikale Bewegungen
+  - Implementiert: Schutz vor extremen Rotationswinkeln
+  - Verbessert: Natürlichere Bewegung bei der Planetenerkundung

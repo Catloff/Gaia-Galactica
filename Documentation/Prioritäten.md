@@ -53,3 +53,5 @@
 
 - [ ] Ressource types nur als enum 
 
+- [ ] Generell Singletons erzeugen 
+

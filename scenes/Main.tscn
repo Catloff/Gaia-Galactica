@@ -1,15 +1,19 @@
-[gd_scene load_steps=6 format=3 uid="uid://example2"]
+[gd_scene load_steps=7 format=3 uid="uid://example2"]
 
 [ext_resource type="Script" path="res://scripts/Main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/ResourceManager.gd" id="2_manager"]
 [ext_resource type="PackedScene" uid="uid://fraeaabxibdi" path="res://scenes/hud/HUD.tscn" id="3_hud"]
 [ext_resource type="PackedScene" path="res://scenes/Ground.tscn" id="5_ground"]
 [ext_resource type="PackedScene" path="res://scenes/buildings/building_manager.tscn" id="5_qeptx"]
+[ext_resource type="Script" path="res://scripts/CameraController.gd" id="6_camera"]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_main")
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="CameraPivot" type="Node3D" parent="."]
+script = ExtResource("6_camera")
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot"]
 transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 35, 45)
 fov = 60.0
 
@@ -18,9 +22,9 @@ transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 35, 0)
 
 [node name="Ground" parent="." instance=ExtResource("5_ground")]
 
+[node name="HUD" parent="." instance=ExtResource("3_hud")]
+
 [node name="ResourceManager" type="Node3D" parent="."]
 script = ExtResource("2_manager")
-
-[node name="HUD" parent="." instance=ExtResource("3_hud")]
 
 [node name="BuildingManager" parent="." instance=ExtResource("5_qeptx")]
