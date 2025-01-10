@@ -66,7 +66,7 @@ func attempt_tree_planting():
 	
 	if result and result.collider.name == "Ground":
 		# Platz ist frei, pflanze einen neuen Baum
-		var resource_scene = load("res://scenes/Resource.tscn")
+		var resource_scene = preload("res://scenes/resources/Resource.tscn")
 		var new_tree = resource_scene.instantiate()
 		new_tree.resource_type = 0  # WOOD type
 		get_parent().add_child(new_tree)
