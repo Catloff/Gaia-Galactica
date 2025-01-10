@@ -1,23 +1,21 @@
-[gd_scene load_steps=5 format=3 uid="uid://lqf5sxn2582n"]
+[gd_scene load_steps=4 format=3 uid="uid://lqf5sxn2582n"]
 
 [ext_resource type="Script" path="res://scripts/buildings/Smeltery.gd" id="1_smeltery"]
-[ext_resource type="PackedScene" uid="uid://buildingui" path="res://scenes/buildings/BuildingUI.tscn" id="2_building_ui"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_1"]
+[sub_resource type="BoxMesh" id="BoxMesh_base"]
 size = Vector3(2, 2, 2)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_1"]
-size = Vector3(2, 2, 2)
+[sub_resource type="CylinderMesh" id="CylinderMesh_chimney"]
+top_radius = 0.3
+bottom_radius = 0.4
 
 [node name="Smeltery" type="Node3D"]
 script = ExtResource("1_smeltery")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-mesh = SubResource("BoxMesh_1")
+[node name="Base" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("BoxMesh_base")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="."]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
-shape = SubResource("BoxShape3D_1")
-
-[node name="UI" parent="." instance=ExtResource("2_building_ui")]
+[node name="Chimney" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 3, 0.5)
+mesh = SubResource("CylinderMesh_chimney")

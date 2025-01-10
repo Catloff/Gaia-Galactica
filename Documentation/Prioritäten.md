@@ -47,6 +47,8 @@
 
 ## 2nd
 
+- [x] Gebäude szenen angleichen
+
 - [ ] unnötige if states entfernen
 
 - [ ] Ressource types nur als enum 

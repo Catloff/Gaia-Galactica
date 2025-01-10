@@ -1,15 +1,19 @@
 extends BaseBuilding
 
 const HARVEST_RADIUS = 5.0
-const HARVEST_RATE = 3.0  # Gleiche Rate wie der Cooldown der großen Steine
+const HARVEST_RATE = 3.0  # Sekunden pro Ernte
 
 var harvest_timer: float = 0.0
 
 func setup_building():
 	# Set building color
 	var material = StandardMaterial3D.new()
-	material.albedo_color = Color(0.5, 0.5, 0.5)  # Grau für Steinbruch
-	$MeshInstance3D.material_override = material
+	material.albedo_color = Color(0.5, 0.5, 0.5)  # Grau
+	$Base.material_override = material
+	
+	var drill_material = StandardMaterial3D.new()
+	drill_material.albedo_color = Color(0.3, 0.3, 0.3)  # Dunkelgrau
+	$Drill.material_override = drill_material
 
 func get_base_cost() -> Dictionary:
 	return {
@@ -25,6 +29,10 @@ func _process(delta):
 	if harvest_timer >= HARVEST_RATE:
 		harvest_timer = 0.0
 		harvest_nearby_stone()
+		
+	# Rotiere den Bohrer
+	if $Drill:
+		$Drill.rotate_y(delta * 1.5)
 
 func harvest_nearby_stone():
 	var space_state = get_world_3d().direct_space_state

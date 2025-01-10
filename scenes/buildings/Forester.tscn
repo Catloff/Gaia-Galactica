@@ -1,18 +1,20 @@
-[gd_scene load_steps=4 format=3 uid="uid://d07dafdx6yrv4"]
+[gd_scene load_steps=4 format=3 uid="uid://forester"]
 
 [ext_resource type="Script" path="res://scripts/buildings/Forester.gd" id="1_forester"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_1"]
+[sub_resource type="BoxMesh" id="BoxMesh_base"]
 size = Vector3(2, 2, 2)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_1"]
-size = Vector3(2, 2, 2)
+[sub_resource type="PrismMesh" id="PrismMesh_roof"]
+size = Vector3(2.2, 1, 2.2)
 
-[node name="Forester" type="StaticBody3D"]
+[node name="Forester" type="Node3D"]
 script = ExtResource("1_forester")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-mesh = SubResource("BoxMesh_1")
+[node name="Base" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("BoxMesh_base")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource("BoxShape3D_1")
+[node name="Roof" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+mesh = SubResource("PrismMesh_roof")

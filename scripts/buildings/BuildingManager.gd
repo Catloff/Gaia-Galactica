@@ -145,14 +145,21 @@ func attempt_demolish(mouse_pos: Vector2):
 	if result and result.collider.has_method("demolish"):
 		print("Versuche Gebäude abzureißen: ", result.collider.name)
 		
-		# Find the building type from the collider's parent name
+		# Versuche zuerst den direkten Node-Namen
 		var building_type = ""
-		for type in buildings:
-			if result.collider.get_parent().name.to_lower().begins_with(type):
-				building_type = type
-				break
+		var node_to_check = result.collider
+		
+		# Prüfe erst den Collider selbst
+		building_type = find_building_type(node_to_check.name)
+		
+		# Wenn nicht gefunden, prüfe den Parent
+		if building_type.is_empty():
+			var parent_node = result.collider.get_parent()
+			print("Parent node name: ", parent_node.name)
+			building_type = find_building_type(parent_node.name)
 				
 		if building_type:
+			print("Gefundener Gebäudetyp: ", building_type)
 			# Get cost from building definition and refund 50%
 			var building = get_building_definition(building_type)
 			var cost = building.cost
@@ -160,10 +167,27 @@ func attempt_demolish(mouse_pos: Vector2):
 				var refund = cost[resource] / 2
 				print("Erstatte %d %s zurück" % [refund, resource])
 				resource_manager.add_resources({"type": resource, "amount": refund})
+		else:
+			print("Kein passender Gebäudetyp gefunden für Collider: ", result.collider.name)
 		
 		# Remove the building
 		result.collider.demolish()
 		print("Gebäude erfolgreich abgerissen!")
+
+# Hilfsfunktion zum Finden des Gebäudetyps basierend auf einem Namen
+func find_building_type(node_name: String) -> String:
+	var name_lower = node_name.to_lower()
+	# Entferne mögliche Zahlen am Ende des Namens
+	var base_name = name_lower.trim_suffix(str(name_lower.to_int()))
+	
+	for type in buildings:
+		var type_lower = type.to_lower()
+		print("Vergleiche: ", type_lower, " mit ", base_name)
+		# Prüfe ob der Typ im Namen enthalten ist oder der Name im Typ
+		if base_name.begins_with(type_lower) or type_lower.begins_with(base_name):
+			return type
+	
+	return ""
 
 func _on_demolish_mode_changed(enabled: bool):
 	demolish_mode = enabled

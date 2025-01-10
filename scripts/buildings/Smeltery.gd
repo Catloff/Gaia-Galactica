@@ -1,63 +1,73 @@
 extends BaseBuilding
 
-const WOOD_COST = 2
-const STONE_COST = 1
-const BASE_METAL_OUTPUT = 1
-const BASE_PROCESS_TIME = 5.0
+const PRODUCTION_RATE_BASE = 5.0  # Sekunden pro Produktion
+const PRODUCTION_AMOUNT_BASE = 1  # Metall pro Produktion
+const WOOD_COST = 2  # Holz pro Produktion
+const STONE_COST = 1  # Stein pro Produktion
 
-var process_timer = 0.0
+var production_timer: float = 0.0
+
+func _ready():
+	super._ready()
+	
+	# Setze Upgrade-Kosten
+	upgrade_costs = [
+		{"metal": 5, "stone": 20},   # Level 1 -> 2
+		{"metal": 10, "stone": 40}   # Level 2 -> 3
+	]
+	max_level = 3
 
 func setup_building():
-	upgrade_costs = [
-		{
-			"metal": 5,
-			"stone": 20
-		},
-		{
-			"metal": 10,
-			"stone": 40
-		}
-	]
-	
-	max_level = 3
-	
 	# Set building color
 	var material = StandardMaterial3D.new()
-	material.albedo_color = Color(0.6, 0.3, 0.3)  # Reddish brown for smeltery
-	$MeshInstance3D.material_override = material
-
+	material.albedo_color = Color(0.4, 0.4, 0.4)  # Grau
+	$Base.material_override = material
+	
+	var chimney_material = StandardMaterial3D.new()
+	chimney_material.albedo_color = Color(0.3, 0.3, 0.3)  # Dunkelgrau
+	$Chimney.material_override = chimney_material
 
 func _process(delta):
 	if not is_active:
 		return
 		
-	process_timer += delta
-	if process_timer >= get_process_time():
-		process_timer = 0.0
-		try_produce_metal()
+	production_timer += delta
+	var production_rate = get_production_rate()
+	
+	if production_timer >= production_rate:
+		production_timer = 0.0
+		attempt_production()
 
-func try_produce_metal():
-	var costs = {
+func get_production_rate() -> float:
+	match current_level:
+		1: return PRODUCTION_RATE_BASE
+		2: return PRODUCTION_RATE_BASE * 0.8  # 20% schneller
+		3: return PRODUCTION_RATE_BASE * 0.6  # 40% schneller
+	return PRODUCTION_RATE_BASE
+
+func get_production_amount() -> int:
+	match current_level:
+		1: return PRODUCTION_AMOUNT_BASE
+		2: return PRODUCTION_AMOUNT_BASE * 2  # Doppelte Produktion
+		3: return PRODUCTION_AMOUNT_BASE * 3  # Dreifache Produktion
+	return PRODUCTION_AMOUNT_BASE
+
+func attempt_production():
+	var cost = {
 		"wood": WOOD_COST,
-		"stone": STONE_COST,
+		"stone": STONE_COST
 	}
-	if resource_manager.pay_cost(costs):
-		resource_manager.add_resources({
-			"type": "metal",
-			"amount": get_metal_output()
-		})
-
-func get_process_time() -> float:
-	# Each level reduces process time by 1 second
-	return BASE_PROCESS_TIME - (current_level - 1)
-
-func get_metal_output() -> int:
-	# Each level adds 1 to metal output
-	return BASE_METAL_OUTPUT + (current_level - 1)
+	
+	if resource_manager.can_afford(cost):
+		if resource_manager.pay_cost(cost):
+			var amount = get_production_amount()
+			resource_manager.add_resources({"type": "metal", "amount": amount})
 
 func _on_upgrade():
-	print("[Smeltery] Upgrade durchgeführt - Neues Level: ", current_level)
-	# Update building appearance
-	var material = StandardMaterial3D.new()
-	material.albedo_color = Color(0.6 + (current_level - 1) * 0.1, 0.3, 0.3)  # Gets slightly redder with each level
-	$MeshInstance3D.material_override = material
+	# Aktualisiere die Farbe basierend auf dem Level
+	var base_material = StandardMaterial3D.new()
+	var red_component = 0.4 + (current_level - 1) * 0.2  # Wird mit jedem Level rötlicher
+	base_material.albedo_color = Color(red_component, 0.4, 0.4)
+	$Base.material_override = base_material
+	
+	print("[Smeltery] Upgrade durchgeführt - Neues Level: %d" % current_level)
