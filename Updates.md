@@ -449,3 +449,31 @@
   - Reduziert: Kamerahöhe für zentrierte Ansicht
   - Optimiert: Kameradistanz für ausgewogenes Sichtfeld
   - Verbessert: Raumausnutzung auf dem Bildschirm
+
+## 2025-01-09
+- Behoben: Gimbal Lock in der Kamerasteuerung
+  - Implementiert: Quaternion-basierte Rotation für flüssigere Bewegungen
+  - Hinzugefügt: Sanfte Polübergänge durch intelligente Rotationsbegrenzung
+  - Optimiert: 5-Grad-Schutzzone an den Polen
+  - Verbessert: Stabilere Kameraführung in Extrempositionen
+
+## 2024-01-09
+- Behoben: Initiale Kamerarotation
+  - Verbessert: Sofortige Rotation in alle Richtungen beim Spielstart
+  - Hinzugefügt: Korrekte Initialisierung der Rotationsbasis
+  - Optimiert: Flüssiger Übergang von Startposition zu Rotation
+  - Behoben: Vertikale Rotation direkt nach Spielstart
+
+## 2024-01-09
+- Verbessert: Kamera-Basis-Initialisierung
+  - Implementiert: Explizite Konstruktion der Rotationsbasis
+  - Hinzugefügt: Initiale Mikro-Rotationen in beide Richtungen
+  - Optimiert: Sofortige Freiheit in allen Rotationsachsen
+  - Behoben: Notwendigkeit der initialen horizontalen Rotation
+
+## 2024-01-09
+- Verbessert: Kamerarotation bei vertikalen Bewegungen
+  - Implementiert: Separate Anwendung von horizontaler und vertikaler Rotation
+  - Hinzugefügt: Speicherung der letzten gültigen Basis für stabilere Übergänge
+  - Optimiert: Flüssigere Bewegung bei reiner vertikaler Rotation
+  - Entfernt: Initiale Mikro-Rotationen zugunsten stabilerer Basis-Verwaltung

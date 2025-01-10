@@ -3,13 +3,29 @@ extends Node3D
 @onready var camera: Camera3D = $Camera3D
 
 var rotation_speed: float = 0.005
-var zoom_speed: float = 0.1
+var zoom_speed: float = 0.3
 var min_zoom: float = 10.0
 var max_zoom: float = 100.0
-var current_zoom: float = 45.0
+var current_zoom: float = 35.0
+
+# Neue Variablen für die Rotationskontrolle
+var current_rotation := Quaternion.IDENTITY
+var up_vector := Vector3.UP
+var initial_basis: Basis
+var last_basis: Basis  # Speichert die letzte gültige Basis
 
 func _ready() -> void:
 	current_zoom = camera.transform.origin.length()
+	
+	# Explizite Konstruktion der initialen Basis
+	var forward := Vector3(0, -0.5, 0.866025)  # Entspricht dem ursprünglichen Blickwinkel
+	var up := Vector3(0, 0.866025, 0.5)        # Entspricht der ursprünglichen Up-Richtung
+	var right := forward.cross(up).normalized()
+	up = right.cross(forward).normalized()      # Reorthogonalisierung
+	
+	# Setze die Basis direkt
+	global_transform.basis = Basis(right, up, -forward)
+	last_basis = global_transform.basis  # Speichere die initiale Basis
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -33,22 +49,32 @@ func _handle_touch_rotation(event: InputEventScreenDrag) -> void:
 	_apply_camera_relative_rotation(event.relative)
 
 func _apply_camera_relative_rotation(relative: Vector2) -> void:
-	# Erstelle Basis-Vektoren für die kamerarelative Rotation
-	var camera_right := camera.global_transform.basis.x
-	var camera_up := camera.global_transform.basis.y
-	
 	# Berechne die Rotationsachsen basierend auf der Kameraausrichtung
-	var horizontal_axis := camera_up
-	var vertical_axis := camera_right
+	var right := camera.global_transform.basis.x
+	var up := camera.global_transform.basis.y
 	
-	# Wende die Rotationen an
-	rotate(horizontal_axis, -relative.x * rotation_speed)
-	rotate(vertical_axis, -relative.y * rotation_speed)
+	# Erstelle Quaternionen für beide Rotationen
+	var horizontal_rotation := Quaternion(up, -relative.x * rotation_speed)
+	var vertical_rotation := Quaternion(right, -relative.y * rotation_speed)
 	
-	# Beschränke die vertikale Rotation um extreme Winkel zu vermeiden
-	var up_dot := global_transform.basis.y.dot(Vector3.UP)
-	if abs(up_dot) < 0.1:  # Verhindere Überkopf-Rotation
-		rotate(vertical_axis, relative.y * rotation_speed)
+	# Wende zuerst die horizontale Rotation an
+	var intermediate_basis := Basis(horizontal_rotation) * global_transform.basis
+	
+	# Dann die vertikale Rotation
+	var new_basis := Basis(vertical_rotation) * intermediate_basis
+	
+	# Überprüfe den Winkel zur Up-Achse
+	var new_up := new_basis.y
+	var angle_to_up := new_up.angle_to(up_vector)
+	
+	# Verhindere zu extreme Rotationen (näher als 5 Grad an den Polen)
+	if angle_to_up > 0.087 and angle_to_up < PI - 0.087:  # ~5 Grad in Radianten
+		global_transform.basis = new_basis
+		last_basis = new_basis  # Speichere die erfolgreiche Rotation
+	else:
+		# Bei Pol-Nähe: Nutze nur horizontale Rotation und behalte vertikale Position bei
+		global_transform.basis = intermediate_basis
+		last_basis = intermediate_basis
 
 func _zoom(zoom_factor: float) -> void:
 	current_zoom = clamp(current_zoom + zoom_factor, min_zoom, max_zoom)
