@@ -2,6 +2,8 @@ extends Node3D
 
 enum BuildingCategory { RESOURCE, INFRASTRUCTURE, SPECIAL }
 
+const PLANET_RADIUS = 25.0  # Muss mit dem Radius in Main.gd übereinstimmen
+
 class BuildingDefinition:
 	var scene: PackedScene
 	var type: String
@@ -224,8 +226,15 @@ func update_preview_position(mouse_pos):
 	
 	if result:
 		preview_building.visible = true
-		preview_building.position = result.position
-		preview_building.position.y = 1.0  # Half of building height
+		# Platziere das Gebäude auf der Planetenoberfläche
+		var hit_pos = result.position
+		var surface_normal = hit_pos.normalized()
+		preview_building.position = hit_pos
+		
+		# Richte das Gebäude zur Planetenmitte aus
+		preview_building.look_at(Vector3.ZERO)
+		preview_building.rotate_object_local(Vector3.RIGHT, PI/2)
+		
 		can_place = true
 	else:
 		preview_building.visible = false
@@ -242,6 +251,7 @@ func place_building():
 		
 	var new_building = building.scene.instantiate()
 	new_building.position = preview_building.position
+	new_building.rotation = preview_building.rotation
 	get_parent().add_child(new_building)
 	
 	if new_building.has_method("activate"):
