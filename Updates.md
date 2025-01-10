@@ -443,3 +443,9 @@
   - Optimiert: Intuitivere Steuerung für horizontale und vertikale Bewegungen
   - Implementiert: Schutz vor extremen Rotationswinkeln
   - Verbessert: Natürlichere Bewegung bei der Planetenerkundung
+
+## 2024-01-09
+- Angepasst: Kameraposition für bessere Planetenzentrierung
+  - Reduziert: Kamerahöhe für zentrierte Ansicht
+  - Optimiert: Kameradistanz für ausgewogenes Sichtfeld
+  - Verbessert: Raumausnutzung auf dem Bildschirm
