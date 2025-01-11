@@ -86,7 +86,7 @@ func spawn_resource_cluster(resource_scene: PackedScene, resource_type: int):
 		var bitangent = center_dir.cross(tangent)
 		
 		var offset = (tangent * cos(angle) + bitangent * sin(angle)) * distance
-		var spawn_pos = (center_dir * PLANET_RADIUS + offset).normalized() * PLANET_RADIUS
+		var spawn_pos = (center_dir * PLANET_RADIUS + offset).normalized() * (PLANET_RADIUS + 0.5)
 		
 		if not is_valid_position(spawn_pos):
 			continue
@@ -95,6 +95,7 @@ func spawn_resource_cluster(resource_scene: PackedScene, resource_type: int):
 		resource.resource_type = resource_type
 		add_child(resource)
 		resource.position = spawn_pos
+		resource.start_position = spawn_pos
 		resource.look_at(Vector3.ZERO)  # Ausrichtung zur Planetenmitte
 		resource.rotate_object_local(Vector3.RIGHT, PI/2)  # Korrektur der Rotation
 		placed_positions.append(spawn_pos)
