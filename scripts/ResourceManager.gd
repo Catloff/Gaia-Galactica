@@ -59,6 +59,6 @@ func _input(event):
 		var result = space_state.intersect_ray(query)
 		
 		if result and result.collider.has_method("gather_resource"):
-			var resource_data = result.collider.gather_resource()
+			var resource_data = await result.collider.gather_resource()
 			if resource_data != null:
 				add_resources(resource_data)

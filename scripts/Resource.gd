@@ -3,8 +3,10 @@ extends StaticBody3D
 enum ResourceType {WOOD, STONE, FOOD}
 @export var resource_type: ResourceType
 @export var resource_amount: int = 10
-var remaining_harvests: int = 3
+const MAX_HARVEST: int = 3
+var remaining_harvests: int = MAX_HARVEST
 var is_being_removed: bool = false
+@onready var start_position: Vector3 = self.global_position
 
 signal resource_removed(position: Vector3, type: String)
 
@@ -60,6 +62,10 @@ func gather_resource():
 	var resource_name = ResourceType.keys()[resource_type].to_lower()
 	print("[Resource] Gathered %d units of %s (%d harvests remaining)" % [resource_amount, resource_name, remaining_harvests])
 	
+	if resource_type != ResourceType.WOOD:
+		var new_position = start_position - (start_position.normalized() * (MAX_HARVEST - remaining_harvests) / MAX_HARVEST)
+		self.global_position = new_position
+	
 	if remaining_harvests <= 0:
 		is_being_removed = true
 		
@@ -77,6 +83,7 @@ func gather_resource():
 			# Deaktiviere Kollision
 			collision_layer = 0
 			collision_mask = 0
+			await get_tree().create_timer(0.5).timeout
 			queue_free()
 		
 	return {
