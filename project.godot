@@ -20,3 +20,8 @@ config/icon="res://icon.svg"
 window/size/viewport_width=500
 window/size/viewport_height=900
 window/size/resizable=false
+window/handheld/orientation=1
+
+[rendering]
+
+textures/vram_compression/import_etc2_astc=true

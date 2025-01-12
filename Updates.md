@@ -499,3 +499,17 @@
   - Angepasst: Minimaler Zoom auf 20 Einheiten
   - Verbessert: Direkte Anwendung der Zoom-Einstellungen beim Start
   - Optimiert: Kameraposition für bessere Planetenübersicht
+
+## 2024-01-09
+- Vorbereitet: Android Export
+  - Konfiguriert: Export-Einstellungen für Android
+  - Optimiert: Bildschirmausrichtung auf Landscape
+  - Angepasst: Touch-Steuerung für mobile Geräte
+  - Eingestellt: Minimale SDK-Version für breite Kompatibilität
+
+## 2024-01-09
+- Angepasst: Bildschirmausrichtung auf Portrait-Modus
+  - Geändert: Orientierung von Landscape zu Portrait
+  - Optimiert: UI-Layout für vertikale Ausrichtung
+  - Angepasst: Fenstereinstellungen für mobiles Format
+  - Konfiguriert: Export-Einstellungen für Portrait-Modus
