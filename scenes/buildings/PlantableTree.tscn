@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://planttree"]
+[gd_scene load_steps=4 format=3 uid="uid://dxkjw2p4h6n8m"]
 
 [ext_resource type="Script" path="res://scripts/buildings/PlantableTree.gd" id="1_tree"]
 
@@ -15,9 +15,11 @@ height = 2.0
 script = ExtResource("1_tree")
 
 [node name="Trunk" type="MeshInstance3D" parent="."]
+unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("CylinderMesh_trunk")
 
 [node name="Crown" type="MeshInstance3D" parent="."]
+unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
 mesh = SubResource("SphereMesh_crown")

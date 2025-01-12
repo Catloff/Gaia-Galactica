@@ -28,7 +28,14 @@ func _ready():
 	
 # Virtuelle Methode zum Einrichten des Gebäudes
 func setup_building():
-	pass
+	# Upgrade-System ist deaktiviert
+	if upgrade_button:
+		upgrade_button.visible = false
+	if level_label:
+		level_label.visible = false
+	
+	# Gebäude-spezifische Einrichtung
+	_setup_building()
 
 # Einrichten der UI-Elemente
 func setup_ui():
@@ -81,27 +88,33 @@ func update_ui_position():
 		ui.visible = false
 
 func update_upgrade_button():
-	if not upgrade_button:
-		return
-		
-	if current_level >= max_level:
-		upgrade_button.text = "Max Level"
-		upgrade_button.disabled = true
-	else:
-		var cost = get_upgrade_cost()
-		var cost_text = ""
-		for resource in cost:
-			if cost_text != "":
-				cost_text += ", "
-			cost_text += "%d %s" % [cost[resource], resource]
-		upgrade_button.text = "Upgrade\n(%s)" % cost_text
-		upgrade_button.disabled = not can_upgrade()
+	# Upgrade-System ist deaktiviert
+	pass
 
 # Einrichten der Kollision
 func setup_collision():
 	var static_body = get_node_or_null("StaticBody3D")
-	if static_body:
+	if not static_body:
+		# Wenn kein StaticBody3D existiert, erstelle einen
+		static_body = StaticBody3D.new()
+		static_body.name = "StaticBody3D"
+		
+		# Füge eine CollisionShape hinzu
+		var collision_shape = CollisionShape3D.new()
+		var box_shape = BoxShape3D.new()
+		box_shape.size = Vector3(2, 2, 2)  # Standard-Größe
+		collision_shape.shape = box_shape
+		static_body.add_child(collision_shape)
+		
+		add_child(static_body)
+	
+	# Stelle sicher, dass das BuildingBody-Skript angehängt ist
+	if not static_body.get_script():
 		static_body.set_script(preload("res://scripts/buildings/BuildingBody.gd"))
+	
+	# Aktiviere Kollision
+	static_body.collision_layer = 1
+	static_body.collision_mask = 1
 
 # Aktivierung des Gebäudes
 func activate():
@@ -135,10 +148,8 @@ func deactivate():
 
 # Upgrade-Funktionalität
 func can_upgrade() -> bool:
-	if current_level >= max_level:
-		return false
-	var cost = get_upgrade_cost()
-	return resource_manager.can_afford(cost)
+	# Upgrade-System ist deaktiviert
+	return false
 
 func get_upgrade_cost() -> Dictionary:
 	if current_level >= max_level:
@@ -146,17 +157,12 @@ func get_upgrade_cost() -> Dictionary:
 	return upgrade_costs[current_level - 1]
 
 func _on_upgrade_pressed():
-	upgrade()
+	# Upgrade-System ist deaktiviert
+	pass
 
 func upgrade():
-	if not can_upgrade():
-		return
-		
-	var cost = get_upgrade_cost()
-	if resource_manager.pay_cost(cost):
-		current_level += 1
-		update_ui()
-		_on_upgrade()
+	# Upgrade-System ist deaktiviert
+	pass
 
 # Virtuelle Methode für Upgrade-Effekte
 func _on_upgrade():
@@ -164,9 +170,8 @@ func _on_upgrade():
 
 # UI-Update
 func update_ui():
-	if level_label:
-		level_label.text = "Level %d" % current_level
-	update_upgrade_button()
+	# Upgrade-System ist deaktiviert
+	pass
 
 # Ressourcen-Änderungs-Handler
 func _on_resource_changed(_resource_type: String, _old_value: int, _new_value: int):
@@ -174,5 +179,33 @@ func _on_resource_changed(_resource_type: String, _old_value: int, _new_value: i
 
 # Abriss-Funktionalität
 func demolish():
+	print("[BaseBuilding] Beginne Abriss von: ", name)
 	deactivate()
-	queue_free() 
+	
+	# Deaktiviere zuerst die Kollision
+	var static_body = get_node_or_null("StaticBody3D")
+	if static_body:
+		static_body.collision_layer = 0
+		static_body.collision_mask = 0
+		if static_body.get_child_count() > 0:
+			for child in static_body.get_children():
+				child.queue_free()
+		static_body.queue_free()
+	
+	# Gib alle visuellen Ressourcen frei
+	var visual = get_node_or_null("Visual")
+	if visual:
+		for child in visual.get_children():
+			if child is MeshInstance3D:
+				# Setze das Material auf null anstatt es zu löschen
+				child.material_override = null
+				child.queue_free()
+		visual.queue_free()
+	
+	# Entferne das Gebäude selbst
+	queue_free()
+	print("[BaseBuilding] Gebäude erfolgreich abgerissen")
+
+# Virtuelle Methode für gebäude-spezifische Einrichtung
+func _setup_building():
+	pass

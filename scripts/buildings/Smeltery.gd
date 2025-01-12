@@ -7,6 +7,9 @@ const STONE_COST = 1  # Stein pro Produktion
 
 var production_timer: float = 0.0
 
+@onready var base_mesh = %Base
+@onready var chimney_mesh = %Chimney
+
 func _ready():
 	super._ready()
 	
@@ -21,11 +24,11 @@ func setup_building():
 	# Set building color
 	var material = StandardMaterial3D.new()
 	material.albedo_color = Color(0.4, 0.4, 0.4)  # Grau
-	$Base.material_override = material
+	base_mesh.material_override = material
 	
 	var chimney_material = StandardMaterial3D.new()
 	chimney_material.albedo_color = Color(0.3, 0.3, 0.3)  # Dunkelgrau
-	$Chimney.material_override = chimney_material
+	chimney_mesh.material_override = chimney_material
 
 func _process(delta):
 	if not is_active:
@@ -38,36 +41,32 @@ func _process(delta):
 		production_timer = 0.0
 		attempt_production()
 
-func get_production_rate() -> float:
-	match current_level:
-		1: return PRODUCTION_RATE_BASE
-		2: return PRODUCTION_RATE_BASE * 0.8  # 20% schneller
-		3: return PRODUCTION_RATE_BASE * 0.6  # 40% schneller
-	return PRODUCTION_RATE_BASE
-
-func get_production_amount() -> int:
-	match current_level:
-		1: return PRODUCTION_AMOUNT_BASE
-		2: return PRODUCTION_AMOUNT_BASE * 2  # Doppelte Produktion
-		3: return PRODUCTION_AMOUNT_BASE * 3  # Dreifache Produktion
-	return PRODUCTION_AMOUNT_BASE
-
 func attempt_production():
-	var cost = {
+	var costs = {
 		"wood": WOOD_COST,
 		"stone": STONE_COST
 	}
 	
-	if resource_manager.can_afford(cost):
-		if resource_manager.pay_cost(cost):
-			var amount = get_production_amount()
-			resource_manager.add_resources({"type": "metal", "amount": amount})
+	if resource_manager.pay_cost(costs):
+		resource_manager.add_resources({
+			"type": "metal",
+			"amount": PRODUCTION_AMOUNT_BASE * get_efficiency_multiplier()
+		})
+
+func get_production_rate() -> float:
+	return PRODUCTION_RATE_BASE / get_speed_multiplier()
+
+func get_efficiency_multiplier() -> float:
+	return 1.0 + (0.25 * current_level)  # 25% mehr Output pro Level
+
+func get_speed_multiplier() -> float:
+	return 1.0 + (0.2 * current_level)  # 20% schneller pro Level
 
 func _on_upgrade():
 	# Aktualisiere die Farbe basierend auf dem Level
 	var base_material = StandardMaterial3D.new()
 	var red_component = 0.4 + (current_level - 1) * 0.2  # Wird mit jedem Level rötlicher
 	base_material.albedo_color = Color(red_component, 0.4, 0.4)
-	$Base.material_override = base_material
+	base_mesh.material_override = base_material
 	
 	print("[Smeltery] Upgrade durchgeführt - Neues Level: %d" % current_level)

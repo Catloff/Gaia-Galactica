@@ -1,22 +1,25 @@
-[gd_scene load_steps=4 format=3 uid="uid://b6j8q2y4n3xk5"]
+[gd_scene load_steps=5 format=3 uid="uid://b6j8q2y4n3xk5"]
 
-[ext_resource type="Script" path="res://scripts/buildings/Refinery.gd" id="1_r4n2p"]
+[ext_resource type="PackedScene" uid="uid://b4q8rg5w2y6n8" path="res://scenes/buildings/BaseBuilding.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scripts/buildings/Refinery.gd" id="2_refinery"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_k8j2p"]
+[sub_resource type="BoxMesh" id="BoxMesh_base"]
 size = Vector3(2, 3, 2)
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_u6v2q"]
-top_radius = 0.4
-bottom_radius = 0.6
+[sub_resource type="CylinderMesh" id="CylinderMesh_chimney"]
+top_radius = 0.2
+bottom_radius = 0.3
 height = 1.5
 
-[node name="Refinery" type="Node3D"]
-script = ExtResource("1_r4n2p")
+[node name="Refinery" instance=ExtResource("1_base")]
+script = ExtResource("2_refinery")
 
-[node name="Base" type="MeshInstance3D" parent="."]
+[node name="Base" type="MeshInstance3D" parent="Visual" index="0"]
+unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
-mesh = SubResource("BoxMesh_k8j2p")
+mesh = SubResource("BoxMesh_base")
 
-[node name="Chimney" type="MeshInstance3D" parent="."]
+[node name="Chimney" type="MeshInstance3D" parent="Visual" index="1"]
+unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 3.25, 0.6)
-mesh = SubResource("CylinderMesh_u6v2q")
+mesh = SubResource("CylinderMesh_chimney")

@@ -52,7 +52,14 @@ func _ready():
 			$MeshInstance3D.material_override = material
 
 func get_resource_type() -> String:
-	return ResourceType.keys()[resource_type]
+	match resource_type:
+		ResourceType.WOOD:
+			return "WOOD"
+		ResourceType.STONE:
+			return "STONE"
+		ResourceType.FOOD:
+			return "FOOD"
+	return "UNKNOWN"
 
 func gather_resource():
 	if is_being_removed:
@@ -109,3 +116,11 @@ func regrow_tree():
 		is_being_removed = false
 		remaining_harvests = 3
 		print("[Resource] Baum ist nachgewachsen")
+
+func demolish():
+	is_being_removed = true
+	resource_removed.emit(global_position, get_resource_type())
+	# Deaktiviere Kollision
+	collision_layer = 0
+	collision_mask = 0
+	queue_free()

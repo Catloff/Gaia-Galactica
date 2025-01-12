@@ -35,3 +35,7 @@ func gather_resource():
 
 func get_resource_type() -> String:
 	return RESOURCE_TYPE 
+
+func demolish():
+	resource_removed.emit(global_position, get_resource_type())
+	queue_free() 

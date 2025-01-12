@@ -1,29 +1,23 @@
 [gd_scene load_steps=5 format=3 uid="uid://forester"]
 
-[ext_resource type="Script" path="res://scripts/buildings/Forester.gd" id="1_forester"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_1"]
-size = Vector3(2, 2, 2)
+[ext_resource type="PackedScene" uid="uid://b4q8rg5w2y6n8" path="res://scenes/buildings/BaseBuilding.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scripts/buildings/Forester.gd" id="2_forester"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_base"]
 size = Vector3(2, 2, 2)
 
 [sub_resource type="PrismMesh" id="PrismMesh_roof"]
-size = Vector3(2.2, 1, 2.2)
+size = Vector3(2.4, 1, 2.4)
 
-[node name="Forester" type="Node3D"]
-script = ExtResource("1_forester")
+[node name="Forester" instance=ExtResource("1_base")]
+script = ExtResource("2_forester")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
-shape = SubResource("BoxShape3D_1")
-
-[node name="Base" type="MeshInstance3D" parent="."]
+[node name="Base" type="MeshInstance3D" parent="Visual" index="0"]
+unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("BoxMesh_base")
 
-[node name="Roof" type="MeshInstance3D" parent="."]
+[node name="Roof" type="MeshInstance3D" parent="Visual" index="1"]
+unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
 mesh = SubResource("PrismMesh_roof")

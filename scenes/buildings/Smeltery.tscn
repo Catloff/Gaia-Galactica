@@ -1,21 +1,25 @@
-[gd_scene load_steps=4 format=3 uid="uid://lqf5sxn2582n"]
+[gd_scene load_steps=5 format=3 uid="uid://lqf5sxn2582n"]
 
-[ext_resource type="Script" path="res://scripts/buildings/Smeltery.gd" id="1_smeltery"]
+[ext_resource type="PackedScene" uid="uid://b4q8rg5w2y6n8" path="res://scenes/buildings/BaseBuilding.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scripts/buildings/Smeltery.gd" id="2_smelt"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_base"]
-size = Vector3(2, 2, 2)
+size = Vector3(2, 3, 2)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_chimney"]
-top_radius = 0.3
-bottom_radius = 0.4
+top_radius = 0.2
+bottom_radius = 0.3
+height = 1.5
 
-[node name="Smeltery" type="Node3D"]
-script = ExtResource("1_smeltery")
+[node name="Smeltery" instance=ExtResource("1_base")]
+script = ExtResource("2_smelt")
 
-[node name="Base" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+[node name="Base" type="MeshInstance3D" parent="Visual" index="0"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 mesh = SubResource("BoxMesh_base")
 
-[node name="Chimney" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 3, 0.5)
+[node name="Chimney" type="MeshInstance3D" parent="Visual" index="1"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 3.25, 0.6)
 mesh = SubResource("CylinderMesh_chimney")

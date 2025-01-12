@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/Main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/ResourceManager.gd" id="2_manager"]
 [ext_resource type="PackedScene" uid="uid://fraeaabxibdi" path="res://scenes/hud/HUD.tscn" id="3_hud"]
-[ext_resource type="PackedScene" path="res://scenes/Ground.tscn" id="5_ground"]
+[ext_resource type="PackedScene" uid="uid://ic4m2aigmns3" path="res://scenes/Ground.tscn" id="5_ground"]
 [ext_resource type="PackedScene" path="res://scenes/buildings/building_manager.tscn" id="5_qeptx"]
 [ext_resource type="Script" path="res://scripts/CameraController.gd" id="6_camera"]
 

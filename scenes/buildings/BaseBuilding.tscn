@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://b4q8rg5w2y6n8"]
+
+[ext_resource type="Script" path="res://scripts/buildings/BaseBuilding.gd" id="1_base"]
+
+[node name="BaseBuilding" type="Node3D"]
+script = ExtResource("1_base")
+
+[node name="Visual" type="Node3D" parent="."] 

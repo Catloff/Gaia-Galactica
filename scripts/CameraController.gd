@@ -36,7 +36,7 @@ func _ready() -> void:
 	new_transform.origin = new_transform.origin.normalized() * current_zoom
 	camera.transform = new_transform
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	# Wende Trägheit an, wenn vorhanden
 	if current_inertia.length_squared() > min_inertia:
 		_apply_camera_relative_rotation(current_inertia)

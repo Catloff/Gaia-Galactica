@@ -1,21 +1,24 @@
-[gd_scene load_steps=4 format=3 uid="uid://berrygatherer"]
+[gd_scene load_steps=5 format=3 uid="uid://b12tp3rda734o"]
 
-[ext_resource type="Script" path="res://scripts/buildings/BerryGatherer.gd" id="1_berry"]
+[ext_resource type="PackedScene" uid="uid://b4q8rg5w2y6n8" path="res://scenes/buildings/BaseBuilding.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scripts/buildings/BerryGatherer.gd" id="2_berry"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_base"]
 size = Vector3(2, 2, 2)
 
 [sub_resource type="SphereMesh" id="SphereMesh_basket"]
-radius = 0.4
-height = 0.6
+radius = 0.6
+height = 0.8
 
-[node name="BerryGatherer" type="Node3D"]
-script = ExtResource("1_berry")
+[node name="BerryGatherer" instance=ExtResource("1_base")]
+script = ExtResource("2_berry")
 
-[node name="Base" type="MeshInstance3D" parent="."]
+[node name="Base" type="MeshInstance3D" parent="Visual" index="0"]
+unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("BoxMesh_base")
 
-[node name="Basket" type="MeshInstance3D" parent="."]
+[node name="Basket" type="MeshInstance3D" parent="Visual" index="1"]
+unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
 mesh = SubResource("SphereMesh_basket")

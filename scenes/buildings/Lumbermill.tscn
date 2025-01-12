@@ -1,20 +1,25 @@
-[gd_scene load_steps=4 format=3 uid="uid://ci87mpwvf5anu"]
+[gd_scene load_steps=5 format=3 uid="uid://ci87mpwvf5anu"]
 
-[ext_resource type="Script" path="res://scripts/buildings/Lumbermill.gd" id="1_lumbermill"]
+[ext_resource type="PackedScene" uid="uid://b4q8rg5w2y6n8" path="res://scenes/buildings/BaseBuilding.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scripts/buildings/Lumbermill.gd" id="2_lumber"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_base"]
-size = Vector3(2, 2, 3)
+size = Vector3(2, 2, 2)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_saw"]
+top_radius = 0.8
+bottom_radius = 0.8
 height = 0.1
 
-[node name="Lumbermill" type="Node3D"]
-script = ExtResource("1_lumbermill")
+[node name="Lumbermill" instance=ExtResource("1_base")]
+script = ExtResource("2_lumber")
 
-[node name="Base" type="MeshInstance3D" parent="."]
+[node name="Base" type="MeshInstance3D" parent="Visual" index="0"]
+unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("BoxMesh_base")
 
-[node name="Saw" type="MeshInstance3D" parent="."]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 1.5, 1.2)
+[node name="Saw" type="MeshInstance3D" parent="Visual" index="1"]
+unique_name_in_owner = true
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 1.5, 0.6)
 mesh = SubResource("CylinderMesh_saw")

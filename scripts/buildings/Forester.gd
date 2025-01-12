@@ -6,32 +6,35 @@ const PLANT_RATE = 3.0  # Sekunden zwischen Pflanzungen
 var plant_timer: float = 0.0
 var tree_stumps: Array = []  # Liste der Baumstümpfe
 
-func _ready():
-	super._ready()
-	scan_for_stumps()
+@onready var base_mesh = %Base
+@onready var roof_mesh = %Roof
 
-func setup_building():
+func _setup_building():
 	# Set building color
 	var material = StandardMaterial3D.new()
-	material.albedo_color = Color(0.2, 0.5, 0.2)  # Dunkelgrün
-	$Base.material_override = material
+	material.albedo_color = Color(0.2, 0.5, 0.3)  # Dunkelgrün für Förster
+	base_mesh.material_override = material
 	
 	var roof_material = StandardMaterial3D.new()
-	roof_material.albedo_color = Color(0.4, 0.2, 0.1)  # Braun
-	$Roof.material_override = roof_material
+	roof_material.albedo_color = Color(0.3, 0.6, 0.4)  # Helleres Grün für das Dach
+	roof_mesh.material_override = roof_material
 
-func _process(delta):
+func _ready():
+	super._ready()
+	await scan_for_stumps()
+
+func _process(_delta):
 	if not is_active:
 		return
 		
-	plant_timer += delta
+	plant_timer += _delta
 	if plant_timer >= PLANT_RATE:
 		plant_timer = 0.0
 		attempt_regrow_tree()
 
 func attempt_regrow_tree():
 	# Aktualisiere die Liste der Stümpfe
-	scan_for_stumps()
+	await scan_for_stumps()
 	
 	# Wenn wir keine Baumstümpfe haben, machen wir nichts
 	if tree_stumps.is_empty():
