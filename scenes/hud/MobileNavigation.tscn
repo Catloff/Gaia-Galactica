@@ -30,8 +30,8 @@ theme_override_constants/margin_bottom = 10
 
 [node name="ButtonContainer" type="HBoxContainer" parent="NavigationBar/MarginContainer"]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 20
+alignment = 1
 
 [node name="BuildButton" type="Button" parent="NavigationBar/MarginContainer/ButtonContainer"]
 custom_minimum_size = Vector2(120, 60)
@@ -45,4 +45,4 @@ custom_minimum_size = Vector2(120, 60)
 layout_mode = 2
 focus_mode = 0
 toggle_mode = true
-text = "Abreißen" 
+text = "Abreißen"

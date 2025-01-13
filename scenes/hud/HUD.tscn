@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://fraeaabxibdi"]
+[gd_scene load_steps=6 format=3 uid="uid://fraeaabxibdi"]
 
 [ext_resource type="Script" path="res://scripts/hud/HUD.gd" id="1_hud"]
 [ext_resource type="PackedScene" uid="uid://resourcehud" path="res://scenes/hud/ResourceHUD.tscn" id="2_resource_hud"]
 [ext_resource type="PackedScene" uid="uid://buildinghud" path="res://scenes/hud/BuildingHUD.tscn" id="3_building_hud"]
 [ext_resource type="PackedScene" uid="uid://mobilenav" path="res://scenes/hud/MobileNavigation.tscn" id="4_mobile_nav"]
+[ext_resource type="PackedScene" uid="uid://bonxt3vxxl3id" path="res://scenes/hud/BuildingInfoHUD.tscn" id="5_building_info"]
 
 [node name="HUD" type="Control"]
 layout_mode = 3
@@ -22,4 +23,7 @@ layout_mode = 1
 layout_mode = 1
 
 [node name="MobileNavigation" parent="." instance=ExtResource("4_mobile_nav")]
+layout_mode = 1
+
+[node name="BuildingInfoHUD" parent="." instance=ExtResource("5_building_info")]
 layout_mode = 1

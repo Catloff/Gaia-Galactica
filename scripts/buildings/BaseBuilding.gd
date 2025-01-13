@@ -15,6 +15,16 @@ var is_active: bool = false
 # Referenz zum ResourceManager
 @onready var resource_manager = get_node("/root/Main/ResourceManager")
 
+# Virtuelle Methoden für Gebäude-Eigenschaften
+func get_production_rate() -> float:
+	return 0.0
+
+func get_efficiency_multiplier() -> float:
+	return 1.0 + (0.25 * (current_level - 1))  # 25% mehr pro Level
+
+func get_speed_multiplier() -> float:
+	return 1.0 + (0.2 * (current_level - 1))  # 20% schneller pro Level
+
 # UI Elemente
 var upgrade_button: Button
 var level_label: Label

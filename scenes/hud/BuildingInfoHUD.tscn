@@ -1,0 +1,90 @@
+[gd_scene load_steps=2 format=3 uid="uid://bonxt3vxxl3id"]
+
+[ext_resource type="Script" path="res://scripts/hud/BuildingInfoHUD.gd" id="1_info"]
+
+[node name="BuildingInfoHUD" type="Control"]
+layout_mode = 3
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 1
+script = ExtResource("1_info")
+
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -160.0
+offset_bottom = -80.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="VBoxLeft" type="VBoxContainer" parent="Panel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="BuildingName" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxLeft"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Gebäude Name"
+
+[node name="Level" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxLeft"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Level: 1"
+
+[node name="VBoxMiddle" type="VBoxContainer" parent="Panel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="ProductionRate" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxMiddle"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Produktionsrate: -"
+
+[node name="EfficiencyMultiplier" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxMiddle"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Effizienz: -"
+
+[node name="VBoxRight" type="VBoxContainer" parent="Panel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="SpeedMultiplier" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxRight"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Geschwindigkeit: -"
+
+[node name="ButtonContainer" type="HBoxContainer" parent="Panel/MarginContainer/HBoxContainer/VBoxRight"]
+layout_mode = 2
+
+[node name="UpgradeButton" type="Button" parent="Panel/MarginContainer/HBoxContainer/VBoxRight/ButtonContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Upgrade"
+
+[node name="CloseButton" type="Button" parent="Panel/MarginContainer/HBoxContainer/VBoxRight/ButtonContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "X"

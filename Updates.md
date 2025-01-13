@@ -513,3 +513,10 @@
   - Optimiert: UI-Layout für vertikale Ausrichtung
   - Angepasst: Fenstereinstellungen für mobiles Format
   - Konfiguriert: Export-Einstellungen für Portrait-Modus
+
+## 2024-01-13 21:30
+- Hinzugefügt: Neue BuildingInfoHUD für detaillierte Gebäudeinformationen
+- Implementiert: Anzeige von Gebäudenamen, Level, Produktionsrate, Effizienz und Geschwindigkeit
+- Hinzugefügt: Upgrade-Button mit Ressourcenkosten-Anzeige
+- Implementiert: Gebäudeauswahl durch Klicken
+- Optimiert: Automatische Aktualisierung der Informationen nach Upgrades

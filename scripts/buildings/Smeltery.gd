@@ -57,10 +57,10 @@ func get_production_rate() -> float:
 	return PRODUCTION_RATE_BASE / get_speed_multiplier()
 
 func get_efficiency_multiplier() -> float:
-	return 1.0 + (0.25 * current_level)  # 25% mehr Output pro Level
+	return 1.0 + (0.25 * (current_level - 1))  # 25% mehr Output pro Level
 
 func get_speed_multiplier() -> float:
-	return 1.0 + (0.2 * current_level)  # 20% schneller pro Level
+	return 1.0 + (0.2 * (current_level - 1))  # 20% schneller pro Level
 
 func _on_upgrade():
 	# Aktualisiere die Farbe basierend auf dem Level

@@ -29,11 +29,13 @@ layout_mode = 2
 [node name="TabContainer" type="TabContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+current_tab = 0
 
 [node name="Ressourcen" type="ScrollContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
 layout_mode = 2
-vertical_scroll_mode = 2
 horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+metadata/_tab_index = 0
 
 [node name="ResourceBuildings" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer/Ressourcen"]
 layout_mode = 2
@@ -43,8 +45,9 @@ theme_override_constants/separation = 5
 [node name="Infrastruktur" type="ScrollContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
 visible = false
 layout_mode = 2
-vertical_scroll_mode = 2
 horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+metadata/_tab_index = 1
 
 [node name="Infrastructure" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer/Infrastruktur"]
 layout_mode = 2
@@ -54,8 +57,9 @@ theme_override_constants/separation = 5
 [node name="Spezial" type="ScrollContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
 visible = false
 layout_mode = 2
-vertical_scroll_mode = 2
 horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+metadata/_tab_index = 2
 
 [node name="Special" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer/Spezial"]
 layout_mode = 2
