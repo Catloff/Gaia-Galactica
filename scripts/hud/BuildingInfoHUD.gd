@@ -1,7 +1,7 @@
 extends Control
 
 var current_building: BaseBuilding = null
-
+@onready var building_manager = get_node("/root/Main/BuildingManager")
 @onready var building_name_label = %BuildingName
 @onready var level_label = %Level
 @onready var production_rate_label = %ProductionRate
@@ -23,8 +23,20 @@ func _ready():
 		mobile_navigation.build_button.pressed.connect(_on_mobile_nav_button_pressed)
 		mobile_navigation.demolish_button.pressed.connect(_on_mobile_nav_button_pressed)
 	
+	# Verbinde das BuildingManager Signal
+	if building_manager:
+		building_manager.preview_building_changed.connect(_on_preview_building_changed)
+	
 	hide()
 	print("[BuildingInfoHUD] Initialisiert")
+
+func _on_preview_building_changed(preview: BaseBuilding):
+	if preview:
+		print("[BuildingInfoHUD] Zeige Preview-Building Info")
+		show_building_info(preview)
+	else:
+		print("[BuildingInfoHUD] Verstecke Preview-Building Info")
+		show_building_info(null)
 
 func _on_mobile_nav_button_pressed():
 	print("[BuildingInfoHUD] Mobile Navigation Button gedrückt - schließe HUD")
@@ -33,10 +45,14 @@ func _on_mobile_nav_button_pressed():
 func show_building_info(building: BaseBuilding):
 	if not building:
 		hide()
+		current_building = null
+		# Wenn wir ein Preview-Building haben und das HUD geschlossen wird, brechen wir den Bauvorgang ab
+		if building_manager and building_manager.preview_building:
+			building_manager.cancel_building()
 		return
 		
 	# Wenn das gleiche Gebäude nochmal angeklickt wird, schließen wir das HUD
-	if current_building == building:
+	if current_building == building and not building_manager.preview_building:
 		print("[BuildingInfoHUD] Gleiches Gebäude angeklickt - schließe HUD")
 		hide()
 		current_building = null
@@ -69,6 +85,12 @@ func _update_info():
 	else:
 		speed_label.text = "Geschwindigkeit: -"
 		
+	# Deaktiviere den Upgrade-Button während der Bauvorschau
+	if building_manager and building_manager.preview_building == current_building:
+		upgrade_button.disabled = true
+		upgrade_button.text = "Upgrade"
+		return
+		
 	# Prüfe ob ein Upgrade möglich ist
 	if current_building.can_upgrade():
 		upgrade_button.disabled = false
@@ -91,8 +113,7 @@ func _on_upgrade_pressed():
 		_update_info()
 
 func _on_close_pressed():
-	hide()
-	current_building = null
+	show_building_info(null)
 
 func _unhandled_input(event):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:

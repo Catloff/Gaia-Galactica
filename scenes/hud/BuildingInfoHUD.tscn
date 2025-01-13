@@ -75,16 +75,21 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Geschwindigkeit: -"
 
-[node name="ButtonContainer" type="HBoxContainer" parent="Panel/MarginContainer/HBoxContainer/VBoxRight"]
-layout_mode = 2
-
-[node name="UpgradeButton" type="Button" parent="Panel/MarginContainer/HBoxContainer/VBoxRight/ButtonContainer"]
+[node name="UpgradeButton" type="Button" parent="Panel/MarginContainer/HBoxContainer/VBoxRight"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
 text = "Upgrade"
 
-[node name="CloseButton" type="Button" parent="Panel/MarginContainer/HBoxContainer/VBoxRight/ButtonContainer"]
+[node name="CloseButton" type="Button" parent="."]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -30.0
+offset_top = -180.0
+offset_right = -10.0
+offset_bottom = -160.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 16
 text = "X"

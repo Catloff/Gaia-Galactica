@@ -87,6 +87,7 @@ var resource_manager
 @onready var mobile_nav = $"../HUD/MobileNavigation"
 
 signal buildings_updated
+signal preview_building_changed(preview: BaseBuilding)
 
 func _ready():
 	resource_manager = $"/root/Main/ResourceManager"
@@ -195,11 +196,8 @@ func _on_demolish_mode_changed(enabled: bool):
 	demolish_mode = enabled
 	if enabled:
 		print("Abriss-Modus aktiviert")
-		# Entferne Vorschau-Gebäude wenn vorhanden
-		if preview_building:
-			remove_child(preview_building)
-			preview_building = null
-		current_building_type = "none"
+		# Breche den Bauvorgang korrekt ab
+		cancel_building()
 	else:
 		print("Abriss-Modus deaktiviert")
 
@@ -264,15 +262,33 @@ func place_building():
 		preview_building = null
 	build_panel.deselect_building()  # New method we'll add to HUD
 
-func _on_building_selected(type: String):
-	current_building_type = type
-	
+func cancel_building():
 	if preview_building:
-		remove_child(preview_building)
+		preview_building.queue_free()
 		preview_building = null
-	
-	if type != "none":
-		var building = get_building_definition(type)
-		if building:
-			preview_building = building.scene.instantiate()
-			add_child(preview_building)
+	current_building_type = "none"
+	can_place = false
+	preview_building_changed.emit(null)
+	build_panel.deselect_building()  # Deselektiere das Gebäude auch im BuildingHUD
+
+func _on_building_selected(type: String):
+	if type == "none":
+		if preview_building:
+			preview_building.queue_free()
+			preview_building = null
+		current_building_type = "none"
+		can_place = false
+		preview_building_changed.emit(null)
+		return
+		
+	var building_def = get_building_definition(type)
+	if not building_def:
+		return
+		
+	if preview_building:
+		preview_building.queue_free()
+		
+	preview_building = building_def.scene.instantiate()
+	add_child(preview_building)
+	current_building_type = type
+	preview_building_changed.emit(preview_building)

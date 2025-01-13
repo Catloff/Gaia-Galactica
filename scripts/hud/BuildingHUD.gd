@@ -94,6 +94,11 @@ func _on_building_button_pressed(type: String):
 	if button.disabled:
 		return
 		
+	# Wenn das gleiche Gebäude nochmal ausgewählt wird, deselektieren wir es
+	if current_building == type:
+		deselect_building()
+		return
+		
 	current_building = type
 	menu_closed.emit()
 	building_selected.emit(type)
