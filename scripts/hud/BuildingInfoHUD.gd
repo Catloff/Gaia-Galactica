@@ -9,6 +9,7 @@ var current_building: BaseBuilding = null
 @onready var speed_label = %SpeedMultiplier
 @onready var upgrade_button = %UpgradeButton
 @onready var close_button = %CloseButton
+@onready var mobile_navigation = $"../MobileNavigation"
 
 func _ready():
 	# Setze Z-Index höher als andere HUD-Elemente
@@ -16,8 +17,18 @@ func _ready():
 	
 	upgrade_button.pressed.connect(_on_upgrade_pressed)
 	close_button.pressed.connect(_on_close_pressed)
+	
+	# Verbinde die Mobile Navigation Signale
+	if mobile_navigation:
+		mobile_navigation.build_button.pressed.connect(_on_mobile_nav_button_pressed)
+		mobile_navigation.demolish_button.pressed.connect(_on_mobile_nav_button_pressed)
+	
 	hide()
 	print("[BuildingInfoHUD] Initialisiert")
+
+func _on_mobile_nav_button_pressed():
+	print("[BuildingInfoHUD] Mobile Navigation Button gedrückt - schließe HUD")
+	show_building_info(null)
 
 func show_building_info(building: BaseBuilding):
 	if not building:
@@ -107,6 +118,10 @@ func _unhandled_input(event):
 				print("[BuildingInfoHUD] Gebäude gefunden!")
 				show_building_info(result.collider.get_parent())
 			elif not get_rect().has_point(event.position):
+				# Wenn wir nicht auf das HUD selbst geklickt haben, schließen wir es
 				show_building_info(null)
 		else:
-			print("[BuildingInfoHUD] Kein Raycast Treffer") 
+			print("[BuildingInfoHUD] Kein Raycast Treffer")
+			# Wenn wir ins Leere geklickt haben und nicht auf das HUD selbst, schließen wir es
+			if not get_rect().has_point(event.position):
+				show_building_info(null) 

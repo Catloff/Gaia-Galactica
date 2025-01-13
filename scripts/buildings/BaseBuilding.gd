@@ -36,6 +36,9 @@ func _ready():
 	setup_collision()
 	assert(max_level == len(upgrade_costs) + 1)
 	
+	if upgrade_button:
+		upgrade_button.pressed.connect(_on_upgrade_pressed)
+
 # Virtuelle Methode zum Einrichten des Gebäudes
 func setup_building():
 	# Upgrade-System ist deaktiviert
@@ -158,21 +161,29 @@ func deactivate():
 
 # Upgrade-Funktionalität
 func can_upgrade() -> bool:
-	# Upgrade-System ist deaktiviert
-	return false
+	if current_level >= max_level:
+		return false
+		
+	var costs = get_upgrade_costs()
+	if costs.is_empty():
+		return false
+		
+	return resource_manager.can_afford(costs)
 
-func get_upgrade_cost() -> Dictionary:
+func get_upgrade_costs() -> Dictionary:
 	if current_level >= max_level:
 		return {}
 	return upgrade_costs[current_level - 1]
 
-func _on_upgrade_pressed():
-	# Upgrade-System ist deaktiviert
-	pass
-
 func upgrade():
-	# Upgrade-System ist deaktiviert
-	pass
+	if not can_upgrade():
+		return
+		
+	var costs = get_upgrade_costs()
+	if resource_manager.pay_cost(costs):
+		current_level += 1
+		_on_upgrade()
+		print("[BaseBuilding] Upgrade durchgeführt - Neues Level: %d" % current_level)
 
 # Virtuelle Methode für Upgrade-Effekte
 func _on_upgrade():
@@ -219,3 +230,6 @@ func demolish():
 # Virtuelle Methode für gebäude-spezifische Einrichtung
 func _setup_building():
 	pass
+
+func _on_upgrade_pressed():
+	upgrade()
