@@ -1,4 +1,4 @@
-extends BaseBuilding
+extends "res://scripts/buildings/BaseBuilding.gd"
 
 const PRODUCTION_RATE_BASE = 5.0  # Sekunden pro Produktion
 const PRODUCTION_AMOUNT_BASE = 1  # Metall pro Produktion
@@ -30,7 +30,7 @@ func setup_building():
 	chimney_material.albedo_color = Color(0.3, 0.3, 0.3)  # Dunkelgrau
 	chimney_mesh.material_override = chimney_material
 
-func _process(delta):
+func _physics_process(delta):
 	if not is_active:
 		return
 		
@@ -42,22 +42,33 @@ func _process(delta):
 		attempt_production()
 
 func attempt_production():
-	var costs = {
-		"wood": WOOD_COST,
-		"stone": STONE_COST
-	}
+	# Prüfe ob wir genug Ressourcen haben
+	var required_resources = {"wood": WOOD_COST, "stone": STONE_COST}
+	if not resource_manager.can_afford(required_resources):
+		print("[Smeltery] Nicht genug Ressourcen für Produktion")
+		return
+		
+	# Verbrauche die Ressourcen
+	resource_manager.pay_cost(required_resources)
 	
-	if resource_manager.pay_cost(costs):
-		resource_manager.add_resources({
-			"type": "metal",
-			"amount": PRODUCTION_AMOUNT_BASE * get_efficiency_multiplier()
-		})
+	# Produziere Metall
+	var amount = PRODUCTION_AMOUNT_BASE * get_efficiency_multiplier()
+	resource_manager.add_resources({"type": "metal", "amount": amount})
+	print("[Smeltery] Produziere %.1f Metall" % amount)
+	
+	# Aktualisiere die Farbe des Schornsteins basierend auf der Produktion
+	var chimney_material = StandardMaterial3D.new()
+	chimney_material.albedo_color = Color(0.8, 0.4, 0.2)  # Orange-rot für aktive Produktion
+	chimney_material.emission_enabled = true
+	chimney_material.emission = Color(0.8, 0.4, 0.2)
+	chimney_material.emission_energy_multiplier = 0.5
+	chimney_mesh.material_override = chimney_material
 
 func get_production_rate() -> float:
 	return PRODUCTION_RATE_BASE / get_speed_multiplier()
 
 func get_efficiency_multiplier() -> float:
-	return 1.0 + (0.25 * (current_level - 1))  # 25% mehr Output pro Level
+	return 1.0 + (0.25 * (current_level - 1))  # 25% mehr Metall pro Level
 
 func get_speed_multiplier() -> float:
 	return 1.0 + (0.2 * (current_level - 1))  # 20% schneller pro Level
@@ -65,8 +76,8 @@ func get_speed_multiplier() -> float:
 func _on_upgrade():
 	# Aktualisiere die Farbe basierend auf dem Level
 	var base_material = StandardMaterial3D.new()
-	var red_component = 0.4 + (current_level - 1) * 0.2  # Wird mit jedem Level rötlicher
-	base_material.albedo_color = Color(red_component, 0.4, 0.4)
+	var gray_component = 0.4 + (current_level - 1) * 0.1  # Wird mit jedem Level heller
+	base_material.albedo_color = Color(gray_component, gray_component, gray_component)
 	base_mesh.material_override = base_material
 	
 	print("[Smeltery] Upgrade durchgeführt - Neues Level: %d" % current_level)

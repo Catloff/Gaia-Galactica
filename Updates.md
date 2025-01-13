@@ -520,3 +520,10 @@
 - Hinzugefügt: Upgrade-Button mit Ressourcenkosten-Anzeige
 - Implementiert: Gebäudeauswahl durch Klicken
 - Optimiert: Automatische Aktualisierung der Informationen nach Upgrades
+
+## 2024-01-13 14:45
+- Touch-Optimierung für die Gebäudeplatzierung
+  - Automatische Erkennung von Touch-Geräten
+  - Deaktivierung der Vorschau auf Touch-Geräten
+  - Direkte Platzierung von Gebäuden beim Touch
+  - Verbesserte Benutzerfreundlichkeit für mobile Geräte

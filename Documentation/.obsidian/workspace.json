@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Prioritäten.md",
+                "file": "Gameplay.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Prioritäten"
+              "title": "Gameplay"
             }
           }
         ]
@@ -93,7 +93,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Prioritäten.md",
+                "file": "Gameplay.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -103,7 +103,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for Prioritäten"
+              "title": "Backlinks for Gameplay"
             }
           },
           {
@@ -112,12 +112,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Prioritäten.md",
+                "file": "Gameplay.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from Prioritäten"
+              "title": "Outgoing links from Gameplay"
             }
           },
           {
@@ -139,10 +139,10 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Prioritäten.md"
+                "file": "Gameplay.md"
               },
               "icon": "lucide-list",
-              "title": "Outline of Prioritäten"
+              "title": "Outline of Gameplay"
             }
           }
         ]

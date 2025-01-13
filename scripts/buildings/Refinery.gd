@@ -9,20 +9,17 @@ var process_timer = 0.0
 @onready var base_mesh = %Base
 @onready var chimney_mesh = %Chimney
 
-func setup_building():
+func _ready():
+	super._ready()
+	
+	# Setze Upgrade-Kosten
 	upgrade_costs = [
-		{
-			"metal": 10,
-			"stone": 20
-		},
-		{
-			"metal": 20,
-			"stone": 40
-		}
+		{"metal": 10, "stone": 20},   # Level 1 -> 2
+		{"metal": 20, "stone": 40}    # Level 2 -> 3
 	]
-	
 	max_level = 3
-	
+
+func setup_building():
 	# Set building color
 	var material = StandardMaterial3D.new()
 	material.albedo_color = Color(0.4, 0.6, 0.7)  # Blue-ish for refinery
@@ -32,7 +29,7 @@ func setup_building():
 	chimney_material.albedo_color = Color(0.3, 0.3, 0.3)  # Dunkelgrau für den Schornstein
 	chimney_mesh.material_override = chimney_material
 
-func _process(delta):
+func _physics_process(delta):
 	if not is_active:
 		return
 		
@@ -42,24 +39,32 @@ func _process(delta):
 		try_produce_fuel()
 
 func try_produce_fuel():
-	var costs = {
-		"food": FOOD_COST
-	}
-	
+	var costs = {"food": FOOD_COST}
+	if not resource_manager.can_afford(costs):
+		print("[Refinery] Nicht genug Nahrung für Produktion")
+		return
+		
 	if resource_manager.pay_cost(costs):
-		resource_manager.add_resources({
-			"type": "fuel",
-			"amount": FUEL_OUTPUT * get_efficiency_multiplier()
-		})
+		var amount = FUEL_OUTPUT * get_efficiency_multiplier()
+		resource_manager.add_resources({"type": "fuel", "amount": amount})
+		print("[Refinery] Produziere %.1f Treibstoff" % amount)
+		
+		# Aktualisiere die Farbe des Schornsteins basierend auf der Produktion
+		var chimney_material = StandardMaterial3D.new()
+		chimney_material.albedo_color = Color(0.2, 0.6, 0.8)  # Blau für aktive Produktion
+		chimney_material.emission_enabled = true
+		chimney_material.emission = Color(0.2, 0.6, 0.8)
+		chimney_material.emission_energy_multiplier = 0.5
+		chimney_mesh.material_override = chimney_material
 
 func get_process_time() -> float:
 	return BASE_PROCESS_TIME / get_speed_multiplier()
 
 func get_efficiency_multiplier() -> float:
-	return 1.0 + (0.25 * current_level)  # 25% mehr Output pro Level
+	return 1.0 + (0.25 * (current_level - 1))  # 25% mehr Output pro Level
 
 func get_speed_multiplier() -> float:
-	return 1.0 + (0.2 * current_level)  # 20% schneller pro Level
+	return 1.0 + (0.2 * (current_level - 1))  # 20% schneller pro Level
 
 func _on_upgrade():
 	# Aktualisiere die Farbe basierend auf dem Level

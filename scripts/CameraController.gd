@@ -8,6 +8,10 @@ var min_zoom: float = 40.0
 var max_zoom: float =120.0
 var current_zoom: float = 100.0
 
+# Touch-Zoom Variablen
+var touch_points = {}
+var last_pinch_distance = 0.0
+
 # Neue Variablen für die Rotationskontrolle
 var current_rotation := Quaternion.IDENTITY
 var up_vector := Vector3.UP
@@ -51,6 +55,28 @@ func _unhandled_input(event: InputEvent) -> void:
 		_handle_rotation(event)
 	elif event is InputEventScreenDrag:
 		_handle_touch_rotation(event)
+	# Touch-Zoom Events
+	elif event is InputEventScreenTouch:
+		if event.pressed:
+			touch_points[event.index] = event.position
+		else:
+			touch_points.erase(event.index)
+			last_pinch_distance = 0.0
+	
+	# Pinch-to-Zoom
+	if event is InputEventScreenDrag:
+		touch_points[event.index] = event.position
+		
+		# Wenn wir genau zwei Finger haben, können wir zoomen
+		if touch_points.size() == 2:
+			var points = touch_points.values()
+			var distance = points[0].distance_to(points[1])
+			
+			if last_pinch_distance != 0:
+				var delta = (last_pinch_distance - distance) * 0.1  # Zoom-Faktor angepasst
+				_zoom(delta)
+			
+			last_pinch_distance = distance
 
 func _handle_zoom(event: InputEventMouseButton) -> void:
 	if event.button_index == MOUSE_BUTTON_WHEEL_UP:

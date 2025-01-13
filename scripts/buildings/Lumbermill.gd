@@ -1,4 +1,4 @@
-extends BaseBuilding
+extends "res://scripts/buildings/BaseBuilding.gd"
 
 const HARVEST_RADIUS = 5.0
 const HARVEST_RATE = 1.0  # Sekunden pro Ernte
@@ -28,7 +28,7 @@ func setup_building():
 	saw_material.albedo_color = Color(0.7, 0.7, 0.7)  # Silber für die Säge
 	saw_mesh.material_override = saw_material
 
-func _process(delta):
+func _physics_process(delta):
 	if not is_active:
 		return
 		
@@ -43,6 +43,9 @@ func _process(delta):
 
 func harvest_nearby_wood():
 	var space_state = get_world_3d().direct_space_state
+	if not space_state:
+		return
+		
 	var query_params = PhysicsShapeQueryParameters3D.new()
 	var shape = SphereShape3D.new()
 	shape.radius = HARVEST_RADIUS

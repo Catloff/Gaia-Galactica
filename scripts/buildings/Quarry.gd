@@ -32,17 +32,24 @@ func _process(delta):
 	if not is_active:
 		return
 		
-	harvest_timer += delta
-	if harvest_timer >= get_production_rate():
-		harvest_timer = 0.0
-		harvest_nearby_stone()
-		
 	# Rotiere den Bohrer
 	if drill_mesh:
 		drill_mesh.rotate_y(delta * 1.5)
 
+func _physics_process(delta):
+	if not is_active:
+		return
+		
+	harvest_timer += delta
+	if harvest_timer >= get_production_rate():
+		harvest_timer = 0.0
+		harvest_nearby_stone()
+
 func harvest_nearby_stone():
 	var space_state = get_world_3d().direct_space_state
+	if not space_state:
+		return
+		
 	var query_params = PhysicsShapeQueryParameters3D.new()
 	var shape = SphereShape3D.new()
 	shape.radius = HARVEST_RADIUS
