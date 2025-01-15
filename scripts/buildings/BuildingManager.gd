@@ -74,6 +74,13 @@ var buildings = {
 		{"wood": 40, "stone": 20},
 		"Steinbruch"
 	),
+	"storage": BuildingDefinition.new(
+		preload("res://scenes/buildings/Storage.tscn"),
+		"storage",
+		BuildingCategory.INFRASTRUCTURE,
+		{"wood": 100, "stone": 50},
+		"Lager"
+	),
 	"spaceship_base": BuildingDefinition.new(
 		preload("res://scenes/buildings/SpaceshipBase.tscn"),
 		"spaceship_base",
@@ -395,8 +402,8 @@ func _on_building_selected(type: String):
 	preview_building_changed.emit(preview_building)
 	
 	# Zeige den Range-Indikator für die Vorschau
-	if preview_building.has_method("show_range"):
-		preview_building.show_range(true)
+	if preview_building.has_method("show_range_indicator"):
+		preview_building.show_range_indicator(true)
 
 func attempt_place_building(_spawn_position: Vector3) -> bool:
 	if current_building_type == "spaceship_base":

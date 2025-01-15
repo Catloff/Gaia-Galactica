@@ -1,22 +1,23 @@
 [gd_scene load_steps=2 format=3 uid="uid://resourcehud"]
 
-[ext_resource type="Script" path="res://scripts/hud/ResourceHUD.gd" id="1_resource_hud"]
+[ext_resource type="Script" path="res://scripts/hud/ResourceHUD.gd" id="1_rhud"]
 
-[node name="ResourceHUD" type="PanelContainer"]
+[node name="ResourceHUD" type="Control"]
+layout_mode = 3
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+grow_horizontal = 0
+script = ExtResource("1_rhud")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -200.0
-offset_top = 20.0
-offset_right = -20.0
-offset_bottom = 126.0
+offset_bottom = 200.0
 grow_horizontal = 0
-mouse_filter = 2
-script = ExtResource("1_resource_hud")
-
-[node name="MarginContainer" type="MarginContainer" parent="."]
-layout_mode = 2
-mouse_filter = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
@@ -24,24 +25,38 @@ theme_override_constants/margin_bottom = 10
 
 [node name="Resources" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-mouse_filter = 2
 
 [node name="WoodLabel" type="Label" parent="MarginContainer/Resources"]
+unique_name_in_owner = true
 layout_mode = 2
-text = "Wood: 0/1000"
-
-[node name="FoodLabel" type="Label" parent="MarginContainer/Resources"]
-layout_mode = 2
-text = "Food: 0/500"
+text = "Holz: 0/1000"
 
 [node name="StoneLabel" type="Label" parent="MarginContainer/Resources"]
+unique_name_in_owner = true
 layout_mode = 2
-text = "Stone: 0/1000"
+text = "Stein: 0/1000"
+
+[node name="FoodLabel" type="Label" parent="MarginContainer/Resources"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Nahrung: 0/1000"
 
 [node name="MetalLabel" type="Label" parent="MarginContainer/Resources"]
+unique_name_in_owner = true
 layout_mode = 2
-text = "Metal: 0/100"
+text = "Metall: 0/1000"
+
+[node name="CrystalLabel" type="Label" parent="MarginContainer/Resources"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Kristall: 0/1000"
+
+[node name="EnergyLabel" type="Label" parent="MarginContainer/Resources"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Energie: 0/1000"
 
 [node name="FuelLabel" type="Label" parent="MarginContainer/Resources"]
+unique_name_in_owner = true
 layout_mode = 2
-text = "Fuel: 0/200"
+text = "Treibstoff: 0/1000"

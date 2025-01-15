@@ -77,6 +77,16 @@ func get_efficiency_multiplier() -> float:
 func get_speed_multiplier() -> float:
 	return 1.0 + (0.2 * (current_level - 1))  # 20% schneller pro Level
 
+func get_building_radius() -> float:
+	return HARVEST_RADIUS
+
+func can_upgrade() -> bool:
+	if current_level >= max_level:
+		return false
+		
+	var next_level_costs = upgrade_costs[current_level - 1]
+	return resource_manager.can_afford(next_level_costs)
+
 func _on_upgrade():
 	# Aktualisiere die Farbe basierend auf dem Level
 	var base_material = StandardMaterial3D.new()
@@ -85,6 +95,3 @@ func _on_upgrade():
 	base_mesh.material_override = base_material
 	
 	print("[Quarry] Upgrade durchgeführt - Neues Level: %d" % current_level)
-
-func get_building_radius() -> float:
-	return HARVEST_RADIUS

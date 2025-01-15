@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://t0ok8kw7laac"]
+
+[ext_resource type="PackedScene" uid="uid://b4q8rg5w2y6n8" path="res://scenes/buildings/BaseBuilding.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scripts/buildings/Storage.gd" id="2_storage"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_base"]
+size = Vector3(3, 2, 3)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_top"]
+top_radius = 1.2
+bottom_radius = 1.5
+height = 1.5
+
+[node name="Storage" instance=ExtResource("1_base")]
+script = ExtResource("2_storage")
+
+[node name="Base" type="MeshInstance3D" parent="Visual" index="0"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("BoxMesh_base")
+
+[node name="Top" type="MeshInstance3D" parent="Visual" index="1"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.75, 0)
+mesh = SubResource("CylinderMesh_top")

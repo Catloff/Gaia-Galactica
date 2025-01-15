@@ -77,7 +77,6 @@ func setup_building():
 	# Gebäude-spezifische Einrichtung
 	_setup_building()
 
-# Einrichten der UI-Elemente
 func setup_ui():
 	ui = get_node_or_null("UI")
 	if not ui:
@@ -127,10 +126,16 @@ func update_ui_position():
 		ui.visible = false
 
 func update_upgrade_button():
-	# Upgrade-System ist deaktiviert
-	pass
+	if not is_instance_valid(upgrade_button) or current_level >= max_level:
+		return
+		
+	var can_be_upgraded = false
+	if current_level < max_level:
+		var upgrade_cost = upgrade_costs[current_level - 1]
+		can_be_upgraded = resource_manager.can_afford(upgrade_cost)
+	
+	upgrade_button.disabled = not can_be_upgraded
 
-# Aktivierung des Gebäudes
 func activate():
 	is_active = true
 	
@@ -146,18 +151,16 @@ func activate():
 	
 	# Verbinde das Signal für Ressourcenänderungen
 	if resource_manager:
-		if not resource_manager.resource_changed.is_connected(_on_resource_changed):
-			resource_manager.resource_changed.connect(_on_resource_changed)
+		if not resource_manager.resources_updated.is_connected(_on_resources_updated):
+			resource_manager.resources_updated.connect(_on_resources_updated)
 	
 	# Aktualisiere UI sofort
 	update_ui_position()
 
-# Zeige oder verstecke den Range-Indikator
-func show_range(visible: bool):
+func show_range_indicator(should_show: bool):
 	if range_indicator:
-		range_indicator.visible = visible
+		range_indicator.visible = should_show
 
-# Deaktivierung des Gebäudes
 func deactivate():
 	is_active = false
 	
@@ -169,47 +172,46 @@ func deactivate():
 		range_indicator.visible = false
 	
 	# Trenne das Signal für Ressourcenänderungen
-	if resource_manager and resource_manager.resource_changed.is_connected(_on_resource_changed):
-		resource_manager.resource_changed.disconnect(_on_resource_changed)
+	if resource_manager and resource_manager.resources_updated.is_connected(_on_resources_updated):
+		resource_manager.resources_updated.disconnect(_on_resources_updated)
 
-# Upgrade-Funktionalität
-func can_upgrade() -> bool:
-	if current_level >= max_level:
-		return false
-		
-	var costs = get_upgrade_costs()
-	if costs.is_empty():
-		return false
-		
-	return resource_manager.can_afford(costs)
+func _on_resources_updated():
+	update_upgrade_button()
 
 func get_upgrade_costs() -> Dictionary:
 	if current_level >= max_level:
 		return {}
 	return upgrade_costs[current_level - 1]
 
-func upgrade():
-	if not can_upgrade():
-		return
+func can_upgrade() -> bool:
+	if current_level >= max_level:
+		return false
 		
-	var costs = get_upgrade_costs()
-	if resource_manager.pay_cost(costs):
-		current_level += 1
-		_on_upgrade()
-		print("[BaseBuilding] Upgrade durchgeführt - Neues Level: %d" % current_level)
+	var next_level_costs = upgrade_costs[current_level - 1]
+	return resource_manager.can_afford(next_level_costs)
 
-# Virtuelle Methode für Upgrade-Effekte
-func _on_upgrade():
-	pass
+func upgrade() -> bool:
+	if current_level >= max_level:
+		return false
+		
+	var upgrade_cost = upgrade_costs[current_level - 1]
+	if not resource_manager.pay_cost(upgrade_cost):
+		return false
+		
+	current_level += 1
+	
+	if level_label:
+		level_label.text = "Level %d" % current_level
+	
+	if upgrade_button and current_level >= max_level:
+		upgrade_button.visible = false
+	
+	_on_upgrade()
+	return true
 
-# UI-Update
 func update_ui():
-	# Upgrade-System ist deaktiviert
-	pass
-
-# Ressourcen-Änderungs-Handler
-func _on_resource_changed(_resource_type: String, _old_value: int, _new_value: int):
-	update_upgrade_button()
+	if level_label:
+		level_label.text = "Level %d" % current_level
 
 # Abriss-Funktionalität
 func demolish():
@@ -244,8 +246,8 @@ func demolish():
 func _setup_building():
 	pass
 
-func _on_upgrade_pressed():
-	upgrade()
+func _on_upgrade():
+	pass
 
 # Einrichten der Kollision
 func setup_collision():
@@ -271,3 +273,6 @@ func setup_collision():
 	# Aktiviere Kollision
 	static_body.collision_layer = 1
 	static_body.collision_mask = 1
+
+func _on_upgrade_pressed():
+	upgrade()

@@ -533,3 +533,15 @@
   - Wenn ein Gebäude ausgewählt wird, wird sein Arbeitsbereich als transparenter Kreis angezeigt
   - Jedes Gebäude hat seinen eigenen spezifischen Radius
   - Der Indikator verwendet ein blaues, leicht leuchtendes Material für bessere Sichtbarkeit
+
+## 2024-03-19
+- Neues Lagergebäude hinzugefügt
+  - Erhöht die maximale Lagerkapazität um 200 (Level 1)
+  - Zusätzliche 100 Kapazität pro Level
+  - Upgrade-Kosten:
+    - Level 2: 100 Holz, 50 Stein
+    - Level 3: 200 Holz, 100 Stein
+- ResourceManager überarbeitet für verbesserte Lagerverwaltung
+  - Neue Basis-Lagerkapazität: 1000
+  - Dynamische Erhöhung durch Lagergebäude
+  - Automatische Anpassung bei Abriss von Lagergebäuden

@@ -1,17 +1,17 @@
 extends PanelContainer
 
+signal building_selected(type: String)
+signal menu_closed
+
 @onready var resource_manager = get_node("/root/Main/ResourceManager")
 @onready var building_manager = get_node("/root/Main/BuildingManager")
-
 @onready var resource_container = $MarginContainer/VBoxContainer/TabContainer/Ressourcen/ResourceBuildings
 @onready var infrastructure_container = $MarginContainer/VBoxContainer/TabContainer/Infrastruktur/Infrastructure
 @onready var special_container = $MarginContainer/VBoxContainer/TabContainer/Spezial/Special
 
-signal building_selected(type: String)
-signal menu_closed
-
 var current_building: String = ""
 var button_mapping = {}
+var preview_building: Node3D = null
 
 func _ready():
 	# Connect building manager signals
@@ -19,7 +19,7 @@ func _ready():
 	
 	# Initialize button states
 	call_deferred("_on_buildings_updated")
-	resource_manager.resource_changed.connect(_on_resource_changed)
+	resource_manager.resources_updated.connect(_on_resources_updated)
 	
 	# Verbinde das Sichtbarkeitssignal
 	visibility_changed.connect(_on_visibility_changed)
@@ -28,7 +28,7 @@ func _on_visibility_changed():
 	if visible:
 		update_button_states()
 
-func _on_resource_changed(_type: String, _old_value: int, _new_value: int) -> void:
+func _on_resources_updated():
 	if visible:
 		update_button_states()
 
@@ -49,7 +49,7 @@ func _on_buildings_updated():
 	
 	for building in infrastructure_buildings:
 		_create_building_button(building, infrastructure_container)
-		
+	
 	for building in special_buildings:
 		_create_building_button(building, special_container)
 	
@@ -73,8 +73,9 @@ func update_button_states():
 	for type in button_mapping:
 		var button = button_mapping[type]
 		if button and is_instance_valid(button):
-			var can_afford = building_manager.can_afford_building(type)
-			button.disabled = not can_afford
+			var building = building_manager.get_building_definition(type)
+			if building:
+				button.disabled = not resource_manager.can_afford(building.cost)
 			button.modulate = Color(1, 1, 0) if current_building == type else Color(1, 1, 1)
 
 func deselect_building():
@@ -104,3 +105,11 @@ func _on_building_button_pressed(type: String):
 	building_selected.emit(type)
 	# Verzögere das Verstecken um einen Frame
 	call_deferred("hide")
+
+func _on_preview_building_changed(building: Node3D):
+	if preview_building and preview_building.has_method("show_range_indicator"):
+		preview_building.show_range_indicator(false)
+	
+	preview_building = building
+	if preview_building and preview_building.has_method("show_range_indicator"):
+		preview_building.show_range_indicator(true)

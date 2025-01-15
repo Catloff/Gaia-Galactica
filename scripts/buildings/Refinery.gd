@@ -74,3 +74,10 @@ func _on_upgrade():
 	base_mesh.material_override = base_material
 	
 	print("[Refinery] Upgrade durchgeführt - Neues Level: %d" % current_level)
+
+func can_upgrade() -> bool:
+	if current_level >= max_level:
+		return false
+		
+	var next_level_costs = upgrade_costs[current_level - 1]
+	return resource_manager.can_afford(next_level_costs)

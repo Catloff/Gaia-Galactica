@@ -84,3 +84,10 @@ func _on_upgrade():
 
 func get_building_radius() -> float:
 	return HARVEST_RADIUS
+
+func can_upgrade() -> bool:
+	if current_level >= max_level:
+		return false
+		
+	var next_level_costs = upgrade_costs[current_level - 1]
+	return resource_manager.can_afford(next_level_costs)

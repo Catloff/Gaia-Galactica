@@ -47,12 +47,12 @@ func _on_mobile_nav_button_pressed():
 func show_building_info(building: BaseBuilding):
 	if current_building and current_building != building:
 		# Verstecke Range des vorherigen Gebäudes
-		current_building.show_range(false)
+		current_building.show_range_indicator(false)
 	
 	current_building = building
 	if building:
 		# Zeige Range des neuen Gebäudes
-		building.show_range(true)
+		building.show_range_indicator(true)
 		show()
 		update_info()
 	else:
@@ -61,8 +61,8 @@ func show_building_info(building: BaseBuilding):
 
 func hide_building_info():
 	if current_building:
-		current_building.show_range(false)
-	current_building = null
+		current_building.show_range_indicator(false)
+		current_building = null
 	hide()
 
 func update_info():

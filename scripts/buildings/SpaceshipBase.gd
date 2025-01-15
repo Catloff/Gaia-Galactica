@@ -46,3 +46,10 @@ func initialize_on_planet(planet: Node3D) -> void:
 	planet_instance = planet
 	is_initialized = true
 	print("SpaceshipBase: Initialized on planet ", planet.name)
+
+func can_upgrade() -> bool:
+	if current_level >= max_level:
+		return false
+		
+	var next_level_costs = upgrade_costs[current_level - 1]
+	return resource_manager.can_afford(next_level_costs)

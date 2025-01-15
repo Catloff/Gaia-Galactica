@@ -1,54 +1,104 @@
 extends Node3D
 
-signal resource_changed(resource_type: String, old_value: int, new_value: int)
-
-var inventory = {
+var resources = {
 	"wood": 100,
-	"stone": 100,
+	"stone": 50,
 	"food": 100,
-	"metal": 4,
+	"metal": 0,
+	"crystal": 0,
+	"energy": 0,
 	"fuel": 0
 }
 
-var storage_limits = {
-	"wood": 1000,
-	"stone": 1000,
-	"food": 500,
-	"metal": 100,
-	"fuel": 200,
-}
+var base_storage_capacity = 1000  # Basis-Lagerkapazität
+var additional_storage_capacity = 0  # Zusätzliche Kapazität durch Lagergebäude
 
-@onready var hud = $"../HUD"
+signal resources_updated
 
 var pending_click_position = null
+
+func _ready():
+	resources_updated.emit()
+
+func get_resources() -> Dictionary:
+	return resources
+
+func get_resource(type: String) -> int:
+	return resources.get(type, 0)
+
+func get_total_storage_capacity() -> int:
+	return base_storage_capacity + additional_storage_capacity
+
+func increase_storage_capacity(amount: int):
+	additional_storage_capacity += amount
+	print("Lagerkapazität erhöht um ", amount, " auf ", get_total_storage_capacity())
+	resources_updated.emit()
+
+func decrease_storage_capacity(amount: int):
+	additional_storage_capacity = max(0, additional_storage_capacity - amount)
+	print("Lagerkapazität verringert um ", amount, " auf ", get_total_storage_capacity())
+	
+	# Prüfe ob Ressourcen die neue Kapazität überschreiten
+	var total_capacity = get_total_storage_capacity()
+	for resource in resources:
+		if resources[resource] > total_capacity:
+			resources[resource] = total_capacity
+	resources_updated.emit()
 
 func can_afford(costs: Dictionary) -> bool:
 	for resource_type in costs:
 		var required_amount = costs[resource_type]
-		if not inventory.has(resource_type) or inventory[resource_type] < required_amount:
+		if not resources.has(resource_type) or resources[resource_type] < required_amount:
 			return false
 	return true
 
 func pay_cost(costs: Dictionary) -> bool:
 	if not can_afford(costs):
 		return false
-	
-	var old_values = {}
+		
 	for resource_type in costs:
-		old_values[resource_type] = inventory[resource_type]
-		inventory[resource_type] -= costs[resource_type]
-		resource_changed.emit(resource_type, old_values[resource_type], inventory[resource_type])
+		resources[resource_type] -= costs[resource_type]
 	
+	resources_updated.emit()
 	return true
 
-func add_resources(resource_data: Dictionary) -> void:
-	var resource_type = resource_data["type"].to_lower()
+func add_resources(resource_data: Dictionary) -> bool:
+	var type = resource_data["type"]
 	var amount = resource_data["amount"]
 	
-	var old_value = inventory[resource_type]
-	var new_value = clampi(old_value + amount, 0, storage_limits[resource_type])
-	inventory[resource_type] = new_value
-	resource_changed.emit(resource_type, old_value, inventory[resource_type])
+	if not resources.has(type):
+		resources[type] = 0
+	
+	# Prüfe ob die Lagerkapazität ausreicht
+	var total_capacity = get_total_storage_capacity()
+	var new_amount = resources[type] + amount
+	
+	if new_amount > total_capacity:
+		# Wenn nicht genug Platz, fülle nur bis zur Kapazitätsgrenze
+		resources[type] = total_capacity
+		resources_updated.emit()
+		return false
+	
+	resources[type] = new_amount
+	resources_updated.emit()
+	return true
+
+func remove_resources(resource_data: Dictionary) -> bool:
+	var type = resource_data["type"]
+	var amount = resource_data["amount"]
+	
+	if not resources.has(type) or resources[type] < amount:
+		return false
+		
+	resources[type] -= amount
+	resources_updated.emit()
+	return true
+
+func has_resources(required_resources: Dictionary) -> bool:
+	for resource in required_resources:
+		if not resources.has(resource) or resources[resource] < required_resources[resource]:
+			return false
+	return true
 
 func _input(event):
 	# Debug: Zeige Event-Typ
