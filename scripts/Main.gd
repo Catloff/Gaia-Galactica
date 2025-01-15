@@ -12,6 +12,10 @@ const LARGE_BUSH_COUNT = 4
 var placed_positions = []
 
 func _ready():
+	# Wait two frames for camera to initialize
+	await get_tree().process_frame
+	await get_tree().process_frame
+	spawn_initial_base()
 	spawn_resource_clusters()
 	spawn_large_rocks()
 	spawn_large_bushes()
@@ -135,3 +139,25 @@ func is_valid_position(pos: Vector3) -> bool:
 		if pos.distance_to(placed_pos) < MIN_DISTANCE_BETWEEN_CLUSTERS:
 			return false
 	return true
+
+func spawn_initial_base() -> void:
+	print("Main: Starting base spawn process")
+	
+	# Get reference to BuildingManager
+	var building_manager := get_node_or_null("BuildingManager")
+	if not building_manager:
+		print("ERROR: BuildingManager not found!")
+		return
+		
+	# Calculate spawn position at the center of the planet (slightly elevated)
+	var spawn_position := Vector3(0, PLANET_RADIUS + 2, 0)  # 2 units above surface
+	
+	# Spawn the base
+	print("Main: Attempting to spawn base at position ", spawn_position)
+	var base_instance: Node3D = building_manager.spawn_base_on_planet(spawn_position)
+	
+	if base_instance:
+		print("Main: Base spawned successfully")
+		placed_positions.append(spawn_position)
+	else:
+		print("ERROR: Failed to spawn base!")

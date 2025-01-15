@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://b4y4q8k3e6j7w"]
+
+[resource]
+transparency = SubSurfaceScattering.SUBSURFACE_SCATTERING_TRANSMISSION_AND_REFRACTION
+albedo_color = Color(0.2, 0.8, 1, 0.2)
+emission_enabled = true
+emission = Color(0.2, 0.8, 1, 1)
+emission_energy_multiplier = 0.5 

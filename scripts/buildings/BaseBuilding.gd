@@ -12,6 +12,9 @@ var max_level: int = 1
 # Aktivierungsstatus
 var is_active: bool = false
 
+# Radius-Indikator
+var range_indicator: MeshInstance3D
+
 # Referenz zum ResourceManager
 @onready var resource_manager = get_node("/root/Main/ResourceManager")
 
@@ -25,6 +28,9 @@ func get_efficiency_multiplier() -> float:
 func get_speed_multiplier() -> float:
 	return 1.0 + (0.2 * (current_level - 1))  # 20% schneller pro Level
 
+func get_building_radius() -> float:
+	return 5.0  # Standard-Radius, kann von Kindklassen überschrieben werden
+
 # UI Elemente
 var upgrade_button: Button
 var level_label: Label
@@ -34,10 +40,31 @@ func _ready():
 	setup_building()
 	setup_ui()
 	setup_collision()
+	setup_range_indicator()
 	assert(max_level == len(upgrade_costs) + 1)
 	
 	if upgrade_button:
 		upgrade_button.pressed.connect(_on_upgrade_pressed)
+
+func setup_range_indicator():
+	range_indicator = MeshInstance3D.new()
+	var cylinder = CylinderMesh.new()
+	cylinder.top_radius = get_building_radius()
+	cylinder.bottom_radius = get_building_radius()
+	cylinder.height = 0.1
+	range_indicator.mesh = cylinder
+	
+	# Material zur Laufzeit erstellen
+	var material = StandardMaterial3D.new()
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.albedo_color = Color(0.2, 0.8, 1, 0.2)
+	material.emission_enabled = true
+	material.emission = Color(0.2, 0.8, 1, 1)
+	material.emission_energy_multiplier = 0.5
+	
+	range_indicator.material_override = material
+	range_indicator.visible = false
+	add_child(range_indicator)
 
 # Virtuelle Methode zum Einrichten des Gebäudes
 func setup_building():
@@ -57,7 +84,6 @@ func setup_ui():
 		return
 	level_label = $UI/LevelLabel
 	upgrade_button = $UI/UpgradeButton
-	
 	
 	# Verstecke UI initial
 	ui.visible = false
@@ -104,31 +130,6 @@ func update_upgrade_button():
 	# Upgrade-System ist deaktiviert
 	pass
 
-# Einrichten der Kollision
-func setup_collision():
-	var static_body = get_node_or_null("StaticBody3D")
-	if not static_body:
-		# Wenn kein StaticBody3D existiert, erstelle einen
-		static_body = StaticBody3D.new()
-		static_body.name = "StaticBody3D"
-		
-		# Füge eine CollisionShape hinzu
-		var collision_shape = CollisionShape3D.new()
-		var box_shape = BoxShape3D.new()
-		box_shape.size = Vector3(2, 2, 2)  # Standard-Größe
-		collision_shape.shape = box_shape
-		static_body.add_child(collision_shape)
-		
-		add_child(static_body)
-	
-	# Stelle sicher, dass das BuildingBody-Skript angehängt ist
-	if not static_body.get_script():
-		static_body.set_script(preload("res://scripts/buildings/BuildingBody.gd"))
-	
-	# Aktiviere Kollision
-	static_body.collision_layer = 1
-	static_body.collision_mask = 1
-
 # Aktivierung des Gebäudes
 func activate():
 	is_active = true
@@ -139,6 +140,10 @@ func activate():
 		ui.visible = true
 		update_ui()
 	
+	# Range-Indikator initial ausblenden
+	if range_indicator:
+		range_indicator.visible = false
+	
 	# Verbinde das Signal für Ressourcenänderungen
 	if resource_manager:
 		if not resource_manager.resource_changed.is_connected(_on_resource_changed):
@@ -147,6 +152,11 @@ func activate():
 	# Aktualisiere UI sofort
 	update_ui_position()
 
+# Zeige oder verstecke den Range-Indikator
+func show_range(visible: bool):
+	if range_indicator:
+		range_indicator.visible = visible
+
 # Deaktivierung des Gebäudes
 func deactivate():
 	is_active = false
@@ -154,6 +164,9 @@ func deactivate():
 	# UI ausblenden
 	if ui:
 		ui.visible = false
+	
+	if range_indicator:
+		range_indicator.visible = false
 	
 	# Trenne das Signal für Ressourcenänderungen
 	if resource_manager and resource_manager.resource_changed.is_connected(_on_resource_changed):
@@ -233,3 +246,28 @@ func _setup_building():
 
 func _on_upgrade_pressed():
 	upgrade()
+
+# Einrichten der Kollision
+func setup_collision():
+	var static_body = get_node_or_null("StaticBody3D")
+	if not static_body:
+		# Wenn kein StaticBody3D existiert, erstelle einen
+		static_body = StaticBody3D.new()
+		static_body.name = "StaticBody3D"
+		
+		# Füge eine CollisionShape hinzu
+		var collision_shape = CollisionShape3D.new()
+		var box_shape = BoxShape3D.new()
+		box_shape.size = Vector3(2, 2, 2)  # Standard-Größe
+		collision_shape.shape = box_shape
+		static_body.add_child(collision_shape)
+		
+		add_child(static_body)
+	
+	# Stelle sicher, dass das BuildingBody-Skript angehängt ist
+	if not static_body.get_script():
+		static_body.set_script(preload("res://scripts/buildings/BuildingBody.gd"))
+	
+	# Aktiviere Kollision
+	static_body.collision_layer = 1
+	static_body.collision_mask = 1

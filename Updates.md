@@ -527,3 +527,9 @@
   - Deaktivierung der Vorschau auf Touch-Geräten
   - Direkte Platzierung von Gebäuden beim Touch
   - Verbesserte Benutzerfreundlichkeit für mobile Geräte
+
+## 15.01.2025
+- Hinzugefügt: Visuelle Anzeige des Arbeitsbereichs für Gebäude
+  - Wenn ein Gebäude ausgewählt wird, wird sein Arbeitsbereich als transparenter Kreis angezeigt
+  - Jedes Gebäude hat seinen eigenen spezifischen Radius
+  - Der Indikator verwendet ein blaues, leicht leuchtendes Material für bessere Sichtbarkeit

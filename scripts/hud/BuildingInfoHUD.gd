@@ -45,27 +45,27 @@ func _on_mobile_nav_button_pressed():
 	show_building_info(null)
 
 func show_building_info(building: BaseBuilding):
-	if not building:
-		hide()
-		current_building = null
-		# Wenn wir ein Preview-Building haben und das HUD geschlossen wird, brechen wir den Bauvorgang ab
-		if building_manager and building_manager.preview_building:
-			building_manager.cancel_building()
-		return
-		
-	# Wenn das gleiche Gebäude nochmal angeklickt wird, schließen wir das HUD
-	if current_building == building and not building_manager.preview_building:
-		print("[BuildingInfoHUD] Gleiches Gebäude angeklickt - schließe HUD")
-		hide()
-		current_building = null
-		return
-		
-	print("[BuildingInfoHUD] Zeige Info für Gebäude: ", building.name)
+	if current_building and current_building != building:
+		# Verstecke Range des vorherigen Gebäudes
+		current_building.show_range(false)
+	
 	current_building = building
-	show()
-	_update_info()
+	if building:
+		# Zeige Range des neuen Gebäudes
+		building.show_range(true)
+		show()
+		update_info()
+	else:
+		hide()
+		current_building = null
 
-func _update_info():
+func hide_building_info():
+	if current_building:
+		current_building.show_range(false)
+	current_building = null
+	hide()
+
+func update_info():
 	if not current_building:
 		return
 		
@@ -112,7 +112,7 @@ func _update_info():
 func _on_upgrade_pressed():
 	if current_building and current_building.can_upgrade():
 		current_building.upgrade()
-		_update_info()
+		update_info()
 
 func _on_close_pressed():
 	show_building_info(null)

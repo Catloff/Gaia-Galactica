@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://b5mc4is51imon"]
+
+[ext_resource type="Script" path="res://scripts/buildings/SpaceshipBase.gd" id="1_rj4k2"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_k8p2l"]
+top_radius = 2.0
+bottom_radius = 3.0
+height = 4.0
+radial_segments = 12
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_u6v2p"]
+height = 4.0
+radius = 2.5
+
+[node name="SpaceshipBase" type="Node3D"]
+script = ExtResource("1_rj4k2")
+
+[node name="BuildingMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("CylinderMesh_k8p2l")
+skeleton = NodePath("../StaticBody3D")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+shape = SubResource("CylinderShape3D_u6v2p")

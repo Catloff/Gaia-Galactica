@@ -1,6 +1,6 @@
 extends Node3D
 
-enum BuildingCategory { RESOURCE, INFRASTRUCTURE, SPECIAL }
+enum BuildingCategory { RESOURCE, INFRASTRUCTURE, SPECIAL, BASE }
 
 const PLANET_RADIUS = 25.0  # Muss mit dem Radius in Main.gd übereinstimmen
 
@@ -73,6 +73,13 @@ var buildings = {
 		BuildingCategory.RESOURCE,
 		{"wood": 40, "stone": 20},
 		"Steinbruch"
+	),
+	"spaceship_base": BuildingDefinition.new(
+		preload("res://scenes/buildings/SpaceshipBase.tscn"),
+		"spaceship_base",
+		BuildingCategory.BASE,
+		{},  # No cost as it's automatically placed
+		"Koloniestation"
 	)
 }
 
@@ -178,7 +185,7 @@ func _physics_process(_delta):
 				var parent_node = result.collider.get_parent()
 				print("Parent node name: ", parent_node.name)
 				building_type = find_building_type(parent_node.name)
-					
+				
 			if building_type:
 				print("Gefundener Gebäudetyp: ", building_type)
 				# Get cost from building definition and refund 50%
@@ -194,8 +201,6 @@ func _physics_process(_delta):
 			# Remove the building
 			result.collider.demolish()
 			print("Gebäude erfolgreich abgerissen!")
-		
-		pending_demolish_position = Vector2.ZERO
 
 func _unhandled_input(event):
 	# Konvertiere Touch zu Mausposition wenn nötig
@@ -388,3 +393,43 @@ func _on_building_selected(type: String):
 	add_child(preview_building)
 	current_building_type = type
 	preview_building_changed.emit(preview_building)
+	
+	# Zeige den Range-Indikator für die Vorschau
+	if preview_building.has_method("show_range"):
+		preview_building.show_range(true)
+
+func attempt_place_building(_spawn_position: Vector3) -> bool:
+	if current_building_type == "spaceship_base":
+		# Check if a base already exists
+		for child in get_children():
+			if child is SpaceshipBase:
+				print("Only one base allowed per planet!")
+				return false
+	return true
+
+func spawn_base_on_planet(spawn_position: Vector3) -> Node3D:
+	print("BuildingManager: Attempting to spawn base at position ", spawn_position)
+	var base_scene: PackedScene = preload("res://scenes/buildings/SpaceshipBase.tscn")
+	var base_instance: Node3D = base_scene.instantiate()
+	add_child(base_instance)
+	
+	# Set position
+	base_instance.global_position = spawn_position
+	
+	# Calculate orientation
+	var up_vector := spawn_position.normalized()  # Direction from planet center to base
+	var forward_vector := Vector3.FORWARD
+	if abs(up_vector.dot(Vector3.UP)) > 0.99:
+		forward_vector = Vector3.FORWARD  # Use forward when up is aligned with global up
+	else:
+		forward_vector = Vector3.UP.cross(up_vector).normalized()
+	var right_vector := up_vector.cross(forward_vector).normalized()
+	
+	# Create and apply the transform - make the base stand upright on the planet surface
+	var transform_basis := Basis(right_vector, up_vector, -forward_vector).rotated(right_vector, PI/2)
+	base_instance.global_transform.basis = transform_basis
+	
+	# Initialize the base
+	base_instance.initialize_on_planet(get_parent())
+	print("BuildingManager: Base spawned successfully")
+	return base_instance

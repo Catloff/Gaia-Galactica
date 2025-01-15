@@ -85,3 +85,6 @@ func _on_upgrade():
 	base_mesh.material_override = base_material
 	
 	print("[Quarry] Upgrade durchgeführt - Neues Level: %d" % current_level)
+
+func get_building_radius() -> float:
+	return HARVEST_RADIUS
