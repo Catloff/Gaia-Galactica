@@ -24,6 +24,10 @@ var has_storage_warning: bool = false
 # Referenz zum ResourceManager
 @onready var resource_manager = get_node("/root/Main/ResourceManager")
 
+# Kollisionsmasken
+const COLLISION_LAYER_GROUND = 2
+const COLLISION_LAYER_BUILDINGS = 4
+
 # Virtuelle Methoden für Gebäude-Eigenschaften
 func get_production_rate() -> float:
 	return 0.0
@@ -394,6 +398,7 @@ func demolish():
 	# Deaktiviere zuerst die Kollision
 	var static_body = get_node_or_null("StaticBody3D")
 	if static_body:
+		print("[BaseBuilding] Deaktiviere Kollision für: ", name)
 		static_body.collision_layer = 0
 		static_body.collision_mask = 0
 		if static_body.get_child_count() > 0:
@@ -422,15 +427,17 @@ func _setup_building():
 func _on_upgrade():
 	pass
 
-# Einrichten der Kollision
+# Virtuelle Methode zum Einrichten der Kollision
 func setup_collision():
+	print("[BaseBuilding] Richte Kollision ein für: ", name)
 	var static_body = get_node_or_null("StaticBody3D")
 	if not static_body:
 		# Wenn kein StaticBody3D existiert, erstelle einen
 		static_body = StaticBody3D.new()
 		static_body.name = "StaticBody3D"
-		static_body.collision_layer = 1  # Layer 1 für normale Gebäude
-		static_body.collision_mask = 1
+		static_body.collision_layer = COLLISION_LAYER_BUILDINGS  # Layer für Gebäude
+		static_body.collision_mask = COLLISION_LAYER_BUILDINGS
+		print("[BaseBuilding] Neuer StaticBody3D erstellt mit Kollisionsmaske: ", COLLISION_LAYER_BUILDINGS)
 		
 		# Füge eine CollisionShape hinzu
 		var collision_shape = CollisionShape3D.new()
@@ -440,10 +447,16 @@ func setup_collision():
 		static_body.add_child(collision_shape)
 		
 		add_child(static_body)
+	else:
+		# Aktualisiere die Kollisionsmaske des existierenden StaticBody
+		static_body.collision_layer = COLLISION_LAYER_BUILDINGS
+		static_body.collision_mask = COLLISION_LAYER_BUILDINGS
+		print("[BaseBuilding] Existierender StaticBody3D aktualisiert mit Kollisionsmaske: ", COLLISION_LAYER_BUILDINGS)
 	
 	# Stelle sicher, dass das BuildingBody-Skript angehängt ist
 	if not static_body.get_script():
 		static_body.set_script(preload("res://scripts/buildings/BuildingBody.gd"))
+		print("[BaseBuilding] BuildingBody-Skript an StaticBody3D angehängt")
 
 func _on_upgrade_pressed():
 	upgrade()

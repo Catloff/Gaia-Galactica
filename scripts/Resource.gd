@@ -11,9 +11,9 @@ var is_being_removed: bool = false
 signal resource_removed(position: Vector3, type: String)
 
 func _ready():
-	# Stelle sicher, dass die Kollision aktiviert ist
-	collision_layer = 1
-	collision_mask = 1
+	# Stelle sicher, dass die Kollision aktiviert ist und die richtige Maske hat
+	collision_layer = 4  # COLLISION_LAYER_BUILDINGS
+	collision_mask = 4   # COLLISION_LAYER_BUILDINGS
 	
 	# Set the color based on resource type
 	var material = StandardMaterial3D.new()

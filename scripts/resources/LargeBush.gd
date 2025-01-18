@@ -10,6 +10,10 @@ var can_be_harvested = true
 var cooldown_timer = 0.0
 
 func _ready():
+		# Setze korrekte Kollisionsmasken
+	collision_layer = 4  # COLLISION_LAYER_BUILDINGS
+	collision_mask = 4   # COLLISION_LAYER_BUILDINGS
+	
 	var material = StandardMaterial3D.new()
 	material.albedo_color = Color(0.2, 0.6, 0.2)  # Dunkelgrün für den Busch
 	$MeshInstance3D.material_override = material

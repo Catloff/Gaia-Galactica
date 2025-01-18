@@ -545,3 +545,17 @@
   - Neue Basis-Lagerkapazität: 1000
   - Dynamische Erhöhung durch Lagergebäude
   - Automatische Anpassung bei Abriss von Lagergebäuden
+
+## 2024-03-19
+- Verbessertes Gebäude-Namensystem implementiert
+  - Eindeutige Namen im Format "typ_nummer" (z.B. lumbermill_1, quarry_2)
+  - Verbesserte Erkennung beim Abreißen von Gebäuden
+  - Konsistente Namensgebung für alle Gebäudetypen
+  - Unterstützung für mehrere Instanzen des gleichen Gebäudetyps
+
+## 2024-03-19
+- Abriss-System erweitert
+  - Ressourcen können jetzt auch abgerissen werden
+  - Einheitliche Behandlung von Gebäuden und Ressourcen
+  - Gebäude erstatten weiterhin 50% der Baukosten zurück
+  - Verbesserte Fehlerbehandlung und Logging
