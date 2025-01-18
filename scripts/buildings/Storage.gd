@@ -2,12 +2,17 @@ extends "res://scripts/buildings/BaseBuilding.gd"
 
 const STORAGE_CAPACITY_BASE = 200  # Basis-Lagerkapazität
 const STORAGE_CAPACITY_PER_LEVEL = 100  # Zusätzliche Kapazität pro Level
+const STORAGE_RADIUS_BASE = 10.0  # Basis-Reichweite
+const STORAGE_RADIUS_PER_LEVEL = 2.0  # Zusätzliche Reichweite pro Level
 
 @onready var base_mesh = %Base
 @onready var top_mesh = %Top
 
 func _ready():
 	super._ready()
+	
+	# Registriere das Lagergebäude in der Gruppe
+	add_to_group("storage_buildings")
 	
 	# Setze Upgrade-Kosten
 	upgrade_costs = [
@@ -62,3 +67,25 @@ func can_upgrade() -> bool:
 		
 	var next_level_costs = upgrade_costs[current_level - 1]
 	return resource_manager.can_afford(next_level_costs) 
+
+func get_storage_radius() -> float:
+	return STORAGE_RADIUS_BASE + (STORAGE_RADIUS_PER_LEVEL * (current_level - 1))
+
+func get_building_radius() -> float:
+	return get_storage_radius()  # Nutze Storage-Radius für den Gebäude-Radius 
+
+func _on_upgrade():
+	# Aktualisiere die Farbe basierend auf dem Level
+	var base_material = StandardMaterial3D.new()
+	var brown_component = 0.6 + (current_level - 1) * 0.1  # Wird mit jedem Level heller
+	base_material.albedo_color = Color(brown_component, 0.4, 0.2)
+	base_mesh.material_override = base_material
+	
+	# Aktualisiere den Range-Indikator
+	if range_indicator:
+		var cylinder = range_indicator.mesh as CylinderMesh
+		cylinder.top_radius = get_storage_radius()
+		cylinder.bottom_radius = get_storage_radius()
+	
+	print("[Storage] Upgrade durchgeführt - Neues Level: %d" % current_level)
+	print("[Storage] Neue Reichweite: %.1f" % get_storage_radius()) 

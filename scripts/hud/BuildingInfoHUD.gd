@@ -34,10 +34,8 @@ func _ready():
 
 func _on_preview_building_changed(preview: BaseBuilding):
 	if preview:
-		print("[BuildingInfoHUD] Zeige Preview-Building Info")
 		show_building_info(preview)
 	else:
-		print("[BuildingInfoHUD] Verstecke Preview-Building Info")
 		show_building_info(null)
 
 func _on_mobile_nav_button_pressed():
@@ -120,7 +118,6 @@ func _on_close_pressed():
 func _unhandled_input(event):
 	if (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT) or \
 	   (event is InputEventScreenTouch and event.pressed):
-		print("[BuildingInfoHUD] Mausklick erkannt")
 		# Prüfe, ob der Klick auf dem HUD war
 		if get_rect().has_point(event.position):
 			return
@@ -130,28 +127,22 @@ func _physics_process(_delta):
 	if pending_click_position != null:
 		var camera = get_viewport().get_camera_3d()
 		if not camera:
-			print("[BuildingInfoHUD] Keine Kamera gefunden!")
 			pending_click_position = null
 			return
 			
 		var from = camera.project_ray_origin(pending_click_position)
 		var to = from + camera.project_ray_normal(pending_click_position) * 1000
-		print("[BuildingInfoHUD] Raycast von: ", from, " nach: ", to)
 		
 		var space_state = get_tree().root.get_world_3d().direct_space_state
 		var query = PhysicsRayQueryParameters3D.create(from, to)
 		var result = space_state.intersect_ray(query)
 		
 		if result:
-			print("[BuildingInfoHUD] Raycast Treffer: ", result.collider.name)
 			if result.collider is StaticBody3D and result.collider.get_parent() is BaseBuilding:
-				print("[BuildingInfoHUD] Gebäude gefunden!")
 				show_building_info(result.collider.get_parent())
 			else:
-				print("[BuildingInfoHUD] Kein Gebäude getroffen")
 				show_building_info(null)
 		else:
-			print("[BuildingInfoHUD] Kein Raycast Treffer")
 			show_building_info(null)
 		
 		pending_click_position = null 

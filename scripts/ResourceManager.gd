@@ -103,11 +103,9 @@ func has_resources(required_resources: Dictionary) -> bool:
 func _input(event):
 	# Debug: Zeige Event-Typ
 	if event is InputEventScreenTouch:
-		print("[ResourceManager] Touch-Event erkannt - pressed: ", event.pressed, " position: ", event.position)
 		if event.pressed:
 			pending_click_position = event.position
 	elif event is InputEventMouseButton:
-		print("[ResourceManager] Maus-Event erkannt - pressed: ", event.pressed, " button: ", event.button_index)
 		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 			pending_click_position = event.position
 
@@ -122,25 +120,17 @@ func _physics_process(_delta):
 			
 		var from = camera.project_ray_origin(pending_click_position)
 		var to = from + camera.project_ray_normal(pending_click_position) * 1000
-		print("[ResourceManager] Raycast von: ", from, " nach: ", to)
 		
 		var space_state = get_world_3d().direct_space_state
 		var query = PhysicsRayQueryParameters3D.create(from, to)
 		var result = space_state.intersect_ray(query)
 		
 		if result:
-			print("[ResourceManager] Raycast Treffer: ", result.collider.name)
 			if result.collider.has_method("gather_resource"):
 				print("[ResourceManager] Objekt hat gather_resource Methode")
 				var resource_data = await result.collider.gather_resource()
 				if resource_data != null:
 					print("[ResourceManager] Ressource gesammelt: ", resource_data)
 					add_resources(resource_data)
-				else:
-					print("[ResourceManager] Keine Ressourcen erhalten")
-			else:
-				print("[ResourceManager] Objekt hat KEINE gather_resource Methode")
-		else:
-			print("[ResourceManager] Kein Raycast Treffer")
 			
 		pending_click_position = null

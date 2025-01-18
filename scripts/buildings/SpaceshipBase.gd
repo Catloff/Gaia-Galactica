@@ -6,8 +6,12 @@ var is_initialized: bool = false
 var planet_instance = null
 var debug_mesh_instance: MeshInstance3D = null
 
+const BASE_RADIUS_BASE = 15.0  # Basis-Reichweite der Base
+const BASE_RADIUS_PER_LEVEL = 5.0  # Zusätzliche Reichweite pro Level
+
 func _ready():
 	super._ready()
+	add_to_group("base")
 	setup_building()
 
 func setup_building():
@@ -53,3 +57,43 @@ func can_upgrade() -> bool:
 		
 	var next_level_costs = upgrade_costs[current_level - 1]
 	return resource_manager.can_afford(next_level_costs)
+
+func get_storage_radius() -> float:
+	return BASE_RADIUS_BASE + (BASE_RADIUS_PER_LEVEL * (current_level - 1))
+
+func get_building_radius() -> float:
+	return get_storage_radius()  # Nutze Base-Radius für den Gebäude-Radius
+
+func _on_upgrade():
+	# Aktualisiere den Range-Indikator
+	if range_indicator:
+		var cylinder = range_indicator.mesh as CylinderMesh
+		cylinder.top_radius = get_storage_radius()
+		cylinder.bottom_radius = get_storage_radius()
+	
+	print("[SpaceshipBase] Upgrade durchgeführt - Neues Level: %d" % current_level)
+	print("[SpaceshipBase] Neue Reichweite: %.1f" % get_storage_radius())
+
+func setup_range_indicator():
+	range_indicator = MeshInstance3D.new()
+	var cylinder = CylinderMesh.new()
+	cylinder.top_radius = get_storage_radius()
+	cylinder.bottom_radius = get_storage_radius()
+	cylinder.height = 0.1
+	range_indicator.mesh = cylinder
+	
+	# Material zur Laufzeit erstellen
+	var material = StandardMaterial3D.new()
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.albedo_color = Color(0.2, 0.8, 1, 0.2)
+	material.emission_enabled = true
+	material.emission = Color(0.2, 0.8, 1, 1)
+	material.emission_energy_multiplier = 0.5
+	
+	range_indicator.material_override = material
+	range_indicator.visible = false
+	
+	# Rotiere den Zylinder um 90 Grad um die X-Achse
+	range_indicator.rotation_degrees.x = 90
+	
+	add_child(range_indicator)

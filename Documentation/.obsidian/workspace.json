@@ -13,15 +13,30 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Gameplay.md",
+                "file": "Prioritäten.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Gameplay"
+              "title": "Prioritäten"
+            }
+          },
+          {
+            "id": "07dc79082cd84512",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Bugs.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Bugs"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -93,7 +108,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Gameplay.md",
+                "file": "Bugs.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -103,7 +118,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for Gameplay"
+              "title": "Backlinks for Bugs"
             }
           },
           {
@@ -112,12 +127,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Gameplay.md",
+                "file": "Bugs.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from Gameplay"
+              "title": "Outgoing links from Bugs"
             }
           },
           {
@@ -139,10 +154,10 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Gameplay.md"
+                "file": "Bugs.md"
               },
               "icon": "lucide-list",
-              "title": "Outline of Gameplay"
+              "title": "Outline of Bugs"
             }
           }
         ]
@@ -162,9 +177,10 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "28e594672dc2f9de",
+  "active": "07dc79082cd84512",
   "lastOpenFiles": [
     "Prioritäten.md",
+    "Bugs.md",
     "Gameplay.md",
     "Prompt.md"
   ]

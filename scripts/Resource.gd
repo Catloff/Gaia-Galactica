@@ -20,7 +20,6 @@ func _ready():
 	
 	match resource_type:
 		ResourceType.WOOD:
-			print("[Resource] Erstelle neuen Baum")
 			# Erstelle Baumstumpf und Krone
 			var stump = CSGCylinder3D.new()
 			stump.radius = 0.3
@@ -77,7 +76,6 @@ func gather_resource():
 		is_being_removed = true
 		
 		if resource_type == ResourceType.WOOD:
-			print("[Resource] Entferne Baumkrone")
 			# Entferne nur die Baumkrone
 			if has_node("Crown"):
 				$Crown.queue_free()
@@ -86,7 +84,6 @@ func gather_resource():
 			# Deaktiviere NICHT die Kollision für Baumstümpfe
 		else:
 			# Für andere Ressourcen: Komplett entfernen
-			print("[Resource] Entferne komplette Ressource")
 			# Deaktiviere Kollision
 			collision_layer = 0
 			collision_mask = 0
@@ -100,7 +97,6 @@ func gather_resource():
 
 func regrow_tree():
 	if resource_type == ResourceType.WOOD and not has_node("Crown"):
-		print("[Resource] Lasse Baum nachwachsen")
 		# Erstelle neue Krone
 		var crown = CSGBox3D.new()
 		crown.size = Vector3(1.0, 1.0, 1.0)
@@ -115,7 +111,6 @@ func regrow_tree():
 		
 		is_being_removed = false
 		remaining_harvests = 3
-		print("[Resource] Baum ist nachgewachsen")
 
 func demolish():
 	is_being_removed = true

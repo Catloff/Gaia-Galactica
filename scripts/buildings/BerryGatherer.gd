@@ -43,7 +43,9 @@ func _physics_process(delta):
 	harvest_timer += delta
 	if harvest_timer >= get_production_rate():
 		harvest_timer = 0.0
-		harvest_nearby_food()
+		# Nur stoppen wenn lokales Lager voll UND kein Lager in Reichweite
+		if not should_stop_production():
+			harvest_nearby_food()
 
 func harvest_nearby_food() -> void:
 	var space_state = get_world_3d().direct_space_state
@@ -77,7 +79,7 @@ func harvest_nearby_food() -> void:
 			var resource_data = await collider.gather_resource()
 			if resource_data != null:
 				resource_data["amount"] *= get_efficiency_multiplier()
-				resource_manager.add_resources(resource_data)
+				add_resources("food", resource_data["amount"])
 				return  # Eine Ressource pro Tick
 
 func get_production_rate() -> float:
@@ -107,3 +109,20 @@ func can_upgrade() -> bool:
 		
 	var next_level_costs = upgrade_costs[current_level - 1]
 	return resource_manager.can_afford(next_level_costs)
+
+func _input(event):
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		var camera = get_viewport().get_camera_3d()
+		if not camera:
+			return
+			
+		var from = camera.project_ray_origin(event.position)
+		var to = from + camera.project_ray_normal(event.position) * 1000
+		
+		var space_state = get_world_3d().direct_space_state
+		var query = PhysicsRayQueryParameters3D.create(from, to)
+		var result = space_state.intersect_ray(query)
+		
+		if result and result.collider.get_parent() == storage_warning_mesh:
+			print("[BerryGatherer] Ausrufezeichen angeklickt - Übertrage Ressourcen")
+			transfer_resources_to_main_storage()

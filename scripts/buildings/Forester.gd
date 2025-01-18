@@ -46,20 +46,15 @@ func attempt_regrow_tree():
 	
 	# Wenn wir keine Baumstümpfe haben, machen wir nichts
 	if tree_stumps.is_empty():
-		print("[Förster] Keine Baumstümpfe gefunden")
 		return
 		
-	print("[Förster] %d Baumstümpfe gefunden" % tree_stumps.size())
-	
+
 	# Wähle einen zufälligen Stumpf aus
 	var stump = tree_stumps[randi() % tree_stumps.size()]
 	
 	# Lasse den Baum nachwachsen
 	if stump.has_method("regrow_tree"):
-		print("[Förster] Lasse Baum nachwachsen")
 		stump.regrow_tree()
-	else:
-		print("[Förster] Stumpf hat keine regrow_tree Methode!")
 
 func scan_for_stumps():
 	tree_stumps.clear()
@@ -76,15 +71,12 @@ func scan_for_stumps():
 	query_params.collision_mask = 1  # Stelle sicher, dass wir die richtige Kollisionsmaske haben
 	
 	var results = space_state.intersect_shape(query_params)
-	print("[Förster] Scanne nach Stümpfen... %d Objekte gefunden" % results.size())
 	
 	for result in results:
 		var collider = result["collider"]
 		if collider.has_method("get_resource_type"):
-			print("[Förster] Ressource gefunden: %s, Hat Krone: %s" % [collider.get_resource_type(), str(collider.has_node("Crown"))])
 			if collider.get_resource_type() == "WOOD" and not collider.has_node("Crown"):
 				tree_stumps.append(collider)
-				print("[Förster] Baumstumpf zur Liste hinzugefügt")
 
 func get_production_rate() -> float:
 	return PLANT_RATE / get_speed_multiplier()
