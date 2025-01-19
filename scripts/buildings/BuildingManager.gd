@@ -47,7 +47,7 @@ var buildings = {
 		"Förster"
 	),
 	"plant_tree": BuildingDefinition.new(
-		preload("res://scenes/buildings/PlantableTree.tscn"),
+		preload("res://scenes/resources/PlantableTree.tscn"),
 		"plant_tree",
 		BuildingCategory.SPECIAL,
 		{"wood": 10},
@@ -381,7 +381,10 @@ func _on_building_selected(type: String):
 	preview_building = building_def.scene.instantiate()
 	add_child(preview_building)
 	current_building_type = type
-	preview_building_changed.emit(preview_building)
+	
+	# Nur für echte Gebäude das Signal emittieren
+	if type != "plant_tree":
+		preview_building_changed.emit(preview_building)
 	
 	# Zeige den Range-Indikator für die Vorschau
 	if preview_building.has_method("show_range_indicator"):

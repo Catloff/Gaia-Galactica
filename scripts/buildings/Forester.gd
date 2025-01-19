@@ -58,9 +58,11 @@ func attempt_regrow_tree():
 
 func scan_for_stumps():
 	tree_stumps.clear()
+	print("[Forester] Starte Scan nach Baumstümpfen...")
 	
 	var space_state = get_world_3d().direct_space_state
 	if not space_state:
+		print("[Forester] Fehler: Kein space_state verfügbar")
 		return
 		
 	var query_params = PhysicsShapeQueryParameters3D.new()
@@ -68,15 +70,29 @@ func scan_for_stumps():
 	shape.radius = SCAN_RADIUS
 	query_params.shape = shape
 	query_params.transform = global_transform
-	query_params.collision_mask = 1  # Stelle sicher, dass wir die richtige Kollisionsmaske haben
+	query_params.collision_mask = 4  # COLLISION_LAYER_BUILDINGS
 	
 	var results = space_state.intersect_shape(query_params)
+	print("[Forester] Gefundene Kollisionen:", results.size())
 	
 	for result in results:
 		var collider = result["collider"]
+		print("[Forester] Prüfe Kollision mit:", collider)
 		if collider.has_method("get_resource_type"):
-			if collider.get_resource_type() == "WOOD" and not collider.has_node("Crown"):
-				tree_stumps.append(collider)
+			print("[Forester] - Hat get_resource_type Methode")
+			if collider.get_resource_type() == "WOOD":
+				print("[Forester] - Ist ein Holz-Ressource")
+				if not collider.has_node("Crown"):
+					print("[Forester] - Hat keine Krone - füge zu Stümpfen hinzu")
+					tree_stumps.append(collider)
+				else:
+					print("[Forester] - Hat bereits eine Krone")
+			else:
+				print("[Forester] - Kein Holz:", collider.get_resource_type())
+		else:
+			print("[Forester] - Keine get_resource_type Methode")
+	
+	print("[Forester] Scan abgeschlossen - Gefundene Stümpfe:", tree_stumps.size())
 
 func get_production_rate() -> float:
 	return PLANT_RATE / get_speed_multiplier()

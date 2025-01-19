@@ -559,3 +559,21 @@
   - Einheitliche Behandlung von Gebäuden und Ressourcen
   - Gebäude erstatten weiterhin 50% der Baukosten zurück
   - Verbesserte Fehlerbehandlung und Logging
+
+## 2025-01-08 18:30
+- Überarbeitet: Platzierbarer Baum komplett neu implementiert
+- Implementiert: Gleiche Funktionalität und Aussehen wie automatisch generierte Bäume
+- Angepasst: Ressourcen-System Integration für manuelle Baumpflanzung
+- Optimiert: Einheitliches Verhalten mit anderen Holz-Ressourcen
+
+## 2025-01-08 18:35
+- Behoben: Platzierbare Bäume haben jetzt volle Funktionalität
+- Korrigiert: Maximale Anzahl von Ernten (3) für platzierbare Bäume
+- Implementiert: Nachwachsen durch Förster für platzierbare Bäume
+- Optimiert: Einheitliches Verhalten mit Standard-Bäumen
+
+## 2025-01-08 18:40
+- Behoben: BuildingInfoHUD-Fehler bei platzierbaren Bäumen
+- Verbessert: Platzierbare Bäume werden nicht mehr als Gebäude behandelt
+- Optimiert: Keine unnötigen UI-Updates für Ressourcen
+- Korrigiert: Initiale Ernte beim Platzieren von Bäumen
