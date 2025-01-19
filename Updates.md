@@ -577,3 +577,9 @@
 - Verbessert: Platzierbare Bäume werden nicht mehr als Gebäude behandelt
 - Optimiert: Keine unnötigen UI-Updates für Ressourcen
 - Korrigiert: Initiale Ernte beim Platzieren von Bäumen
+
+## 2025-01-08 18:45
+- Vereinheitlicht: Aussehen aller Bäume im Spiel
+- Verbessert: Visuelle Konsistenz zwischen platzierbaren und automatischen Bäumen
+- Angepasst: Verwendung von CSG-Shapes für besseres Aussehen
+- Optimiert: Einheitliche Materialien und Farben für alle Bäume

@@ -20,16 +20,18 @@ func _ready():
 	
 	match resource_type:
 		ResourceType.WOOD:
+			# Entferne alte Mesh-Instanz falls vorhanden
+			if has_node("MeshInstance3D"):
+				$MeshInstance3D.queue_free()
+			
 			# Erstelle Baumstumpf und Krone
 			var stump = CSGCylinder3D.new()
 			stump.radius = 0.3
 			stump.height = 0.4
-			
 			stump.position.y = 0.2  # Halbe Höhe
 			add_child(stump)
 			
 			var stump_material = StandardMaterial3D.new()
-			
 			stump_material.albedo_color = Color(0.4, 0.3, 0.2)  # Braun für Holz
 			stump.material = stump_material
 			
