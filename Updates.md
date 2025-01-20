@@ -583,3 +583,20 @@
 - Verbessert: Visuelle Konsistenz zwischen platzierbaren und automatischen Bäumen
 - Angepasst: Verwendung von CSG-Shapes für besseres Aussehen
 - Optimiert: Einheitliche Materialien und Farben für alle Bäume
+
+## 10. Januar 2024
+- Planetengenerierung optimiert:
+  - Zweistufige Noise-Berechnung für gleichmäßigere Höhenverteilung
+  - Zentrierte Noise-Berechnung verhindert Planetenverschiebung
+  - Höhenvariation auf 20% begrenzt für natürlicheres Aussehen
+  - Verbesserte Biom-Übergänge durch normalisierte Höhenwerte
+
+## 2024-01-20
+### Biom-basiertes Ressourcenspawning
+- Neue Kollisionsebene für den Planeten implementiert
+- Ressourcen spawnen jetzt biom-spezifisch:
+  - Gras-Biom: Bäume und Büsche
+  - Berg-Biom: Steine
+  - Wasser-Biom: Keine Ressourcen
+- Verbesserte Platzierung der Ressourcen auf der Planetenoberfläche
+- Kollisionserkennung für Gebäudeplatzierung optimiert

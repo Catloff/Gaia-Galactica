@@ -3,6 +3,10 @@ extends Node3D
 enum BuildingCategory { RESOURCE, INFRASTRUCTURE, SPECIAL, BASE }
 
 const PLANET_RADIUS = 25.0  # Muss mit dem Radius in Main.gd übereinstimmen
+const SNAP_GRID_SIZE = 2.0  # Größe des Snapping-Grids in Einheiten
+
+var preview_material_valid: StandardMaterial3D
+var preview_material_invalid: StandardMaterial3D
 
 class BuildingDefinition:
 	var scene: PackedScene
@@ -113,18 +117,34 @@ const COLLISION_LAYER_BUILDINGS = 4
 
 var building_counters = {}
 
+var current_snap_position: Vector3 = Vector3.ZERO
+var valid_snap_positions: Array[Vector3] = []
+
 func _ready():
 	resource_manager = $"/root/Main/ResourceManager"
 	hud.building_selected.connect(_on_building_selected)
 	hud.demolish_mode_changed.connect(_on_demolish_mode_changed)
 	buildings_updated.emit()
 	
-	# Initialisiere Zähler für jeden Gebäudetyp
 	for type in buildings:
 		building_counters[type] = 0
 	
-	# Prüfe ob wir auf einem Touch-Gerät sind
 	is_touch_device = DisplayServer.is_touchscreen_available()
+	
+	# Erstelle die Preview-Materialien
+	preview_material_valid = StandardMaterial3D.new()
+	preview_material_valid.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	preview_material_valid.albedo_color = Color(0, 1, 0, 0.5)
+	preview_material_valid.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	preview_material_valid.no_depth_test = true
+	preview_material_valid.render_priority = 100  # Stelle sicher, dass die Vorschau über allem anderen gerendert wird
+	
+	preview_material_invalid = StandardMaterial3D.new()
+	preview_material_invalid.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	preview_material_invalid.albedo_color = Color(1, 0, 0, 0.5)
+	preview_material_invalid.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	preview_material_invalid.no_depth_test = true
+	preview_material_invalid.render_priority = 100
 
 func generate_building_name(building_type: String) -> String:
 	building_counters[building_type] += 1
@@ -225,24 +245,37 @@ func _unhandled_input(event):
 	if current_building_type == "none":
 		return
 		
-	# Nur für Maus-Geräte die Vorschau aktualisieren
-	if not is_touch_device and (event is InputEventMouseMotion or event is InputEventScreenDrag):
+	# Aktualisiere die Vorschau bei jeder Mausbewegung
+	if event is InputEventMouseMotion:
 		update_preview_position(mouse_pos)
+		get_viewport().set_input_as_handled()
 	
+	# Linksklick zum Platzieren
 	if (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT) or \
 	   (event is InputEventScreenTouch and event.pressed):
+		print("[BuildingManager] Linksklick erkannt")
 		if is_mouse_over_ui():
+			print("[BuildingManager] Klick war über UI")
 			return
-			
-		if is_touch_device:
-			# Für Touch-Geräte: Position speichern für nächsten _physics_process
-			pending_touch_position = mouse_pos
+		
+		print("[BuildingManager] Prüfe Platzierungsbedingungen:")
+		print("- Kann platzieren: ", can_place)
+		print("- Aktuelle Snap-Position: ", current_snap_position)
+		print("- Vorschau aktiv: ", preview_building != null)
+		print("- Kann sich Gebäude leisten: ", can_afford_building(current_building_type))
+		
+		if can_place and current_snap_position != Vector3.ZERO and preview_building and can_afford_building(current_building_type):
+			print("[BuildingManager] Platziere Gebäude")
+			place_building()
 		else:
-			# Für Maus: Normale Platzierung mit Vorschau
-			if can_place and can_afford_building(current_building_type):
-				place_building()
-			
-	get_viewport().set_input_as_handled()
+			print("[BuildingManager] Platzierung nicht möglich")
+		get_viewport().set_input_as_handled()
+	
+	# Rechtsklick oder Escape zum Abbrechen
+	if (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT) or \
+	   (event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE):
+		cancel_building()
+		get_viewport().set_input_as_handled()
 
 # Hilfsfunktion zum Finden des Gebäudetyps basierend auf einem Namen
 func find_building_type(node_name: String) -> String:
@@ -295,62 +328,170 @@ func is_mouse_over_ui() -> bool:
 	var nav_rect = mobile_nav.get_global_rect()
 	return panel_rect.has_point(mouse_pos) or nav_rect.has_point(mouse_pos)
 
-func update_preview_position(mouse_pos):
-	if is_mouse_over_ui():
-		preview_building.visible = false
-		can_place = false
+func calculate_planet_aligned_basis(world_pos: Vector3) -> Basis:
+	var up = world_pos.normalized()  # Richtung vom Planetenzentrum zum Gebäude
+	var forward = Vector3.FORWARD
+	
+	# Wenn wir fast am Nordpol sind, verwende eine andere Referenzrichtung
+	if abs(up.dot(Vector3.UP)) > 0.99:
+		forward = -Vector3.FORWARD
+	else:
+		# Berechne eine Tangente zur Planetenoberfläche
+		forward = Vector3.UP.cross(up).normalized()
+	
+	var right = up.cross(forward).normalized()
+	forward = right.cross(up).normalized()  # Neuberechnung für eine perfekte Orthogonalität
+	
+	# Erstelle die Basis-Matrix
+	return Basis(right, up, -forward)
+
+func update_preview_position(mouse_pos: Vector2):
+	if not preview_building:
+		print("[BuildingManager] Keine Vorschau vorhanden")
 		return
-		
+	
+	print("[BuildingManager] Aktualisiere Vorschauposition")
 	var camera = get_viewport().get_camera_3d()
 	var from = camera.project_ray_origin(mouse_pos)
 	var to = from + camera.project_ray_normal(mouse_pos) * 1000
 	
 	var space_state = get_world_3d().direct_space_state
 	var query = PhysicsRayQueryParameters3D.create(from, to)
-	query.collision_mask = 2  # Only collide with Ground
+	query.collision_mask = COLLISION_LAYER_GROUND
 	var result = space_state.intersect_ray(query)
 	
 	if result:
-		preview_building.visible = true
-		# Platziere das Gebäude auf der Planetenoberfläche
 		var hit_pos = result.position
-		preview_building.position = hit_pos
+		var collision_planet = get_node("/root/Main/CollisionPlanet")
+		if not collision_planet:
+			print("[BuildingManager] CollisionPlanet nicht gefunden")
+			return
 		
-		# Richte das Gebäude zur Planetenmitte aus
-		preview_building.look_at(Vector3.ZERO)
-		preview_building.rotate_object_local(Vector3.RIGHT, PI/2)
+		# Berechne die Position auf der Planetenoberfläche
+		var dir = hit_pos.normalized()
+		var height = collision_planet.get_height_at_position(dir * PLANET_RADIUS)
+		var terrain_height = PLANET_RADIUS * (1.0 + height * 0.2)
+		var surface_pos = dir * terrain_height
 		
-		can_place = true
+		print("[BuildingManager] Oberflächenposition: ", surface_pos)
+		
+		# Prüfe das Biom
+		var biome = collision_planet.get_biome_at_position(surface_pos)
+		print("[BuildingManager] Biom an Position: ", biome)
+		
+		# Berechne die Snapping-Position
+		var snap_pos = find_nearest_snap_position(surface_pos)
+		current_snap_position = snap_pos
+		
+		print("[BuildingManager] Snap-Position: ", snap_pos)
+		
+		# Setze die Position und Rotation der Vorschau
+		preview_building.global_position = snap_pos
+		preview_building.global_transform.basis = calculate_planet_aligned_basis(snap_pos)
+		
+		# Prüfe ob wir hier bauen können
+		can_place = can_place_building(snap_pos)
+		update_preview_material(can_place)
+		
+		print("[BuildingManager] Platzierung möglich: ", can_place)
+		print("[BuildingManager] Biom: ", biome)
+		print("[BuildingManager] Höhe: ", height)
 	else:
-		preview_building.visible = false
-		can_place = false
+		print("[BuildingManager] Kein Treffer mit dem Terrain gefunden")
+
+func find_nearest_snap_position(pos: Vector3) -> Vector3:
+	var dir = pos.normalized()
+	var collision_planet = get_node("/root/Main/CollisionPlanet")
+	
+	# Berechne die Basis-Vektoren für das lokale Koordinatensystem
+	var up = dir
+	var right = up.cross(Vector3.UP).normalized()
+	var forward = up.cross(right)
+	
+	# Berechne die lokalen Koordinaten
+	var local_pos = Vector3(
+		pos.dot(right),
+		pos.dot(up),
+		pos.dot(forward)
+	)
+	
+	print("[BuildingManager] Lokale Position vor Snapping: ", local_pos)
+	
+	# Snappe zu einem Grid
+	var snapped_local = Vector3(
+		round(local_pos.x / SNAP_GRID_SIZE) * SNAP_GRID_SIZE,
+		local_pos.y,
+		round(local_pos.z / SNAP_GRID_SIZE) * SNAP_GRID_SIZE
+	)
+	
+	print("[BuildingManager] Lokale Position nach Snapping: ", snapped_local)
+	
+	# Transformiere zurück in globale Koordinaten
+	var snapped_pos = right * snapped_local.x + up * snapped_local.y + forward * snapped_local.z
+	
+	# Passe die Höhe an das Terrain an
+	var height = collision_planet.get_height_at_position(snapped_pos.normalized() * PLANET_RADIUS)
+	var terrain_height = PLANET_RADIUS * (1.0 + height * 0.2)
+	var final_pos = snapped_pos.normalized() * (terrain_height + 0.1)
+	
+	print("[BuildingManager] Finale Snap-Position: ", final_pos)
+	return final_pos
+
+func update_preview_material(is_valid_position: bool):
+	if not preview_building:
+		return
+		
+	# Setze das Material für alle MeshInstance3D-Nodes im Preview
+	for child in preview_building.get_children():
+		if child is MeshInstance3D:
+			child.material_override = preview_material_valid if is_valid_position else preview_material_invalid
 
 func place_building():
+	print("[BuildingManager] Starte Gebäudeplatzierung")
+	if not can_place:
+		print("[BuildingManager] Platzierung nicht möglich: can_place ist false")
+		return
+	if not current_snap_position:
+		print("[BuildingManager] Platzierung nicht möglich: keine Snap-Position")
+		return
+	if not preview_building:
+		print("[BuildingManager] Platzierung nicht möglich: keine Vorschau")
+		return
+		
 	var building = get_building_definition(current_building_type)
 	if not building:
+		print("[BuildingManager] Platzierung nicht möglich: keine Gebäudedefinition")
 		return
 		
 	var cost = building.cost
 	if not resource_manager.pay_cost(cost):
+		print("[BuildingManager] Platzierung nicht möglich: nicht genug Ressourcen")
 		return
 		
+	print("[BuildingManager] Erstelle neues Gebäude")
 	var new_building = building.scene.instantiate()
-	# Generiere einen eindeutigen Namen
 	new_building.name = generate_building_name(building.type)
-	# Setze die Position und Rotation BEVOR wir das Gebäude zur Szene hinzufügen
-	new_building.position = preview_building.position
-	new_building.rotation = preview_building.rotation
+	
+	# Füge das Gebäude zuerst zur Szene hinzu
 	get_parent().add_child(new_building)
+	
+	# Setze die Position und Rotation
+	new_building.global_position = current_snap_position
+	new_building.global_transform.basis = calculate_planet_aligned_basis(current_snap_position)
 	
 	if new_building.has_method("activate"):
 		new_building.activate()
 	
-	# Explicitly deselect the building after successful placement
+	print("[BuildingManager] Räume auf")
 	current_building_type = "none"
 	if preview_building:
-		remove_child(preview_building)
+		preview_building.queue_free()
 		preview_building = null
+	build_panel.visible = false
 	build_panel.deselect_building()
+	
+	buildings_updated.emit()
+	print("[BuildingManager] Gebäude erfolgreich platziert")
 
 func cancel_building():
 	if preview_building:
@@ -359,36 +500,57 @@ func cancel_building():
 	current_building_type = "none"
 	can_place = false
 	preview_building_changed.emit(null)
-	build_panel.deselect_building()  # Deselektiere das Gebäude auch im BuildingHUD
+	# Deaktiviere die Signalverbindung temporär
+	hud.building_selected.disconnect(_on_building_selected)
+	build_panel.deselect_building()
+	build_panel.visible = false
+	# Reaktiviere die Signalverbindung
+	hud.building_selected.connect(_on_building_selected)
 
 func _on_building_selected(type: String):
+	print("[BuildingManager] Gebäude ausgewählt: ", type)
+	
 	if type == "none":
 		if preview_building:
 			preview_building.queue_free()
 			preview_building = null
-		current_building_type = "none"
-		can_place = false
-		preview_building_changed.emit(null)
+			current_building_type = "none"
+			can_place = false
+			preview_building_changed.emit(null)
 		return
-		
+	
 	var building_def = get_building_definition(type)
 	if not building_def:
+		print("[BuildingManager] Gebäudedefinition nicht gefunden für: ", type)
 		return
-		
+	
+	print("[BuildingManager] Erstelle Vorschau für: ", type)
 	if preview_building:
 		preview_building.queue_free()
-		
+	
 	preview_building = building_def.scene.instantiate()
 	add_child(preview_building)
 	current_building_type = type
 	
-	# Nur für echte Gebäude das Signal emittieren
-	if type != "plant_tree":
-		preview_building_changed.emit(preview_building)
+	# Setze das Material für die Vorschau
+	for child in preview_building.get_children():
+		if child is MeshInstance3D:
+			var mesh = child as MeshInstance3D
+			mesh.material_override = preview_material_valid
+			mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			mesh.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			mesh.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
 	
-	# Zeige den Range-Indikator für die Vorschau
+	# Zeige den Range-Indikator
 	if preview_building.has_method("show_range_indicator"):
 		preview_building.show_range_indicator(true)
+	
+	preview_building_changed.emit(preview_building)
+	
+	# Aktualisiere die Position sofort
+	var mouse_pos = get_viewport().get_mouse_position()
+	update_preview_position(mouse_pos)
+	print("[BuildingManager] Vorschau erstellt und positioniert")
 
 func attempt_place_building(_spawn_position: Vector3) -> bool:
 	if current_building_type == "spaceship_base":
@@ -426,39 +588,101 @@ func spawn_base_on_planet(spawn_position: Vector3) -> Node3D:
 	print("BuildingManager: Base spawned successfully")
 	return base_instance
 
-func place_building_at_position(pos: Vector2):
-	if current_building_type == "none":
-		return
+func place_building_at_position(mouse_pos: Vector2) -> Node3D:
+	if not can_afford_building(current_building_type):
+		return null
 		
 	var camera = get_viewport().get_camera_3d()
-	var from = camera.project_ray_origin(pos)
-	var to = from + camera.project_ray_normal(pos) * 1000
+	var from = camera.project_ray_origin(mouse_pos)
+	var to = from + camera.project_ray_normal(mouse_pos) * 1000
 	
 	var space_state = get_world_3d().direct_space_state
 	var query = PhysicsRayQueryParameters3D.create(from, to)
-	query.collision_mask = 2  # Only collide with Ground
+	query.collision_mask = COLLISION_LAYER_GROUND
 	var result = space_state.intersect_ray(query)
 	
-	if result and can_afford_building(current_building_type):
-		var building = get_building_definition(current_building_type)
-		if building:
-			var cost = building.cost
-			if resource_manager.pay_cost(cost):
-				var new_building = building.scene.instantiate()
-				# Generiere einen eindeutigen Namen
-				new_building.name = generate_building_name(building.type)
-				# Erst zur Szene hinzufügen
-				get_parent().add_child(new_building)
-				# Dann Position und Rotation setzen
-				new_building.position = result.position
-				new_building.look_at_from_position(result.position, Vector3.ZERO, Vector3.UP)
-				new_building.rotate_object_local(Vector3.RIGHT, PI/2)
+	if result:
+		var pos = result.position
+		
+		var collision_planet = get_node("/root/Main/CollisionPlanet")
+		if collision_planet:
+			var dir = pos.normalized()
+			var height = collision_planet.get_height_at_position(dir * PLANET_RADIUS)
+			var terrain_height = PLANET_RADIUS * (1.0 + height * 0.2)
+			pos = dir * (terrain_height + 0.1)
+		
+		if can_place_building(pos):
+			var building = create_building_instance(current_building_type, pos)
+			if building:
+				var building_def = get_building_definition(current_building_type)
+				resource_manager.pay_cost(building_def.cost)
+				building.name = generate_building_name(current_building_type)
 				
-				if new_building.has_method("activate"):
-					new_building.activate()
-				
+				# Schließe das BuildingHUD nach erfolgreicher Platzierung
+				build_panel.visible = false
 				current_building_type = "none"
+				if preview_building:
+					remove_child(preview_building)
+					preview_building = null
 				build_panel.deselect_building()
+				
+				buildings_updated.emit()
+				return building
+	
+	return null
+
+func create_building_instance(building_type: String, world_position: Vector3) -> Node3D:
+	var building_def = get_building_definition(building_type)
+	if not building_def:
+		return null
+		
+	var building = building_def.scene.instantiate()
+	add_child(building)
+	
+	# Setze Position und Rotation
+	building.global_position = world_position
+	
+	# Berechne Ausrichtung zum Planetenzentrum
+	var up_vector = world_position.normalized()
+	var forward = Vector3.FORWARD
+	if abs(up_vector.dot(Vector3.UP)) > 0.99:
+		forward = Vector3.FORWARD
+	else:
+		forward = Vector3.UP.cross(up_vector).normalized()
+	var right = up_vector.cross(forward).normalized()
+	
+	# Erstelle und wende die Transformation an
+	var transform_basis = Basis(right, up_vector, -forward).rotated(right, PI/2)
+	building.global_transform.basis = transform_basis
+	
+	return building
+
+func can_place_building(world_position: Vector3) -> bool:
+	print("[BuildingManager] Prüfe Platzierungsmöglichkeit an Position: ", world_position)
+	
+	# Hole das Biom an der Position
+	var collision_planet = get_node("/root/Main/CollisionPlanet")
+	if not collision_planet:
+		print("[BuildingManager] CollisionPlanet nicht gefunden")
+		return false
+		
+	var biome = collision_planet.get_biome_at_position(world_position)
+	print("[BuildingManager] Biom: ", biome)
+	
+	if biome == "water":
+		print("[BuildingManager] Kann nicht im Wasser bauen")
+		return false
+	
+	# Prüfe Mindestabstand zu anderen Gebäuden
+	for building in get_tree().get_nodes_in_group("building"):
+		var distance = world_position.distance_to(building.global_position)
+		print("[BuildingManager] Abstand zu Gebäude ", building.name, ": ", distance)
+		if distance < 3.0:
+			print("[BuildingManager] Zu nah an anderem Gebäude")
+			return false
+	
+	print("[BuildingManager] Position ist gültig für Platzierung")
+	return true
 
 func setup_collision():
 	var static_body = get_node_or_null("StaticBody3D")

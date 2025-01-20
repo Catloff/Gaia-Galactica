@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b4q8j2k5y6m7n"]
+
+[ext_resource type="Script" path="res://scripts/CollisionPlanet.gd" id="1_y4k3m"]
+
+[node name="CollisionPlanet" type="StaticBody3D"]
+script = ExtResource("1_y4k3m") 

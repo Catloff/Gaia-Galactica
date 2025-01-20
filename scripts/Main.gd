@@ -2,23 +2,42 @@ extends Node3D
 
 const PLANET_RADIUS = 25.0  # Radius des Planeten
 const MIN_CLUSTER_SIZE = 3
-const MAX_CLUSTER_SIZE = 8
-const MIN_DISTANCE_BETWEEN_CLUSTERS = 4.0
+const MAX_CLUSTER_SIZE = 6
+const MIN_DISTANCE_BETWEEN_CLUSTERS = 3.0
 const RESOURCE_HEIGHT = 0.5
-const RESOURCE_DENSITY = 0.01
-const LARGE_ROCK_COUNT = 5
-const LARGE_BUSH_COUNT = 4
+const RESOURCE_DENSITY = 0.005
+const LARGE_ROCK_COUNT = 3
+const LARGE_BUSH_COUNT = 3
 
 var placed_positions = []
+var collision_planet: Node3D
 
 func _ready():
 	# Wait two frames for camera to initialize
 	await get_tree().process_frame
 	await get_tree().process_frame
+	
+	# Initialisiere Kollisionsebene
+	setup_collision_planet()
+	
 	spawn_initial_base()
 	spawn_resource_clusters()
 	spawn_large_rocks()
 	spawn_large_bushes()
+
+func setup_collision_planet():
+	var collision_scene = preload("res://scenes/CollisionPlanet.tscn")
+	collision_planet = collision_scene.instantiate()
+	add_child(collision_planet)
+	
+	# Korrigiere den Node-Pfad
+	var planet_mesh = $Planet/PlanetMesh
+	if not planet_mesh:
+		push_error("PlanetMesh nicht gefunden! Aktueller Pfad: /Planet/PlanetGenerator/PlanetMesh")
+		return
+		
+	print("PlanetMesh gefunden: ", planet_mesh.name)
+	collision_planet.initialize(planet_mesh)
 
 func spawn_large_bushes():
 	var large_bush_scene = preload("res://scenes/resources/LargeBush.tscn")
@@ -28,13 +47,22 @@ func spawn_large_bushes():
 		if not valid_pos.is_valid:
 			continue
 			
+		# Prüfe Biom
+		var biome = collision_planet.get_biome_at_position(valid_pos.position)
+		if biome != "grass":
+			continue
+			
+		# Berechne tatsächliche Höhe
+		var dir = valid_pos.position.normalized()
+		var height = collision_planet.get_height_at_position(dir * PLANET_RADIUS)
+		var terrain_height = PLANET_RADIUS * (1.0 + height * 0.2)
+		
 		var bush = large_bush_scene.instantiate()
 		add_child(bush)
-		var spawn_pos = valid_pos.position.normalized() * PLANET_RADIUS
-		bush.position = spawn_pos
-		bush.look_at(Vector3.ZERO)  # Ausrichtung zur Planetenmitte
-		bush.rotate_object_local(Vector3.RIGHT, PI/2)  # Korrektur der Rotation
-		placed_positions.append(spawn_pos)
+		bush.position = dir * (terrain_height + 0.3)  # Büsche etwas über dem Terrain
+		bush.look_at(Vector3.ZERO)
+		bush.rotate_object_local(Vector3.RIGHT, PI/2)
+		placed_positions.append(bush.position)
 
 func spawn_large_rocks():
 	var large_rock_scene = preload("res://scenes/resources/LargeRock.tscn")
@@ -44,13 +72,22 @@ func spawn_large_rocks():
 		if not valid_pos.is_valid:
 			continue
 			
+		# Prüfe Biom
+		var biome = collision_planet.get_biome_at_position(valid_pos.position)
+		if biome != "mountain":
+			continue
+			
+		# Berechne tatsächliche Höhe
+		var dir = valid_pos.position.normalized()
+		var height = collision_planet.get_height_at_position(dir * PLANET_RADIUS)
+		var terrain_height = PLANET_RADIUS * (1.0 + height * 0.2)
+		
 		var rock = large_rock_scene.instantiate()
 		add_child(rock)
-		var spawn_pos = valid_pos.position.normalized() * PLANET_RADIUS
-		rock.position = spawn_pos
-		rock.look_at(Vector3.ZERO)  # Ausrichtung zur Planetenmitte
-		rock.rotate_object_local(Vector3.RIGHT, PI/2)  # Korrektur der Rotation
-		placed_positions.append(spawn_pos)
+		rock.position = dir * (terrain_height + 0.5)  # Steine etwas über dem Terrain
+		rock.look_at(Vector3.ZERO)
+		rock.rotate_object_local(Vector3.RIGHT, PI/2)
+		placed_positions.append(rock.position)
 
 func spawn_resource_clusters():
 	var resource_scene = preload("res://scenes/resources/Resource.tscn")
@@ -60,38 +97,86 @@ func spawn_resource_clusters():
 	var base_clusters = int(surface_area * RESOURCE_DENSITY)
 	var num_clusters = max(base_clusters + randi_range(-2, 2), 3)
 	
-	print("Spawning %d resource clusters on planet surface area %d" % [num_clusters, surface_area])
+	print("Erstelle %d Ressourcen-Cluster..." % num_clusters)
 	
-	var resource_types = [0, 1, 2]  # WOOD, STONE, FOOD
-	resource_types.shuffle()
+	# Garantiere mindestens einen Cluster pro Ressourcentyp in passendem Biom
+	var guaranteed_clusters = {
+		"grass": [0, 2],  # WOOD und FOOD in Gras
+		"mountain": [1]    # STONE in Bergen
+	}
 	
-	for resource_type in resource_types:
-		spawn_resource_cluster(resource_scene, resource_type)
+	for biome in guaranteed_clusters:
+		for resource_type in guaranteed_clusters[biome]:
+			spawn_resource_cluster(resource_scene, resource_type, biome)
 	
+	# Restliche Cluster zufällig verteilen
 	for _i in range(num_clusters - 3):
 		var resource_type = randi() % 3
 		spawn_resource_cluster(resource_scene, resource_type)
 
-func spawn_resource_cluster(resource_scene: PackedScene, resource_type: int):
-	var center = find_valid_position()
-	if not center.is_valid:
+func spawn_resource_cluster(resource_scene: PackedScene, resource_type: int, target_biome: String = ""):
+	var max_center_attempts = 10
+	var center = null
+	var biome = ""
+	
+	for _i in range(max_center_attempts):
+		var test_pos = find_valid_position()
+		if not test_pos.is_valid:
+			continue
+			
+		biome = collision_planet.get_biome_at_position(test_pos.position)
+		var is_valid_biome = false
+		
+		if target_biome != "":
+			is_valid_biome = biome == target_biome
+		else:
+			match resource_type:
+				0, 2:  # WOOD, FOOD
+					is_valid_biome = biome == "grass"
+				1:     # STONE
+					is_valid_biome = biome == "mountain"
+		
+		if is_valid_biome:
+			center = test_pos
+			break
+	
+	if not center:
 		return
 		
 	var cluster_size = randi_range(MIN_CLUSTER_SIZE, MAX_CLUSTER_SIZE)
+	var placed_in_cluster = 0
 	
-	for _j in range(cluster_size):
-		# Zufällige Position auf der Kugeloberfläche im Umkreis des Zentrums
+	# Versuche Ressourcen im Cluster zu platzieren
+	for _j in range(cluster_size * 3):  # Mehr Versuche für vollständige Cluster
 		var angle = randf() * TAU
 		var distance = randf_range(1.0, 3.0)
 		
-		# Berechne die Position auf der Kugeloberfläche
 		var center_dir = center.position.normalized()
 		var tangent = center_dir.cross(Vector3.UP).normalized()
 		var bitangent = center_dir.cross(tangent)
 		
 		var offset = (tangent * cos(angle) + bitangent * sin(angle)) * distance
-		var spawn_pos = (center_dir * PLANET_RADIUS + offset).normalized() * (PLANET_RADIUS + 0.5)
+		var base_pos = (center_dir * PLANET_RADIUS + offset).normalized()
 		
+		# Hole die Höhe an dieser Position
+		var height = collision_planet.get_height_at_position(base_pos * PLANET_RADIUS)
+		var terrain_height = PLANET_RADIUS * (1.0 + height * 0.2)  # 20% Höhenvariation wie im Shader
+		
+		# Platziere die Ressource auf der Terrainhöhe plus einem kleinen Offset
+		var resource_offset = 0.0
+		match resource_type:
+			0:  # WOOD - Bäume etwas tiefer für besseren Halt
+				resource_offset = 0.2
+			1:  # STONE - Steine etwas höher für bessere Sichtbarkeit
+				resource_offset = 0.5
+			2:  # FOOD - Beeren auf mittlerer Höhe
+				resource_offset = 0.3
+				
+		var spawn_pos = base_pos * (terrain_height + resource_offset)
+		
+		if collision_planet.get_biome_at_position(spawn_pos) != biome:
+			continue
+			
 		if not is_valid_position(spawn_pos):
 			continue
 			
@@ -100,9 +185,16 @@ func spawn_resource_cluster(resource_scene: PackedScene, resource_type: int):
 		add_child(resource)
 		resource.position = spawn_pos
 		resource.start_position = spawn_pos
-		resource.look_at(Vector3.ZERO)  # Ausrichtung zur Planetenmitte
-		resource.rotate_object_local(Vector3.RIGHT, PI/2)  # Korrektur der Rotation
+		resource.look_at(Vector3.ZERO)
+		resource.rotate_object_local(Vector3.RIGHT, PI/2)
 		placed_positions.append(spawn_pos)
+		placed_in_cluster += 1
+		
+		if placed_in_cluster >= cluster_size:
+			break
+	
+	if placed_in_cluster > 0:
+		print("Cluster mit %d Ressourcen in %s platziert" % [placed_in_cluster, biome])
 
 class PositionResult:
 	var position: Vector3
@@ -113,11 +205,10 @@ class PositionResult:
 		is_valid = valid
 
 func find_valid_position() -> PositionResult:
-	var max_attempts = 50
+	var max_attempts = 20
 	var current_attempt = 0
 	
 	while current_attempt < max_attempts:
-		# Generiere zufällige Position auf der Kugeloberfläche
 		var phi = randf() * TAU
 		var theta = acos(randf() * 2.0 - 1.0)
 		
@@ -135,9 +226,16 @@ func find_valid_position() -> PositionResult:
 	return PositionResult.new(Vector3.ZERO, false)
 
 func is_valid_position(pos: Vector3) -> bool:
+	# Prüfe ob die Position im Wasser ist
+	var biome = collision_planet.get_biome_at_position(pos)
+	if biome == "water":
+		return false
+		
+	# Prüfe Mindestabstand zu anderen Ressourcen
 	for placed_pos in placed_positions:
 		if pos.distance_to(placed_pos) < MIN_DISTANCE_BETWEEN_CLUSTERS:
 			return false
+	
 	return true
 
 func spawn_initial_base() -> void:
@@ -149,10 +247,32 @@ func spawn_initial_base() -> void:
 		print("ERROR: BuildingManager not found!")
 		return
 		
-	# Calculate spawn position at the center of the planet (slightly elevated)
-	var spawn_position := Vector3(0, PLANET_RADIUS + 2, 0)  # 2 units above surface
+	# Finde eine gute Position für die Basis im Gras-Biom
+	var spawn_dir = Vector3(0, 1, 0)  # Starte am "Nordpol"
+	var spawn_pos = spawn_dir * PLANET_RADIUS
+	var biome = collision_planet.get_biome_at_position(spawn_pos)
 	
-	# Spawn the base
+	# Wenn nicht im Gras, suche eine passende Position
+	if biome != "grass":
+		var found = false
+		for i in range(36):  # Suche in 10-Grad-Schritten
+			var angle = deg_to_rad(i * 10)
+			spawn_dir = Vector3(sin(angle), cos(angle), 0)
+			spawn_pos = spawn_dir * PLANET_RADIUS
+			biome = collision_planet.get_biome_at_position(spawn_pos)
+			if biome == "grass":
+				found = true
+				break
+		
+		if not found:
+			print("ERROR: Keine geeignete Position für die Basis gefunden!")
+			return
+	
+	# Berechne die tatsächliche Höhe
+	var height = collision_planet.get_height_at_position(spawn_pos)
+	var terrain_height = PLANET_RADIUS * (1.0 + height * 0.2)
+	var spawn_position = spawn_dir * (terrain_height + 0.1)  # Leicht über dem Terrain
+	
 	print("Main: Attempting to spawn base at position ", spawn_position)
 	var base_instance: Node3D = building_manager.spawn_base_on_planet(spawn_position)
 	

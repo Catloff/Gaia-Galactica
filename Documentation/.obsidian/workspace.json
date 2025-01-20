@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Bugs.md",
+                "file": "Prompt.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Bugs"
+              "title": "Prompt"
             }
           }
         ],
@@ -179,9 +179,9 @@
   },
   "active": "07dc79082cd84512",
   "lastOpenFiles": [
+    "Bugs.md",
     "Gameplay.md",
     "Prompt.md",
-    "Bugs.md",
     "Optimierungsvorschläge von der IDE.md",
     "Prioritäten.md"
   ]

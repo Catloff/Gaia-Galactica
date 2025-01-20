@@ -3,8 +3,8 @@
 [ext_resource type="Script" path="res://scripts/Main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/ResourceManager.gd" id="2_manager"]
 [ext_resource type="PackedScene" uid="uid://fraeaabxibdi" path="res://scenes/hud/HUD.tscn" id="3_hud"]
-[ext_resource type="PackedScene" uid="uid://ic4m2aigmns3" path="res://scenes/Ground.tscn" id="5_ground"]
-[ext_resource type="PackedScene" path="res://scenes/buildings/building_manager.tscn" id="5_qeptx"]
+[ext_resource type="PackedScene" uid="uid://1peur11igjei" path="res://scenes/Planet.tscn" id="4_planet"]
+[ext_resource type="PackedScene" uid="uid://cdvo1dccng3iy" path="res://scenes/buildings/building_manager.tscn" id="5_qeptx"]
 [ext_resource type="Script" path="res://scripts/CameraController.gd" id="6_camera"]
 
 [node name="Main" type="Node3D"]
@@ -20,7 +20,7 @@ fov = 60.0
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 35, 0)
 
-[node name="Ground" parent="." instance=ExtResource("5_ground")]
+[node name="Planet" parent="." instance=ExtResource("4_planet")]
 
 [node name="HUD" parent="." instance=ExtResource("3_hud")]
 
