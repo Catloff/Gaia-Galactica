@@ -48,8 +48,10 @@ func _physics_process(delta):
 			harvest_nearby_food()
 
 func harvest_nearby_food() -> void:
+	print("[BerryGatherer] Suche nach Nahrungsressourcen...")
 	var space_state = get_world_3d().direct_space_state
 	if not space_state:
+		print("[BerryGatherer] Keine Space State gefunden")
 		return
 		
 	var query_params = PhysicsShapeQueryParameters3D.new()
@@ -57,12 +59,11 @@ func harvest_nearby_food() -> void:
 	shape.radius = HARVEST_RADIUS
 	query_params.shape = shape
 	query_params.transform = global_transform
-	query_params.collision_mask = 1  # Stelle sicher dass die Kollisionsmaske gesetzt ist
+	query_params.collision_mask = 4  # Layer 4 für Ressourcen
 	
 	var results = space_state.intersect_shape(query_params)
-	if results.is_empty():
-		return  # Keine Ressourcen in Reichweite
-		
+	print("[BerryGatherer] Gefundene Kollisionen: ", results.size())
+	
 	for result in results:
 		if not "collider" in result:
 			continue
@@ -71,16 +72,28 @@ func harvest_nearby_food() -> void:
 		if not is_instance_valid(collider):
 			continue  # Überspringe ungültige Collider
 			
+		print("[BerryGatherer] Prüfe Kollision mit: ", collider.name)
+		
 		if not (collider.has_method("gather_resource") and collider.has_method("get_resource_type")):
+			print("[BerryGatherer] - Keine Ressourcen-Methoden gefunden")
 			continue
 			
 		# Prüfe erst den Ressourcentyp
-		if collider.get_resource_type() == "FOOD":
+		var resource_type = collider.get_resource_type()
+		print("[BerryGatherer] - Ressourcentyp: ", resource_type)
+		
+		if resource_type == "FOOD":
+			print("[BerryGatherer] - Sammle Nahrung...")
 			var resource_data = await collider.gather_resource()
 			if resource_data != null:
 				resource_data["amount"] *= get_efficiency_multiplier()
 				add_resources("food", resource_data["amount"])
+				print("[BerryGatherer] - Gesammelte Menge: ", resource_data["amount"])
 				return  # Eine Ressource pro Tick
+			else:
+				print("[BerryGatherer] - Keine Ressourcen erhalten")
+		else:
+			print("[BerryGatherer] - Falscher Ressourcentyp: ", resource_type)
 
 func get_production_rate() -> float:
 	return HARVEST_RATE / get_speed_multiplier()

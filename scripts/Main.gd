@@ -88,16 +88,17 @@ func setup_collision_planet():
 
 func spawn_large_bushes():
 	var large_bush_scene = preload("res://scenes/resources/LargeBush.tscn")
+	var bush_placed = false
 	
 	for _i in range(LARGE_BUSH_COUNT):
 		var valid_pos = find_valid_position()
 		if not valid_pos.is_valid:
 			continue
 			
-		# Prüfe Biom
+		# Prüfe Biom - bevorzuge Gras, aber akzeptiere andere wenn nötig
 		var biome = collision_planet.get_biome_at_position(valid_pos.position)
-		if biome != "grass":
-			continue
+		if not bush_placed and biome != "grass" and biome != "hill":
+			continue  # Für den ersten Bush versuche es weiter
 			
 		# Berechne tatsächliche Höhe
 		var dir = valid_pos.position.normalized()
@@ -110,19 +111,45 @@ func spawn_large_bushes():
 		bush.look_at(Vector3.ZERO)
 		bush.rotate_object_local(Vector3.RIGHT, PI/2)
 		placed_positions.append(bush.position)
+		bush_placed = true
+
+	# Wenn kein Busch platziert wurde, platziere einen an der ersten gültigen Position
+	if not bush_placed:
+		for _i in range(20):  # Maximale Versuche
+			var valid_pos = find_valid_position()
+			if not valid_pos.is_valid:
+				continue
+				
+			var biome = collision_planet.get_biome_at_position(valid_pos.position)
+			if biome == "water":  # Vermeide nur Wasser
+				continue
+				
+			var dir = valid_pos.position.normalized()
+			var height = collision_planet.get_height_at_position(dir * PLANET_RADIUS)
+			var terrain_height = PLANET_RADIUS * (1.0 + height * 0.2)
+			
+			var bush = large_bush_scene.instantiate()
+			add_child(bush)
+			bush.position = dir * (terrain_height + 0.3)
+			bush.look_at(Vector3.ZERO)
+			bush.rotate_object_local(Vector3.RIGHT, PI/2)
+			placed_positions.append(bush.position)
+			print("[Main] Notfall-Busch platziert in Biom: ", biome)
+			break
 
 func spawn_large_rocks():
 	var large_rock_scene = preload("res://scenes/resources/LargeRock.tscn")
+	var rock_placed = false
 	
 	for _i in range(LARGE_ROCK_COUNT):
 		var valid_pos = find_valid_position()
 		if not valid_pos.is_valid:
 			continue
 			
-		# Prüfe Biom
+		# Prüfe Biom - bevorzuge Berge, aber akzeptiere andere wenn nötig
 		var biome = collision_planet.get_biome_at_position(valid_pos.position)
-		if biome != "mountain":
-			continue
+		if not rock_placed and biome != "mountain" and biome != "hill":
+			continue  # Für den ersten Stein versuche es weiter
 			
 		# Berechne tatsächliche Höhe
 		var dir = valid_pos.position.normalized()
@@ -135,6 +162,31 @@ func spawn_large_rocks():
 		rock.look_at(Vector3.ZERO)
 		rock.rotate_object_local(Vector3.RIGHT, PI/2)
 		placed_positions.append(rock.position)
+		rock_placed = true
+
+	# Wenn kein Stein platziert wurde, platziere einen an der ersten gültigen Position
+	if not rock_placed:
+		for _i in range(20):  # Maximale Versuche
+			var valid_pos = find_valid_position()
+			if not valid_pos.is_valid:
+				continue
+				
+			var biome = collision_planet.get_biome_at_position(valid_pos.position)
+			if biome == "water":  # Vermeide nur Wasser
+				continue
+				
+			var dir = valid_pos.position.normalized()
+			var height = collision_planet.get_height_at_position(dir * PLANET_RADIUS)
+			var terrain_height = PLANET_RADIUS * (1.0 + height * 0.2)
+			
+			var rock = large_rock_scene.instantiate()
+			add_child(rock)
+			rock.position = dir * (terrain_height + 0.5)
+			rock.look_at(Vector3.ZERO)
+			rock.rotate_object_local(Vector3.RIGHT, PI/2)
+			placed_positions.append(rock.position)
+			print("[Main] Notfall-Stein platziert in Biom: ", biome)
+			break
 
 func spawn_resource_clusters():
 	var resource_scene = preload("res://scenes/resources/Resource.tscn")
@@ -148,7 +200,8 @@ func spawn_resource_clusters():
 	
 	# Garantiere mindestens einen Cluster pro Ressourcentyp in passendem Biom
 	var guaranteed_clusters = {
-		"grass": [0, 2],  # WOOD und FOOD in Gras
+		"grass": [0, 2], 
+		"hill": [0], # WOOD und FOOD in Gras
 		"mountain": [1]    # STONE in Bergen
 	}
 	
@@ -178,10 +231,12 @@ func spawn_resource_cluster(resource_scene: PackedScene, resource_type: int, tar
 			is_valid_biome = biome == target_biome
 		else:
 			match resource_type:
-				0, 2:  # WOOD, FOOD
-					is_valid_biome = biome == "grass"
-				1:     # STONE
+				0:  # WOOD
+					is_valid_biome = biome == "grass" or biome == "hill"  # Erlaube Bäume auch auf Hügeln
+				1:  # STONE
 					is_valid_biome = biome == "mountain"
+				2:  # FOOD
+					is_valid_biome = biome == "grass"
 		
 		if is_valid_biome:
 			center = test_pos
@@ -190,7 +245,12 @@ func spawn_resource_cluster(resource_scene: PackedScene, resource_type: int, tar
 	if not center:
 		return
 		
+	# Größere Cluster für Bäume auf Hills
 	var cluster_size = randi_range(MIN_CLUSTER_SIZE, MAX_CLUSTER_SIZE)
+	if resource_type == 0 and biome == "hill":  # Für Bäume auf Hills
+		cluster_size *= 3  # Dreimal so große Cluster
+		print("[Main] Großes Baumcluster auf Hügel mit Größe: ", cluster_size)
+	
 	var placed_in_cluster = 0
 	
 	# Versuche Ressourcen im Cluster zu platzieren

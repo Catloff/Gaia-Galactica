@@ -16,6 +16,7 @@ var preview_building: Node3D = null
 func _ready():
 	# Connect building manager signals
 	building_manager.buildings_updated.connect(_on_buildings_updated)
+	building_manager.preview_building_changed.connect(_on_preview_building_changed)
 	
 	# Initialize button states
 	call_deferred("_on_buildings_updated")
@@ -107,9 +108,9 @@ func _on_building_button_pressed(type: String):
 	call_deferred("hide")
 
 func _on_preview_building_changed(building: Node3D):
-	if preview_building and preview_building.has_method("show_range_indicator"):
+	if preview_building and is_instance_valid(preview_building) and preview_building.has_method("show_range_indicator"):
 		preview_building.show_range_indicator(false)
 	
 	preview_building = building
-	if preview_building and preview_building.has_method("show_range_indicator"):
+	if preview_building and is_instance_valid(preview_building) and preview_building.has_method("show_range_indicator"):
 		preview_building.show_range_indicator(true)

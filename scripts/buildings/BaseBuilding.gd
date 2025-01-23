@@ -68,14 +68,29 @@ func _ready():
 
 func setup_range_indicator():
 	range_indicator = MeshInstance3D.new()
+	range_indicator.name = "RangeIndicator"  # Setze den Namen explizit
 	var cylinder = CylinderMesh.new()
 	cylinder.top_radius = get_building_radius()
 	cylinder.bottom_radius = get_building_radius()
 	cylinder.height = 0.1
 	range_indicator.mesh = cylinder
-	range_indicator.material_override = RANGE_INDICATOR_MATERIAL
+	
+	# Erstelle ein neues Material für den Range-Indikator
+	var range_material = StandardMaterial3D.new()
+	range_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	range_material.albedo_color = Color(0, 0.7, 1, 0.3)  # Hellblau, transparent
+	range_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	range_material.no_depth_test = true
+	range_material.render_priority = 101  # Setze die Render-Priorität über das Material
+	
+	range_indicator.material_override = range_material
 	range_indicator.visible = false
 	add_child(range_indicator)
+	
+	print("[BaseBuilding] Range-Indikator eingerichtet für: ", name)
+	print("- Radius: ", get_building_radius())
+	print("- Material: ", range_material)
+	print("- Render Priority: ", range_material.render_priority)
 
 func setup_storage_warning():
 	storage_warning_mesh = MeshInstance3D.new()
@@ -329,8 +344,16 @@ func activate():
 	update_ui_position()
 
 func show_range_indicator(should_show: bool):
-	if range_indicator:
+	if range_indicator and is_instance_valid(range_indicator):
+		print("[BaseBuilding] Setze Range-Indikator Sichtbarkeit für %s auf: %s" % [name, should_show])
 		range_indicator.visible = should_show
+		if should_show:
+			# Aktualisiere den Radius für den Fall, dass er sich geändert hat
+			var cylinder = range_indicator.mesh as CylinderMesh
+			if cylinder:
+				cylinder.top_radius = get_building_radius()
+				cylinder.bottom_radius = get_building_radius()
+				print("- Radius aktualisiert auf: ", get_building_radius())
 
 func deactivate():
 	is_active = false

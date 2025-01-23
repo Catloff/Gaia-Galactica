@@ -618,3 +618,137 @@
 - Implementierung von preload für häufig verwendete Ressourcen
 - Optimierung der Szenen-Struktur für schnelleres Laden
 - Verbesserung des Ressourcen-Managements
+
+## 2024-03-19 - Überarbeitung der Planetengenerierung
+
+### Änderungen
+- Vereinfachung der Höhenstufen auf vier diskrete Ebenen:
+  - Wasser (< 0.25)
+  - Gras (0.25 - 0.5)
+  - Hügel (0.5 - 0.75)
+  - Berge (> 0.75)
+- Entfernung der Übergangszone zwischen Wasser und Land für klarere Grenzen
+- Reduzierung der Noise-Komplexität für deutlichere Biome:
+  - Frequenz auf 0.4 reduziert
+  - Oktaven auf 3 reduziert
+  - Quantisierung der Noise-Werte in vier diskrete Stufen
+- Anpassung der Kollisionsebene an die neuen Höhenstufen
+- Optimierung der Beleuchtung für bessere Sichtbarkeit (minimales Umgebungslicht erhöht)
+- Reduzierung der Noise-Details für einen klareren Low-Poly-Look
+
+### Technische Details
+- Shader überarbeitet für diskrete Höhenstufen
+- PlanetGenerator.gd angepasst für neue Biom-Logik
+- CollisionPlanet.gd aktualisiert für verbesserte Höhen- und Biomerkennung
+- Noise-Parameter optimiert für größere, zusammenhängende Flächen
+
+## 2024-03-19 - Verbesserung der Gebäudeplatzierung
+
+### Änderungen
+- Verbesserte Raycast-Erkennung für Gebäudeplatzierung
+- Alternative Methode zur Positionsbestimmung bei fehlgeschlagenem Raycast
+- Genauere Höhenberechnung für Gebäudeplatzierung
+- Verbesserte Kollisionserkennung zwischen Gebäuden und Planetenoberfläche
+
+### Technische Details
+- BuildingManager.gd erweitert um alternative Positionsberechnung
+- Implementierung einer Sphere-Raycast-Intersection für zuverlässigere Platzierung
+- Verbessertes Logging für bessere Fehlerdiagnose
+- Optimierte Vertex-Suche in CollisionPlanet.gd
+
+## 2024-03-19 - Fehlerbehebung: Gebäudevorschau und UI
+
+### Änderungen
+- Verbesserte Fehlerbehandlung für freigegebene Gebäude-Instanzen
+- Robustere Validierung von Gebäude-Referenzen
+- Korrektur von UI-Aktualisierungen bei ungültigen Gebäuden
+
+### Technische Details
+- Implementierung von is_instance_valid-Prüfungen in BuildingHUD
+- Verbesserte Methodenprüfung mit has_method in BuildingInfoHUD
+- Sicherere Behandlung von Gebäude-Referenzen beim Platzieren
+- Automatische Bereinigung ungültiger Referenzen
+
+## 2024-03-19 - Verbesserung der Range-Indikatoren
+
+### Änderungen
+- Verbesserte Sichtbarkeit der Range-Indikatoren
+- Korrekte Anzeige der Range-Indikatoren in der Gebäudevorschau
+- Dynamische Aktualisierung der Range-Größe
+- Konsistente Namensgebung für Range-Indikatoren
+
+### Technische Details
+- Explizite Namensgebung für Range-Indicator Nodes
+- Erhöhte Render-Priorität für bessere Sichtbarkeit
+- Verbesserte Validierung von Range-Indicator Instanzen
+- Dynamische Radius-Aktualisierung bei Aktivierung
+
+## 2024-03-19 - Verbesserung der Gebäudevorschau
+
+### Änderungen
+- Range-Indikator wird jetzt auch in der Gebäudevorschau angezeigt
+- Verbesserte Sichtbarkeit der Baubereichs-Anzeige
+- Korrekte Behandlung der Range-Anzeige beim Wechsel zwischen Gebäuden
+
+### Technische Details
+- BuildingManager.gd angepasst für sofortige Range-Anzeige
+- Verbesserte Aufräumlogik für Range-Indikatoren
+- Sicherere Methodenaufrufe für show_range_indicator
+
+## 2024-03-19 - Fehlerbehebung: Gebäudevorschau und UI
+
+### Änderungen
+- Verbesserte Fehlerbehandlung für freigegebene Gebäude-Instanzen
+- Robustere Validierung von Gebäude-Referenzen
+- Korrektur von UI-Aktualisierungen bei ungültigen Gebäuden
+
+### Technische Details
+- Implementierung von is_instance_valid-Prüfungen in BuildingHUD
+- Verbesserte Methodenprüfung mit has_method in BuildingInfoHUD
+- Sicherere Behandlung von Gebäude-Referenzen beim Platzieren
+- Automatische Bereinigung ungültiger Referenzen
+
+## 2024-03-19 - Verbesserung der Gebäudeplatzierung
+
+### Änderungen
+- Verbesserte Raycast-Erkennung für Gebäudeplatzierung
+- Alternative Methode zur Positionsbestimmung bei fehlgeschlagenem Raycast
+- Genauere Höhenberechnung für Gebäudeplatzierung
+- Verbesserte Kollisionserkennung zwischen Gebäuden und Planetenoberfläche
+
+### Technische Details
+- BuildingManager.gd erweitert um alternative Positionsberechnung
+- Implementierung einer Sphere-Raycast-Intersection für zuverlässigere Platzierung
+- Verbessertes Logging für bessere Fehlerdiagnose
+- Optimierte Vertex-Suche in CollisionPlanet.gd
+
+## 2024-03-19 - Überarbeitung der Planetengenerierung
+
+### Änderungen
+- Vereinfachung der Höhenstufen auf vier diskrete Ebenen:
+  - Wasser (< 0.25)
+  - Gras (0.25 - 0.5)
+  - Hügel (0.5 - 0.75)
+  - Berge (> 0.75)
+- Entfernung der Übergangszone zwischen Wasser und Land für klarere Grenzen
+- Reduzierung der Noise-Komplexität für deutlichere Biome:
+  - Frequenz auf 0.4 reduziert
+  - Oktaven auf 3 reduziert
+  - Quantisierung der Noise-Werte in vier diskrete Stufen
+- Anpassung der Kollisionsebene an die neuen Höhenstufen
+- Optimierung der Beleuchtung für bessere Sichtbarkeit (minimales Umgebungslicht erhöht)
+- Reduzierung der Noise-Details für einen klareren Low-Poly-Look
+
+### Technische Details
+- Shader überarbeitet für diskrete Höhenstufen
+- PlanetGenerator.gd angepasst für neue Biom-Logik
+- CollisionPlanet.gd aktualisiert für verbesserte Höhen- und Biomerkennung
+- Noise-Parameter optimiert für größere, zusammenhängende Flächen
+
+## 19. März 2024
+- Verbesserte Ressourcen-Spawning-Logik:
+  - Bäume können jetzt auch auf Hügeln spawnen
+  - Dreimal größere Baumcluster auf Hügeln
+  - Garantierte Mindestanzahl an großen Büschen und Steinen
+  - Notfall-Spawning-System für Ressourcen implementiert
+  - Verbesserte Biom-Erkennung und Platzierungslogik

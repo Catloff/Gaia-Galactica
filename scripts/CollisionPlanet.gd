@@ -36,9 +36,9 @@ func initialize(mesh: MeshInstance3D, world_seed: int = 0):
 	noise = FastNoiseLite.new()
 	noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
 	noise.seed = world_seed
-	noise.frequency = 0.6
+	noise.frequency = 0.4
 	noise.fractal_type = FastNoiseLite.FRACTAL_FBM
-	noise.fractal_octaves = 5
+	noise.fractal_octaves = 3
 	noise.fractal_lacunarity = 2.0
 	noise.fractal_gain = 0.5
 	
@@ -80,15 +80,19 @@ func get_height_at_position(world_position: Vector3) -> float:
 	# Finde den nächsten Vertex zur gegebenen Richtung
 	var closest_dist = INF
 	var height = 0.0
+	var closest_vertex = Vector3.ZERO
 	
 	for i in range(vertices.size()):
-		var vertex_dir = vertices[i].normalized()
+		var vertex = vertices[i]
+		var vertex_dir = vertex.normalized()
 		var dist = dir.distance_to(vertex_dir)
 		if dist < closest_dist:
 			closest_dist = dist
 			height = uvs[i].x  # Die Höheninformation ist in der X-Komponente der UV gespeichert
+			closest_vertex = vertex
 	
-	print("[CollisionPlanet] Höhe an Position ", world_position, ": ", height)
+	print("[CollisionPlanet] Nächster Vertex: ", closest_vertex)
+	print("[CollisionPlanet] Höhe: ", height)
 	return height
 
 func get_biome_at_position(world_position: Vector3) -> String:
@@ -98,13 +102,24 @@ func get_biome_at_position(world_position: Vector3) -> String:
 	
 	var height = get_height_at_position(world_position)
 	
-	# Biom basierend auf der Höhe bestimmen
-	if height < 0.0:
-		return "water"
-	elif height > 0.6:
-		return "mountain"
-	else:
+	# Hole die Höhengrenzen aus dem Material
+	var material = planet_mesh.material_override
+	if not material:
 		return "grass"
+		
+	var water_level = material.get_shader_parameter("water_level")
+	var hill_level = material.get_shader_parameter("hill_level")
+	var mountain_level = material.get_shader_parameter("mountain_level")
+	
+	# Biom basierend auf der Höhe bestimmen
+	if height < water_level:
+		return "water"
+	elif height < hill_level:
+		return "grass"
+	elif height < mountain_level:
+		return "hill"
+	else:
+		return "mountain"
 
 func update_collision_shape():
 	if not planet_mesh or not planet_mesh.mesh:
@@ -125,7 +140,12 @@ func update_collision_shape():
 	height_data.clear()
 	biome_data.clear()
 	
-	var biome_counts = {"water": 0, "grass": 0, "mountain": 0}
+	var biome_counts = {
+		"water": 0,
+		"grass": 0,
+		"hill": 0,
+		"mountain": 0
+	}
 	
 	for i in range(vertices.size()):
 		var height = uvs[i].x  # Höheninformation aus UV
@@ -133,13 +153,14 @@ func update_collision_shape():
 		height_data.append({"position": vertex_pos, "height": height})
 		
 		# Bestimme Biom basierend auf Höhe
-		var biome = get_biome_for_height(height)
+		var biome = get_biome_at_position(vertex_pos)
 		biome_data.append(biome)
 		biome_counts[biome] += 1
 		
 	print("Biom-Verteilung:")
 	print("- Wasser: ", biome_counts["water"])
 	print("- Gras: ", biome_counts["grass"])
+	print("- Hügel: ", biome_counts["hill"])
 	print("- Berge: ", biome_counts["mountain"])
 	
 	# Erstelle Kollisionsform

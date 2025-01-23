@@ -32,9 +32,9 @@ func _ready():
 	hide()
 	print("[BuildingInfoHUD] Initialisiert")
 
-func _on_preview_building_changed(preview: BaseBuilding):
-	if preview:
-		show_building_info(preview)
+func _on_preview_building_changed(preview: Node3D):
+	if preview and preview is BaseBuilding:
+		show_building_info(preview as BaseBuilding)
 	else:
 		show_building_info(null)
 
@@ -43,14 +43,16 @@ func _on_mobile_nav_button_pressed():
 	show_building_info(null)
 
 func show_building_info(building: BaseBuilding):
-	if current_building and current_building != building:
+	if current_building and is_instance_valid(current_building) and current_building != building:
 		# Verstecke Range des vorherigen Gebäudes
-		current_building.show_range_indicator(false)
+		if current_building.has_method("show_range_indicator"):
+			current_building.show_range_indicator(false)
 	
 	current_building = building
-	if building:
+	if building and is_instance_valid(building):
 		# Zeige Range des neuen Gebäudes
-		building.show_range_indicator(true)
+		if building.has_method("show_range_indicator"):
+			building.show_range_indicator(true)
 		show()
 		update_info()
 	else:
@@ -58,13 +60,16 @@ func show_building_info(building: BaseBuilding):
 		current_building = null
 
 func hide_building_info():
-	if current_building:
-		current_building.show_range_indicator(false)
-		current_building = null
+	if current_building and is_instance_valid(current_building):
+		if current_building.has_method("show_range_indicator"):
+			current_building.show_range_indicator(false)
+	current_building = null
 	hide()
 
 func update_info():
-	if not current_building:
+	if not current_building or not is_instance_valid(current_building):
+		hide()
+		current_building = null
 		return
 		
 	building_name_label.text = current_building.name

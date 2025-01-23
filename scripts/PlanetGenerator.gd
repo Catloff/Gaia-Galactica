@@ -29,24 +29,19 @@ var verticies = []
 		generate_planet()
 
 # Biome Parameter
-@export_range(0.0, 1.0) var water_level: float = 0.3:
+@export_range(0.0, 1.0) var water_level: float = 0.25:
 	set(value):
 		water_level = value
 		_update_material()
 
-@export_range(0.0, 0.1) var shore_blend: float = 0.03:
+@export_range(0.0, 1.0) var hill_level: float = 0.5:
 	set(value):
-		shore_blend = value
+		hill_level = value
 		_update_material()
 
-@export_range(0.0, 1.0) var mountain_start: float = 0.5:
+@export_range(0.0, 1.0) var mountain_level: float = 0.75:
 	set(value):
-		mountain_start = value
-		_update_material()
-
-@export_range(0.0, 1.0) var snow_start: float = 0.7:
-	set(value):
-		snow_start = value
+		mountain_level = value
 		_update_material()
 
 @export var water_color: Color = Color(0.1, 0.3, 0.5):
@@ -54,24 +49,19 @@ var verticies = []
 		water_color = value
 		_update_material()
 
-@export var shore_color: Color = Color(0.2, 0.4, 0.2):
-	set(value):
-		shore_color = value
-		_update_material()
-
 @export var grass_color: Color = Color(0.2, 0.5, 0.2):
 	set(value):
 		grass_color = value
 		_update_material()
 
+@export var hill_color: Color = Color(0.3, 0.4, 0.2):
+	set(value):
+		hill_color = value
+		_update_material()
+
 @export var mountain_color: Color = Color(0.4, 0.3, 0.2):
 	set(value):
 		mountain_color = value
-		_update_material()
-
-@export var snow_color: Color = Color(0.9, 0.9, 0.9):
-	set(value):
-		snow_color = value
 		_update_material()
 
 var current_seed: int = 0
@@ -90,9 +80,9 @@ func initialize_noise() -> void:
 		noise = FastNoiseLite.new()
 		noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
 		noise.seed = current_seed
-		noise.frequency = 0.6
+		noise.frequency = 0.4  # Reduzierte Frequenz für größere Flächen
 		noise.fractal_type = FastNoiseLite.FRACTAL_FBM
-		noise.fractal_octaves = 5
+		noise.fractal_octaves = 3  # Reduzierte Oktaven für klarere Strukturen
 		noise.fractal_lacunarity = 2.0
 		noise.fractal_gain = 0.5
 
@@ -139,14 +129,17 @@ func generate_mesh() -> void:
 					pos.x * roughness * 10.0,
 					pos.y * roughness * 10.0,
 					pos.z * roughness * 10.0
-				) * 0.5
+				)
 				
-				# Füge Details hinzu
-				noise_val += noise.get_noise_3d(
-					pos.x * roughness * 20.0,
-					pos.y * roughness * 20.0,
-					pos.z * roughness * 20.0
-				) * 0.25
+				# Quantisiere den Noise-Wert in vier Stufen
+				if noise_val < -0.5:
+					noise_val = 0.0  # Wasser
+				elif noise_val < 0.0:
+					noise_val = 0.33  # Gras
+				elif noise_val < 0.5:
+					noise_val = 0.66  # Hügel
+				else:
+					noise_val = 1.0  # Berg
 			
 			noise_values.push_back(noise_val)
 			min_noise = min(min_noise, noise_val)
@@ -185,14 +178,12 @@ func _update_material() -> void:
 	if material_override and material_override is ShaderMaterial:
 		material_override.set_shader_parameter("noise_texture", noise)
 		material_override.set_shader_parameter("water_level", water_level)
-		material_override.set_shader_parameter("shore_blend", shore_blend)
-		material_override.set_shader_parameter("mountain_start", mountain_start)
-		material_override.set_shader_parameter("snow_start", snow_start)
+		material_override.set_shader_parameter("hill_level", hill_level)
+		material_override.set_shader_parameter("mountain_level", mountain_level)
 		material_override.set_shader_parameter("water", water_color)
-		material_override.set_shader_parameter("shore", shore_color)
 		material_override.set_shader_parameter("grass", grass_color)
+		material_override.set_shader_parameter("hill", hill_color)
 		material_override.set_shader_parameter("mountain", mountain_color)
-		material_override.set_shader_parameter("snow", snow_color)
 
 func generate_icosphere() -> void:
 	var t = (1.0 + sqrt(5.0)) / 2.0

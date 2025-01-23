@@ -1,3 +1,4 @@
+@tool
 extends Node3D
 
 enum BuildingCategory { RESOURCE, INFRASTRUCTURE, SPECIAL, BASE }
@@ -105,11 +106,11 @@ var resource_manager
 @onready var mobile_nav = $"../HUD/MobileNavigation"
 
 signal buildings_updated
-signal preview_building_changed(preview: BaseBuilding)
+signal preview_building_changed(preview: Node3D)
 
 var is_touch_device = false
-var pending_touch_position: Vector2 = Vector2.ZERO  # Neue Variable für ausstehende Touch-Position
-var pending_demolish_position: Vector2 = Vector2.ZERO  # Neue Variable für ausstehende Abriss-Position
+var pending_touch_position: Vector2 = Vector2.ZERO
+var pending_demolish_position: Vector2 = Vector2.ZERO
 
 # Füge Kollisionsmasken als Konstanten hinzu
 const COLLISION_LAYER_GROUND = 2
@@ -374,6 +375,7 @@ func update_preview_position(mouse_pos: Vector2):
 		var surface_pos = dir * terrain_height
 		
 		print("[BuildingManager] Oberflächenposition: ", surface_pos)
+		print("[BuildingManager] Höhe: ", height)
 		
 		# Prüfe das Biom
 		var biome = collision_planet.get_biome_at_position(surface_pos)
@@ -394,10 +396,60 @@ func update_preview_position(mouse_pos: Vector2):
 		update_preview_material(can_place)
 		
 		print("[BuildingManager] Platzierung möglich: ", can_place)
-		print("[BuildingManager] Biom: ", biome)
-		print("[BuildingManager] Höhe: ", height)
 	else:
 		print("[BuildingManager] Kein Treffer mit dem Terrain gefunden")
+		# Versuche eine alternative Methode zur Positionsbestimmung
+		var planet_center = Vector3.ZERO
+		var ray_dir = camera.project_ray_normal(mouse_pos)
+		var closest_point = find_closest_point_on_sphere(from, ray_dir, planet_center, PLANET_RADIUS)
+		
+		if closest_point != Vector3.ZERO:
+			print("[BuildingManager] Alternative Position gefunden: ", closest_point)
+			var dir = closest_point.normalized()
+			var collision_planet = get_node("/root/Main/CollisionPlanet")
+			if collision_planet:
+				var height = collision_planet.get_height_at_position(dir * PLANET_RADIUS)
+				var terrain_height = PLANET_RADIUS * (1.0 + height * 0.2)
+				var surface_pos = dir * terrain_height
+				
+				# Berechne die Snapping-Position
+				var snap_pos = find_nearest_snap_position(surface_pos)
+				current_snap_position = snap_pos
+				
+				# Setze die Position und Rotation der Vorschau
+				preview_building.global_position = snap_pos
+				preview_building.global_transform.basis = calculate_planet_aligned_basis(snap_pos)
+				
+				# Prüfe ob wir hier bauen können
+				can_place = can_place_building(snap_pos)
+				update_preview_material(can_place)
+				
+				print("[BuildingManager] Alternative Platzierung möglich: ", can_place)
+
+func find_closest_point_on_sphere(ray_origin: Vector3, ray_direction: Vector3, sphere_center: Vector3, sphere_radius: float) -> Vector3:
+	# Berechne den Vektor vom Strahlenursprung zum Kugelmittelpunkt
+	var oc = ray_origin - sphere_center
+	
+	# Berechne die Koeffizienten der quadratischen Gleichung
+	var a = ray_direction.dot(ray_direction)
+	var b = 2.0 * oc.dot(ray_direction)
+	var c = oc.dot(oc) - sphere_radius * sphere_radius
+	
+	# Berechne die Diskriminante
+	var discriminant = b * b - 4 * a * c
+	
+	if discriminant < 0:
+		return Vector3.ZERO  # Kein Schnittpunkt
+	
+	# Berechne den näheren Schnittpunkt
+	var t = (-b - sqrt(discriminant)) / (2.0 * a)
+	if t < 0:
+		t = (-b + sqrt(discriminant)) / (2.0 * a)  # Verwende den zweiten Schnittpunkt, wenn der erste hinter dem Strahl liegt
+	
+	if t < 0:
+		return Vector3.ZERO  # Beide Schnittpunkte liegen hinter dem Strahl
+	
+	return ray_origin + ray_direction * t
 
 func find_nearest_snap_position(pos: Vector3) -> Vector3:
 	var dir = pos.normalized()
@@ -512,6 +564,8 @@ func _on_building_selected(type: String):
 	
 	if type == "none":
 		if preview_building:
+			if preview_building.has_method("show_range_indicator"):
+				preview_building.show_range_indicator(false)
 			preview_building.queue_free()
 			preview_building = null
 			current_building_type = "none"
@@ -526,23 +580,26 @@ func _on_building_selected(type: String):
 	
 	print("[BuildingManager] Erstelle Vorschau für: ", type)
 	if preview_building:
+		if preview_building.has_method("show_range_indicator"):
+			preview_building.show_range_indicator(false)
 		preview_building.queue_free()
 	
 	preview_building = building_def.scene.instantiate()
 	add_child(preview_building)
 	current_building_type = type
 	
-	# Setze das Material für die Vorschau
+	# Setze das Material für die Vorschau, aber NICHT für den Range-Indikator
 	for child in preview_building.get_children():
-		if child is MeshInstance3D:
+		if child is MeshInstance3D and child.name != "RangeIndicator":
 			var mesh = child as MeshInstance3D
 			mesh.material_override = preview_material_valid
 			mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 			mesh.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			mesh.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
 	
-	# Zeige den Range-Indikator
+	# Zeige den Range-Indikator sofort an
 	if preview_building.has_method("show_range_indicator"):
+		print("[BuildingManager] Aktiviere Range-Indikator für: ", preview_building.name)
 		preview_building.show_range_indicator(true)
 	
 	preview_building_changed.emit(preview_building)
