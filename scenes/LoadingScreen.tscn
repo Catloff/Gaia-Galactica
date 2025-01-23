@@ -1,0 +1,71 @@
+[gd_scene load_steps=2 format=3 uid="uid://b8vyj2p4h3dlc"]
+
+[ext_resource type="Script" path="res://scripts/LoadingScreen.gd" id="1_load"]
+
+[node name="LoadingScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_load")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0, 0.0, 0.0, 1.0)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Title" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.8, 1.0, 1.0)
+theme_override_font_sizes/font_size = 48
+text = "Gaia Galactica"
+horizontal_alignment = 1
+
+[node name="LoadingLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Lade Spiel..."
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="ProgressBar" type="ProgressBar" parent="CenterContainer/VBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(400, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.8, 1.0, 1.0)
+theme_override_colors/font_outline_color = Color(0.2, 0.8, 1.0, 1.0)
+show_percentage = false
+
+[node name="StatusLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1.0)
+text = "Initialisiere..."
+horizontal_alignment = 1
+
+[node name="TipLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1.0)
+theme_override_font_sizes/font_size = 16
+text = "Tipp: Nutze die rechte Maustaste zum Rotieren der Kamera"
+horizontal_alignment = 1 

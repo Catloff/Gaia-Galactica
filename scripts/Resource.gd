@@ -1,5 +1,11 @@
 extends StaticBody3D
 
+# Preload häufig verwendeter Materialien
+const WOOD_STUMP_MATERIAL = preload("res://materials/wood_stump.tres")
+const WOOD_CROWN_MATERIAL = preload("res://materials/wood_crown.tres")
+const STONE_MATERIAL = preload("res://materials/stone.tres")
+const FOOD_MATERIAL = preload("res://materials/food.tres")
+
 enum ResourceType {WOOD, STONE, FOOD}
 @export var resource_type: ResourceType
 @export var resource_amount: int = 10
@@ -16,8 +22,6 @@ func _ready():
 	collision_mask = 4   # COLLISION_LAYER_BUILDINGS
 	
 	# Set the color based on resource type
-	var material = StandardMaterial3D.new()
-	
 	match resource_type:
 		ResourceType.WOOD:
 			# Entferne alte Mesh-Instanz falls vorhanden
@@ -30,27 +34,19 @@ func _ready():
 			stump.height = 0.4
 			stump.position.y = 0.2  # Halbe Höhe
 			add_child(stump)
-			
-			var stump_material = StandardMaterial3D.new()
-			stump_material.albedo_color = Color(0.4, 0.3, 0.2)  # Braun für Holz
-			stump.material = stump_material
+			stump.material = WOOD_STUMP_MATERIAL
 			
 			var crown = CSGBox3D.new()
 			crown.size = Vector3(1.0, 1.0, 1.0)
 			crown.position.y = 1.2  # Über dem Stumpf
 			crown.name = "Crown"
 			add_child(crown)
-			
-			var crown_material = StandardMaterial3D.new()
-			crown_material.albedo_color = Color(0.2, 0.6, 0.2)  # Grün für Blätter
-			crown.material = crown_material
+			crown.material = WOOD_CROWN_MATERIAL
 			
 		ResourceType.STONE:
-			material.albedo_color = Color(0.7, 0.7, 0.7) # Gray
-			$MeshInstance3D.material_override = material
+			$MeshInstance3D.material_override = STONE_MATERIAL
 		ResourceType.FOOD:
-			material.albedo_color = Color(0.8, 0.0, 0.0) # Red
-			$MeshInstance3D.material_override = material
+			$MeshInstance3D.material_override = FOOD_MATERIAL
 
 func get_resource_type() -> String:
 	match resource_type:

@@ -1,5 +1,17 @@
 extends Node3D
 
+# Preload häufig verwendeter Ressourcen
+const RESOURCE_SCENE = preload("res://scenes/resources/Resource.tscn")
+const LARGE_ROCK_SCENE = preload("res://scenes/resources/LargeRock.tscn")
+const PLANTABLE_TREE_SCENE = preload("res://scenes/resources/PlantableTree.tscn")
+const BUILDING_SCENES = {
+	"Lumbermill": preload("res://scenes/buildings/Lumbermill.tscn"),
+	"Quarry": preload("res://scenes/buildings/Quarry.tscn"),
+	"Storage": preload("res://scenes/buildings/Storage.tscn"),
+	"BerryGatherer": preload("res://scenes/buildings/BerryGatherer.tscn"),
+	"Refinery": preload("res://scenes/buildings/Refinery.tscn")
+}
+
 const PLANET_RADIUS = 25.0  # Radius des Planeten
 const MIN_CLUSTER_SIZE = 3
 const MAX_CLUSTER_SIZE = 6
@@ -11,19 +23,39 @@ const LARGE_BUSH_COUNT = 3
 
 var placed_positions = []
 var collision_planet: Node3D
+var loading_screen: Control
 
 func _ready():
-	# Wait two frames for camera to initialize
+	show_loading_screen()
+	initialize_game()
+
+func show_loading_screen():
+	loading_screen = preload("res://scenes/LoadingScreen.tscn").instantiate()
+	add_child(loading_screen)
+	loading_screen.loading_completed.connect(_on_loading_completed)
+
+func initialize_game():
+	# Warte zwei Frames für die Kamera-Initialisierung
 	await get_tree().process_frame
 	await get_tree().process_frame
+	loading_screen.update_progress("Initialisiere Kamera...")
 	
 	# Initialisiere Kollisionsebene
 	setup_collision_planet()
+	loading_screen.update_progress("Erstelle Planetenoberfläche...")
 	
 	spawn_initial_base()
+	loading_screen.update_progress("Platziere Basis...")
+	
 	spawn_resource_clusters()
+	loading_screen.update_progress("Generiere Ressourcen...")
+	
 	spawn_large_rocks()
 	spawn_large_bushes()
+	loading_screen.update_progress("Platziere spezielle Ressourcen...")
+
+func _on_loading_completed():
+	print("Spiel vollständig geladen!")
 
 func setup_collision_planet():
 	var collision_scene = preload("res://scenes/CollisionPlanet.tscn")

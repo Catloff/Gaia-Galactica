@@ -600,3 +600,15 @@
   - Wasser-Biom: Keine Ressourcen
 - Verbesserte Platzierung der Ressourcen auf der Planetenoberfläche
 - Kollisionserkennung für Gebäudeplatzierung optimiert
+
+## 2024-03-20
+### Ladebildschirm hinzugefügt
+- Implementierung eines Ladebildschirms für besseres Nutzerfeedback
+- Fortschrittsanzeige für verschiedene Ladevorgänge
+- Statusmeldungen für aktuelle Ladeoperationen
+- Verbesserte Benutzererfahrung beim Spielstart
+
+### Ladezeit-Optimierungen
+- Implementierung von preload für häufig verwendete Ressourcen
+- Optimierung der Szenen-Struktur für schnelleres Laden
+- Verbesserung des Ressourcen-Managements

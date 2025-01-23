@@ -28,6 +28,9 @@ var has_storage_warning: bool = false
 const COLLISION_LAYER_GROUND = 2
 const COLLISION_LAYER_BUILDINGS = 4
 
+# Preload häufig verwendeter Materialien
+const RANGE_INDICATOR_MATERIAL = preload("res://materials/range_indicator.tres")
+
 # Virtuelle Methoden für Gebäude-Eigenschaften
 func get_production_rate() -> float:
 	return 0.0
@@ -70,16 +73,7 @@ func setup_range_indicator():
 	cylinder.bottom_radius = get_building_radius()
 	cylinder.height = 0.1
 	range_indicator.mesh = cylinder
-	
-	# Material zur Laufzeit erstellen
-	var material = StandardMaterial3D.new()
-	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	material.albedo_color = Color(0.2, 0.8, 1, 0.2)
-	material.emission_enabled = true
-	material.emission = Color(0.2, 0.8, 1, 1)
-	material.emission_energy_multiplier = 0.5
-	
-	range_indicator.material_override = material
+	range_indicator.material_override = RANGE_INDICATOR_MATERIAL
 	range_indicator.visible = false
 	add_child(range_indicator)
 
