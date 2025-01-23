@@ -6,11 +6,11 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5po51"]
 render_priority = 0
 shader = ExtResource("1_ql7wv")
-shader_parameter/water = Color(0.1, 0.3, 0.5, 1)
-shader_parameter/shore = Color(0.2, 0.4, 0.2, 1)
-shader_parameter/grass = Color(0.2, 0.5, 0.2, 1)
-shader_parameter/mountain = Color(0.4, 0.3, 0.2, 1)
-shader_parameter/snow = Color(0.9, 0.9, 0.9, 1)
+shader_parameter/water = Color(0.117647, 0.533333, 0.898039, 1)
+shader_parameter/shore = Color(1, 0.717647, 0.301961, 1)
+shader_parameter/grass = Color(0.545098, 0.764706, 0.290196, 1)
+shader_parameter/mountain = Color(0.901961, 0.317647, 0, 1)
+shader_parameter/snow = Color(0.890196, 0.94902, 0.992157, 1)
 shader_parameter/water_level = 0.3
 shader_parameter/shore_blend = 0.03
 shader_parameter/mountain_start = 0.5
@@ -42,3 +42,8 @@ mesh = SubResource("ArrayMesh_byiw7")
 script = ExtResource("1_y6p4r")
 roughness = 0.328
 noise = SubResource("FastNoiseLite_xpat5")
+water_color = Color(0.117647, 0.533333, 0.898039, 1)
+shore_color = Color(1, 0.717647, 0.301961, 1)
+grass_color = Color(0.545098, 0.764706, 0.290196, 1)
+mountain_color = Color(0.901961, 0.317647, 0, 1)
+snow_color = Color(0.890196, 0.94902, 0.992157, 1)

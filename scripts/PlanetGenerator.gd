@@ -74,16 +74,10 @@ var verticies = []
 		snow_color = value
 		_update_material()
 
+var current_seed: int = 0
+
 func _ready() -> void:
-	if not noise:
-		noise = FastNoiseLite.new()
-		noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
-		noise.seed = randi()  # Zufälliger Seed
-		noise.frequency = 0.6
-		noise.fractal_type = FastNoiseLite.FRACTAL_FBM
-		noise.fractal_octaves = 5
-		noise.fractal_lacunarity = 2.0
-		noise.fractal_gain = 0.5
+	initialize_noise()
 	
 	# Material initial erstellen
 	material_override = ShaderMaterial.new()
@@ -91,8 +85,29 @@ func _ready() -> void:
 	
 	generate_planet()
 
+func initialize_noise() -> void:
+	if not noise:
+		noise = FastNoiseLite.new()
+		noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
+		noise.seed = current_seed
+		noise.frequency = 0.6
+		noise.fractal_type = FastNoiseLite.FRACTAL_FBM
+		noise.fractal_octaves = 5
+		noise.fractal_lacunarity = 2.0
+		noise.fractal_gain = 0.5
+
+func set_seed(new_seed: int) -> void:
+	current_seed = new_seed
+	if noise:
+		noise.seed = current_seed
+	else:
+		initialize_noise()
+	print("[PlanetGenerator] Seed gesetzt auf: ", current_seed)
+
 func generate_planet() -> void:
-	randomize()
+	if not noise:
+		initialize_noise()
+	
 	triangles.clear()
 	verticies.clear()
 	mesh = null

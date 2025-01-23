@@ -24,6 +24,7 @@ const LARGE_BUSH_COUNT = 3
 var placed_positions = []
 var collision_planet: Node3D
 var loading_screen: Control
+var world_seed: int
 
 func _ready():
 	show_loading_screen()
@@ -35,14 +36,28 @@ func show_loading_screen():
 	loading_screen.loading_completed.connect(_on_loading_completed)
 
 func initialize_game():
+	# Generiere einen zufälligen Seed
+	randomize()
+	world_seed = randi()
+	print("Generiere Welt mit Seed: ", world_seed)
+	
 	# Warte zwei Frames für die Kamera-Initialisierung
 	await get_tree().process_frame
 	await get_tree().process_frame
 	loading_screen.update_progress("Initialisiere Kamera...")
 	
-	# Initialisiere Kollisionsebene
+	# Setze den Seed für den Planeten
+	var planet_generator = $Planet/PlanetMesh
+	if planet_generator:
+		planet_generator.set_seed(world_seed)
+		planet_generator.generate_planet()
+	
+	# Initialisiere Kollisionsebene mit dem Seed
 	setup_collision_planet()
 	loading_screen.update_progress("Erstelle Planetenoberfläche...")
+	
+	# Setze den Seed auch für die Ressourcenverteilung
+	seed(world_seed)
 	
 	spawn_initial_base()
 	loading_screen.update_progress("Platziere Basis...")
@@ -69,7 +84,7 @@ func setup_collision_planet():
 		return
 		
 	print("PlanetMesh gefunden: ", planet_mesh.name)
-	collision_planet.initialize(planet_mesh)
+	collision_planet.initialize(planet_mesh, world_seed)  # Übergebe den Seed
 
 func spawn_large_bushes():
 	var large_bush_scene = preload("res://scenes/resources/LargeBush.tscn")

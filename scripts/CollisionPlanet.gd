@@ -6,6 +6,7 @@ var static_body: StaticBody3D
 var planet_mesh: MeshInstance3D
 var height_data: Array = []
 var biome_data: Array = []
+var noise: FastNoiseLite
 
 func _ready():
 	# Erstelle StaticBody3D wenn noch nicht vorhanden
@@ -28,16 +29,33 @@ func _ready():
 	
 	print("[CollisionPlanet] Kollisionsebene initialisiert")
 
-func initialize(p_planet_mesh: MeshInstance3D):
-	planet_mesh = p_planet_mesh
-	print("[CollisionPlanet] Initialisiere mit PlanetMesh: ", planet_mesh.name)
+func initialize(mesh: MeshInstance3D, world_seed: int = 0):
+	planet_mesh = mesh
 	
-	# Erstelle eine SphereShape3D für die Grundkollision
-	var sphere_shape = SphereShape3D.new()
-	sphere_shape.radius = 25.0  # PLANET_RADIUS
-	collision_shape.shape = sphere_shape
+	# Initialisiere Noise mit dem Seed
+	noise = FastNoiseLite.new()
+	noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
+	noise.seed = world_seed
+	noise.frequency = 0.6
+	noise.fractal_type = FastNoiseLite.FRACTAL_FBM
+	noise.fractal_octaves = 5
+	noise.fractal_lacunarity = 2.0
+	noise.fractal_gain = 0.5
 	
-	print("[CollisionPlanet] Kollisionsform erstellt mit Radius: ", sphere_shape.radius)
+	print("[CollisionPlanet] Initialisiert mit Seed: ", world_seed)
+	generate_collision_data()
+
+func generate_collision_data():
+	if not planet_mesh:
+		push_error("[CollisionPlanet] Kein PlanetMesh gefunden!")
+		return
+		
+	# Generiere Höhen- und Biomdaten basierend auf dem Noise
+	height_data.clear()
+	biome_data.clear()
+	
+	# Hier kommt deine bestehende Logik für die Höhen- und Biomgenerierung
+	# ...
 
 func get_height_at_position(world_position: Vector3) -> float:
 	if not planet_mesh or not planet_mesh.mesh:
