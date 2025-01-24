@@ -746,9 +746,9 @@
 - Noise-Parameter optimiert für größere, zusammenhängende Flächen
 
 ## 19. März 2024
-- Verbesserte Ressourcen-Spawning-Logik:
-  - Bäume können jetzt auch auf Hügeln spawnen
-  - Dreimal größere Baumcluster auf Hügeln
-  - Garantierte Mindestanzahl an großen Büschen und Steinen
-  - Notfall-Spawning-System für Ressourcen implementiert
-  - Verbesserte Biom-Erkennung und Platzierungslogik
+- Optimierung des Wasser-Shaders:
+  - Entfernung der externen Textur-Abhängigkeiten
+  - Implementierung von prozeduralem Noise direkt im Shader
+  - Verbesserte Performance durch interne Noise-Generierung
+  - Hinzugefügt: Perlin Noise und FBM für natürlichere Wassereffekte
+  - Optimierte Speichernutzung durch Entfernung der Texturen

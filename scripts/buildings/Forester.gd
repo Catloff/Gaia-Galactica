@@ -1,7 +1,7 @@
 extends "res://scripts/buildings/BaseBuilding.gd"
 
 const SCAN_RADIUS = 8.0
-const PLANT_RATE = 3.0  # Sekunden zwischen Pflanzungen
+const PLANT_RATE = 10.0  # Sekunden zwischen Pflanzungen
 
 var plant_timer: float = 0.0
 var tree_stumps: Array = []  # Liste der Baumstümpfe

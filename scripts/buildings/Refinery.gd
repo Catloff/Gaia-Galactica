@@ -1,8 +1,8 @@
 extends "res://scripts/buildings/BaseBuilding.gd"
 
-const PRODUCTION_RATE_BASE = 5.0  # Sekunden pro Produktion
+const PRODUCTION_RATE_BASE = 10.0  # Sekunden pro Produktion
 const PRODUCTION_AMOUNT_BASE = 1  # Treibstoff pro Produktion
-const FOOD_COST = 2  # Nahrung pro Produktion
+const FOOD_COST = 5  # Nahrung pro Produktion
 const PRODUCTION_RADIUS = 15.0  # Reichweite für Ressourcensammlung
 
 var production_timer: float = 0.0

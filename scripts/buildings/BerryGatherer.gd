@@ -1,7 +1,7 @@
 extends "res://scripts/buildings/BaseBuilding.gd"
 
 const HARVEST_RADIUS = 5.0
-const HARVEST_RATE = 2.0  # Sekunden pro Ernte
+const HARVEST_RATE = 5  # Sekunden pro Ernte
 
 var harvest_timer: float = 0.0
 

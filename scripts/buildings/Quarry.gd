@@ -1,7 +1,7 @@
 extends BaseBuilding
 
 const HARVEST_RADIUS = 5.0
-const HARVEST_RATE = 3.0  # Sekunden pro Ernte
+const HARVEST_RATE = 8.0  # Sekunden pro Ernte
 
 var harvest_timer: float = 0.0
 
