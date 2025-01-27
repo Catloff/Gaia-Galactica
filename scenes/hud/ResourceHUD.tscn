@@ -15,48 +15,56 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -200.0
-offset_bottom = 200.0
+offset_left = -250.0
+offset_bottom = 300.0
 grow_horizontal = 0
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
 
 [node name="Resources" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
+theme_override_constants/separation = 12
 
 [node name="WoodLabel" type="Label" parent="MarginContainer/Resources"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "Holz: 0/1000"
 
 [node name="StoneLabel" type="Label" parent="MarginContainer/Resources"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "Stein: 0/1000"
 
 [node name="FoodLabel" type="Label" parent="MarginContainer/Resources"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "Nahrung: 0/1000"
 
 [node name="MetalLabel" type="Label" parent="MarginContainer/Resources"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "Metall: 0/1000"
 
 [node name="CrystalLabel" type="Label" parent="MarginContainer/Resources"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "Kristall: 0/1000"
 
 [node name="EnergyLabel" type="Label" parent="MarginContainer/Resources"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "Energie: 0/1000"
 
 [node name="FuelLabel" type="Label" parent="MarginContainer/Resources"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "Treibstoff: 0/1000"

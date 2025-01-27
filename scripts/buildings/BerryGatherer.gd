@@ -1,7 +1,8 @@
 extends "res://scripts/buildings/BaseBuilding.gd"
 
 const HARVEST_RADIUS = 5.0
-const HARVEST_RATE = 5  # Sekunden pro Ernte
+const HARVEST_RATE = 5.0  # Sekunden pro Ernte
+const HARVEST_AMOUNT = 1.0  # Definiere explizite Erntemenge
 
 var harvest_timer: float = 0.0
 
@@ -86,7 +87,7 @@ func harvest_nearby_food() -> void:
 			print("[BerryGatherer] - Sammle Nahrung...")
 			var resource_data = await collider.gather_resource()
 			if resource_data != null:
-				resource_data["amount"] *= get_efficiency_multiplier()
+				resource_data["amount"] = HARVEST_AMOUNT * get_efficiency_multiplier()
 				add_resources("food", resource_data["amount"])
 				print("[BerryGatherer] - Gesammelte Menge: ", resource_data["amount"])
 				return  # Eine Ressource pro Tick

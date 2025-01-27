@@ -1,7 +1,8 @@
 extends "res://scripts/buildings/BaseBuilding.gd"
 
 const HARVEST_RADIUS = 5.0
-const HARVEST_RATE = 5  # Sekunden pro Ernte
+const HARVEST_RATE = 5.0  # Sekunden pro Ernte
+const HARVEST_AMOUNT = 1.0  # Definiere explizite Erntemenge
 
 var harvest_timer: float = 0.0
 
@@ -65,7 +66,7 @@ func harvest_nearby_wood():
 			if collider.get_resource_type() == "WOOD":
 				var resource_data = await collider.gather_resource()
 				if resource_data != null:
-					resource_data["amount"] *= get_efficiency_multiplier()
+					resource_data["amount"] = HARVEST_AMOUNT * get_efficiency_multiplier()
 					add_resources("wood", resource_data["amount"])
 					return  # Nur eine Ressource pro Tick ernten
 

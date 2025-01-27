@@ -19,65 +19,71 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -160.0
-offset_bottom = -80.0
+offset_top = -200.0
+offset_bottom = -120.0
 grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel"]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 30
 alignment = 1
 
 [node name="VBoxLeft" type="VBoxContainer" parent="Panel/MarginContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 10
 
 [node name="BuildingName" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxLeft"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 28
 text = "Gebäude Name"
 
 [node name="Level" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxLeft"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "Level: 1"
 
 [node name="VBoxMiddle" type="VBoxContainer" parent="Panel/MarginContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 10
 
 [node name="ProductionRate" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxMiddle"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "Produktionsrate: -"
 
 [node name="EfficiencyMultiplier" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxMiddle"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "Effizienz: -"
 
 [node name="VBoxRight" type="VBoxContainer" parent="Panel/MarginContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 10
 
 [node name="SpeedMultiplier" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxRight"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "Geschwindigkeit: -"
 
 [node name="UpgradeButton" type="Button" parent="Panel/MarginContainer/HBoxContainer/VBoxRight"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
+custom_minimum_size = Vector2(140, 50)
 text = "Upgrade"
 
 [node name="CloseButton" type="Button" parent="."]
@@ -86,10 +92,10 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -30.0
-offset_top = -180.0
-offset_right = -10.0
-offset_bottom = -160.0
+offset_left = -50.0
+offset_top = -220.0
+offset_right = -20.0
+offset_bottom = -190.0
 grow_horizontal = 0
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 24
 text = "X"

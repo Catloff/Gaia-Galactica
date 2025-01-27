@@ -18,31 +18,33 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -80.0
+offset_top = -120.0
 grow_horizontal = 2
 grow_vertical = 0
 
 [node name="MarginContainer" type="MarginContainer" parent="NavigationBar"]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
 
 [node name="ButtonContainer" type="HBoxContainer" parent="NavigationBar/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 30
 alignment = 1
 
 [node name="BuildButton" type="Button" parent="NavigationBar/MarginContainer/ButtonContainer"]
-custom_minimum_size = Vector2(120, 60)
+custom_minimum_size = Vector2(180, 90)
 layout_mode = 2
 focus_mode = 0
+theme_override_font_sizes/font_size = 28
 toggle_mode = true
 text = "Bauen"
 
 [node name="DemolishButton" type="Button" parent="NavigationBar/MarginContainer/ButtonContainer"]
-custom_minimum_size = Vector2(120, 60)
+custom_minimum_size = Vector2(180, 90)
 layout_mode = 2
 focus_mode = 0
+theme_override_font_sizes/font_size = 28
 toggle_mode = true
 text = "Abreißen"

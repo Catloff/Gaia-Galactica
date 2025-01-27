@@ -31,6 +31,12 @@ const COLLISION_LAYER_BUILDINGS = 4
 # Preload häufig verwendeter Materialien
 const RANGE_INDICATOR_MATERIAL = preload("res://materials/range_indicator.tres")
 
+# Platzierungs-Variablen
+var is_preview: bool = false
+var is_being_dragged: bool = false
+var drag_plane: Plane
+var last_drag_position: Vector3
+
 # Virtuelle Methoden für Gebäude-Eigenschaften
 func get_production_rate() -> float:
 	return 0.0
@@ -199,24 +205,52 @@ func transfer_resources_to_main_storage():
 	update_storage_warning()
 
 func _input(event):
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		var camera = get_viewport().get_camera_3d()
-		if not camera:
-			return
+	if is_preview:
+		if event is InputEventScreenTouch:
+			if event.pressed:
+				# Start drag
+				is_being_dragged = true
+				var camera = get_viewport().get_camera_3d()
+				if camera:
+					# Erstelle eine horizontale Ebene auf Höhe des Gebäudes
+					drag_plane = Plane(Vector3.UP, global_position.y)
+					
+					# Berechne die Weltposition des Touch-Punkts
+					var from = camera.project_ray_origin(event.position)
+					var hit_point = drag_plane.intersects_ray(from, camera.project_ray_normal(event.position))
+					if hit_point:
+						last_drag_position = hit_point
+			else:
+				# End drag and confirm placement
+				is_being_dragged = false
+				is_preview = false
+				# Hier können wir zusätzliche Logik für die finale Platzierung hinzufügen
+		
+		elif event is InputEventScreenDrag and is_being_dragged:
+			var camera = get_viewport().get_camera_3d()
+			if camera:
+				var from = camera.project_ray_origin(event.position)
+				var hit_point = drag_plane.intersects_ray(from, camera.project_ray_normal(event.position))
+				if hit_point:
+					global_position = hit_point
+					last_drag_position = hit_point
+	else:
+		# Original click handling für storage warning
+		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			var camera = get_viewport().get_camera_3d()
+			if not camera:
+				return
+				
+			var from = camera.project_ray_origin(event.position)
+			var _to = from + camera.project_ray_normal(event.position) * 1000  # Prefix mit Unterstrich da wir es nicht direkt nutzen
 			
-		var from = camera.project_ray_origin(event.position)
-		var to = from + camera.project_ray_normal(event.position) * 1000
-		
-		var space_state = get_world_3d().direct_space_state
-		var query = PhysicsRayQueryParameters3D.create(from, to)
-		query.collision_mask = 16  # Nur mit Layer 5 (Ausrufezeichen) kollidieren
-		var result = space_state.intersect_ray(query)
-		
-		if result and result.collider.get_parent() == storage_warning_mesh:
-			print("[%s] Ausrufezeichen wurde angeklickt:" % name)
-			print("- Klick-Position: %s" % event.position)
-			print("- Kollision mit: %s" % result.collider.name)
-			transfer_resources_to_main_storage()
+			var space_state = get_world_3d().direct_space_state
+			var query = PhysicsRayQueryParameters3D.create(from, _to)
+			query.collision_mask = 16
+			var result = space_state.intersect_ray(query)
+			
+			if result and result.collider.get_parent() == storage_warning_mesh:
+				transfer_resources_to_main_storage()
 
 func should_store_directly() -> bool:
 	return has_storage_in_range()
@@ -604,3 +638,15 @@ func consume_resources_from_nearby(required_resources: Dictionary) -> bool:
 			return false
 	
 	return true
+
+# Neue Methode zum Aktivieren der Vorschau
+func start_preview():
+	is_preview = true
+	is_being_dragged = false
+	# Hier können wir zusätzliche Vorschau-Visualisierungen aktivieren
+
+# Neue Methode zum Beenden der Vorschau
+func end_preview():
+	is_preview = false
+	is_being_dragged = false
+	# Hier können wir zusätzliche Vorschau-Visualisierungen deaktivieren

@@ -64,6 +64,11 @@ func _create_building_button(building_def, container):
 	var button = Button.new()
 	button.text = "%s %s" % [building_def.display_name, building_def.get_cost_text()]
 	button.pressed.connect(_on_building_button_pressed.bind(building_def.type))
+	
+	# Größere Buttons für mobile Geräte
+	button.custom_minimum_size = Vector2(0, 80)  # Höhere Buttons
+	button.add_theme_font_size_override("font_size", 28)  # Größere Schrift
+	
 	container.add_child(button)
 	button_mapping[building_def.type] = button
 

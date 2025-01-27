@@ -121,6 +121,9 @@ var building_counters = {}
 var current_snap_position: Vector3 = Vector3.ZERO
 var valid_snap_positions: Array[Vector3] = []
 
+var is_dragging: bool = false
+var drag_start_position: Vector2 = Vector2.ZERO
+
 func _ready():
 	resource_manager = $"/root/Main/ResourceManager"
 	hud.building_selected.connect(_on_building_selected)
@@ -246,31 +249,30 @@ func _unhandled_input(event):
 	if current_building_type == "none":
 		return
 		
-	# Aktualisiere die Vorschau bei jeder Mausbewegung
-	if event is InputEventMouseMotion:
+	# Aktualisiere die Vorschau bei jeder Mausbewegung oder Touch-Bewegung
+	if event is InputEventMouseMotion or event is InputEventScreenDrag:
 		update_preview_position(mouse_pos)
 		get_viewport().set_input_as_handled()
 	
-	# Linksklick zum Platzieren
+	# Touch/Klick-Start für Drag & Drop
 	if (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT) or \
 	   (event is InputEventScreenTouch and event.pressed):
-		print("[BuildingManager] Linksklick erkannt")
 		if is_mouse_over_ui():
-			print("[BuildingManager] Klick war über UI")
 			return
-		
-		print("[BuildingManager] Prüfe Platzierungsbedingungen:")
-		print("- Kann platzieren: ", can_place)
-		print("- Aktuelle Snap-Position: ", current_snap_position)
-		print("- Vorschau aktiv: ", preview_building != null)
-		print("- Kann sich Gebäude leisten: ", can_afford_building(current_building_type))
-		
-		if can_place and current_snap_position != Vector3.ZERO and preview_building and can_afford_building(current_building_type):
-			print("[BuildingManager] Platziere Gebäude")
-			place_building()
-		else:
-			print("[BuildingManager] Platzierung nicht möglich")
+			
+		is_dragging = true
+		drag_start_position = mouse_pos
 		get_viewport().set_input_as_handled()
+	
+	# Touch/Klick-Ende für Drag & Drop
+	if (event is InputEventMouseButton and not event.pressed and event.button_index == MOUSE_BUTTON_LEFT) or \
+	   (event is InputEventScreenTouch and not event.pressed):
+		if is_dragging:
+			is_dragging = false
+			# Nur platzieren wenn wir uns nicht zu weit bewegt haben
+			if can_place and current_snap_position != Vector3.ZERO and preview_building and can_afford_building(current_building_type):
+				place_building()
+			get_viewport().set_input_as_handled()
 	
 	# Rechtsklick oder Escape zum Abbrechen
 	if (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT) or \
